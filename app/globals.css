@@ -8,6 +8,10 @@
   font-family: 'IRANSansX';
   src: url("@/public/font/iransansX family/IRANSansX-Medium.ttf");
 }
+@font-face {
+  font-family: 'IRANSansNum';
+  src: url("@/public/font/iranSans Num/IRANSansXFaNum-Regular.ttf");
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -24,4 +28,7 @@
 
 *{
   font-family: 'IRANSansX';
+}
+input{
+  font-family: 'IRANSansNum';
 }
