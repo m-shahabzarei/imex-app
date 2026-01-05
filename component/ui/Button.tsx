@@ -1,8 +1,23 @@
 import React from 'react'
 
-function Button() {
+interface IButton{
+  variant : "primary" | "secondary" | "outline" | "payment",
+  icon? : string,
+  children : string | number
+}
+const variants = {
+  primary:"bg-[#FFFFFF] text-[#5562EF]",
+  secondary:"",
+  outline:"bg-tarnsparent",
+  payment:"bg-[#FFFFFF] text-[#5562EF]",
+  glassy:""
+}
+
+function Button({variant , icon , children} : IButton) {
   return (
-    <div>Button</div>
+    <div>
+      <button className={``}>{children}</button>
+    </div>
   )
 }
 
