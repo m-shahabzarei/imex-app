@@ -7,7 +7,7 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="max-md:flex max-md:items-center">
       <Header />
       <Menu />
       {children}
