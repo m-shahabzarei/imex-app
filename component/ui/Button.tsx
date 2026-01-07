@@ -8,12 +8,12 @@ interface IButton{
 }
 const variants = {
   primary:"bg-[#FFFFFF] text-[#5562EF]",
-  secondary:"bg-[#5764EF] text-white w-full text-center justify-center",
+  secondary:"bg-linear-to-b  from-[#5764EF] to-[#3E47AD]  text-white w-full text-center justify-center",
   outline:"bg-tarnsparent",
   payment:"bg-[#FFFFFF] text-[#5562EF]",
   glassy:""
 }
-const baseStyle = "px-[12px] py-[8px] rounded-[12px] text-sm font-medium cursor-pointer hover:opacity-90 transition-all duration-200 ease-in-out flex items-center gap-1"
+const baseStyle = "max-md:py-[12px] max-md:text-lg px-[12px] py-[8px] rounded-[12px] text-sm font-medium cursor-pointer hover:opacity-90 transition-all duration-200 ease-in-out flex items-center gap-1"
 
 function Button({variant , icon , children , onClick} : IButton) {
   return (

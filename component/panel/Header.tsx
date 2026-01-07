@@ -33,8 +33,10 @@ function Header() {
           </Button>
         </div>
         {
-          isActive && (<div className="w-full">
-          <input className="bg-[rgba(255,255,255,0.06)] border-1 border-white p-4 w-full rounded-2xl mt-6 placeholder:text-white placeholder:opacity-40" placeholder="جستجو در ایمکس ..." type="text" />
+          isActive && (<div className="w-full flex">
+          <Image src="/image/search-normal.svg" alt="search icon" width="24" height="24" className="absolute mt-10 right-6"/>
+          <input className="bg-[rgba(255,255,255,0.06)] border-1 text-white border-white px-9 py-4 w-full rounded-2xl mt-6 placeholder:text-white placeholder:opacity-40 focus:outline-0" placeholder="جستجو در ایمکس ..." type="text" />
+          <Image src="/image/setting-4.svg" alt="search icon" width="24" height="24" className="absolute mt-10 left-6 "/>
         </div>)
         }
       </header>
