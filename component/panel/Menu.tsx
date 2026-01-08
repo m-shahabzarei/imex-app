@@ -17,9 +17,12 @@ function Menu() {
   const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState(-1);
 
+
+  
+
   return (
-    <div className="max-md:fixed max-md:bottom-6 max-md:w-full max-md:flex max-md:justify-center">
-      <nav className="md:absolute md:top-32 md:right-[9vw] md:w-40 max-md:py-3 w-[83%] rounded-3xl bg-white px-3 py-5 shadow-[0_0_20px_rgba(0,0,0,0.12)]">
+    <div className="max-md:fixed max-md:bottom-6 max-md:w-full max-md:flex max-md:justify-center md:absolute md:top-32 md:right-[9vw]">
+      <nav className="md:w-40 max-md:py-3 w-[83%] rounded-3xl bg-white px-3 py-5 shadow-[0_0_20px_rgba(0,0,0,0.12)]">
         <ul className="flex justify-around md:flex-col md:gap-4">
           {menuItems.map((item, index) => {
             const isActive = pathname === item.url;
@@ -61,7 +64,7 @@ function Menu() {
                     `}
                   />
                   <span className="max-md:hidden">{item.name}</span>
-                  {isActive && <span className="mr-2">{item.name}</span>}
+                  {isActive && <span className="mr-2 md:hidden">{item.name}</span>}
                 </li>
               </Link>
             );
