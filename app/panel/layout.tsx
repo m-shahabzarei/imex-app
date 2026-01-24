@@ -1,18 +1,36 @@
-import Header from "@/component/panel/Header";
-import Menu from "@/component/panel/Menu";
+// import NewLayout from "./newLayout";
+// import ReactQueryProvider from "@/providers/ReactQuery";
 
-export default function Layout({
+// export default function Layout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+//   return (
+//     <div className="debug-screens">
+//       <NewLayout>
+//         <ReactQueryProvider>{children}</ReactQueryProvider>
+//       </NewLayout>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+import NewLayout from "./newLayout";
+import ReactQueryProvider from "@/providers/ReactQuery";
+
+export default function PanelLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <div>
-      <Header />
-      <div>
-        <Menu />
-        {children}
-      </div>
-    </div>
+    <NewLayout>
+      <ReactQueryProvider>{children}</ReactQueryProvider>
+    </NewLayout>
   );
 }

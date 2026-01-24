@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
-import Button from "../ui/Button";
+import Button from "@/component/ui/Button";
 import { usePathname } from "next/navigation";
-import Search from "./Search";
+import Search from "../common/Search";
 
 function Header() {
   const pathname = usePathname();
@@ -10,11 +10,11 @@ function Header() {
 
   return (
     <div
-      className={`w-full flex md:top-32 justify-center max-md:items-center mt-10 ${
-        isActive ? "h-96" : "h-48"
+      className={`w-full flex md:top-32 justify-center max-md:items-center md:mt-10 ${
+        isActive ? "h-80" : "h-48"
       }`}
     >
-      <header className="md:w-[83%] md:h-16 max-md:items-center max-md:pb-7 max-md:rounded-b-3xl max-md:justify-end h-full w-full bg-linear-to-b  from-[#5764EF] to-[#3E47AD]  flex flex-col justify-center px-4 rounded-lg">
+      <header className="md:w-[83%] md:h-16 max-md:items-center max-md:pb-7 max-md:rounded-b-3xl max-md:justify-end h-full w-full bg-linear-to-b  from-[#5764EF] to-[#3E47AD]  flex flex-col justify-center px-4 md:rounded-lg">
         <div className="w-full flex items-center h-fit justify-between">
           <div className="flex">
             <Image

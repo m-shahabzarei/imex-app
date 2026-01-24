@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Outline / Arrows / Alt Arrow Left</title>
+    <defs>
+        <path d="M0,0 L24,0 L24,24 L0,24 L0,0 Z" id="path-1"></path>
+    </defs>
+    <g id="Outline-/-Arrows-/-Alt-Arrow-Left" stroke="none" fill="none" fill-rule="nonzero" xlink:href="#path-1">
+        <path d="M15.4880934,4.43055731 C15.802588,4.70012394 15.8390093,5.17359889 15.5694423,5.48809326 L9.98780823,12 L15.5694423,18.5119061 C15.8390093,18.8264003 15.802588,19.2998757 15.4880934,19.5694423 C15.1735992,19.8390088 14.7001243,19.802587 14.4305577,19.4880929 L8.43055755,12.4880929 C8.18981415,12.2072258 8.18981415,11.7927737 8.43055755,11.5119066 L14.4305577,4.51190624 C14.7001243,4.19741184 15.1735992,4.16099072 15.4880934,4.43055731 Z" id="Vector-(Stroke)" fill="#1C274C"></path>
+    </g>
+</svg>

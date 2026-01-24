@@ -1,0 +1,23 @@
+"use client"
+import LogoutButton from "@/component/panel/common/LogoutButton";
+import Item from "@/component/panel/profile/Item";
+import { useAuthStore } from "@/stores/auth.store";
+
+function Profile() {
+  const {user} = useAuthStore()
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-7 items-center">
+
+      <Item variant="profile" phone={user?.phone}>{user?.name}</Item>
+      <Item variant="subscribe" subscription={false}>نیما محمدپور</Item>
+      <Item variant="primary" icon="/image/tr.svg">دوره های من</Item>
+      <Item variant="primary" icon="/image/messages-2.svg">مشاوره های من</Item>
+      <Item variant="primary" icon="/image/bookmark-2.svg">تعرفه های نشان شده</Item>
+      <Item variant="primary" icon="/image/exit.svg">خروج از حساب کاربری</Item>
+      <LogoutButton/>
+    </div>
+  );
+}
+
+export default Profile;

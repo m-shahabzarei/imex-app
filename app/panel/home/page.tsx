@@ -1,11 +1,73 @@
-import Search from "@/component/panel/Search";
+/* eslint-disable react-hooks/immutability */
+"use client";
+
+import Search from "@/component/panel/common/Search";
+import Item from "@/component/panel/home/item";
 import Image from "next/image";
+import { useEffect} from "react";
 
 function Home() {
+
+  useEffect(() => {
+    showItems();
+    console.log(screen.width)
+  }, []);
+
+  const showItems = () => {
+
+    if(screen.width >= 1024){
+    return (
+      <>
+        <Item icon="/image/bookC.svg" link="/" variant="primary">
+          کتاب صادرات و واردات
+        </Item>
+        <Item icon="/image/shipC.svg" link="/" variant="primary">
+          اطلاعات تجاری
+        </Item>
+        <Item icon="/image/messagesC.svg" link="/" variant="primary">
+          مشاوره تجاری
+        </Item>
+        <Item icon="/image/teacher.svg" link="/" variant="primary">
+          دوره های تخصصی
+        </Item>
+        <Item icon="/image/bookC.svg" link="/" variant="primary">
+          نمایشگاه های تجاری
+        </Item>
+        <Item icon="/image/message-questionC.svg" link="/" variant="primary">
+          دانستنی های تجاری
+        </Item>
+        </>
+    );
+  }else if(screen.width <= 1024){
+    return (
+      <div className="grid max-md:grid-cols-3 grid-cols-2 gap-3 items-center md:pb-10">
+        <Item icon="/image/bookC.svg" link="/" variant="primary">
+          کتاب صادرات و واردات
+        </Item>
+        <Item icon="/image/shipC.svg" link="/" variant="primary">
+          اطلاعات تجاری
+        </Item>
+        <Item icon="/image/messagesC.svg" link="/" variant="primary">
+          مشاوره تجاری
+        </Item>
+        <Item icon="/image/teacher.svg" link="/" variant="primary">
+          دوره های تخصصی
+        </Item>
+        <Item icon="/image/bookC.svg" link="/" variant="primary">
+          نمایشگاه های تجاری
+        </Item>
+        <Item icon="/image/message-questionC.svg" link="/" variant="primary">
+          دانستنی های تجاری
+        </Item>
+      </div>
+    );
+  }
+  };
+
   return (
-    <div className="w-[67%] h-fit top-0 mt-32 left-[8.5vw] absolute grid grid-cols-2 gap-7">
-      <div className=" shadow-[0_0_20px_rgba(0,0,0,0.12)] py-7 px-3 rounded-3xl">
-        <p className="text-[#5764EF] bg-white text-sm">
+    <div className="grid md:grid-cols-2 gap-7 items-center md:pb-10">
+      <div className="h-32 flex flex-col justify-between shadow-[0_0_20px_rgba(0,0,0,0.12)] py-4 px-3 rounded-xl max-md:hidden">
+        <p className="text-[#5764EF] bg-white text-sm font-bold">
           جستجو بوسیله نام و یا کد تعرفه
         </p>
         <Image
@@ -13,34 +75,28 @@ function Home() {
           alt="search icon"
           width="23"
           height="22"
-          className="absolute mt-10 right-6 invert brightness-50 contrast-200"
+          className="absolute mt-14 right-6 invert brightness-50 contrast-200"
         />
         <Search
           variant="secondary"
           text="جستجو در تعرفه‌ها، مقررات، آمار صادرات و واردات و ..."
         />
       </div>
-      <div className=" shadow-[0_0_20px_rgba(0,0,0,0.12)] py-7 px-3 rounded-3xl">
-        <Image src="/image/image5.png" alt="banner" width="60" height="30"/>
-      </div>
-      <div className=" shadow-[0_0_20px_rgba(0,0,0,0.12)] py-7 px-3 rounded-3xl">
-        <p className="text-[#5764EF] bg-white">
-          جستجو بوسیله نام و یا کد تعرفه
-        </p>
-        <Search
-          variant="secondary"
-          text="جستجو در تعرفه‌ها، مقررات، آمار صادرات و واردات و ..."
+      <div className=" shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl h-32 overflow-hidden">
+        <img
+          src="https://webapp.imexapp.ir/media/sliders/1404.jpg"
+          alt="banner"
+          className="h-full w-full"
         />
       </div>
-      <div className=" shadow-[0_0_20px_rgba(0,0,0,0.12)] py-7 px-3 rounded-3xl">
-        <p className="text-[#5764EF] bg-white">
-          جستجو بوسیله نام و یا کد تعرفه
-        </p>
-        <Search
-          variant="secondary"
-          text="جستجو در تعرفه‌ها، مقررات، آمار صادرات و واردات و ..."
-        />
-      </div>
+
+      {showItems()}
+      <Item icon="/image/moneyBagC.svg" link="/" variant="secondary">
+        صفحه اختصاصی رایزن اقتصادی
+      </Item>
+      <Item icon="/image/EarthC.svg" link="/" variant="secondary">
+        صفحه اختصاصی کشور های مقصد
+      </Item>
     </div>
   );
 }

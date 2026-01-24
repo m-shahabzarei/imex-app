@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthProvider from "@/providers/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,11 +13,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    
     <html lang="fa">
       <body
         dir="rtl"
+        className="max-md:pb-40 debug-screens"
       >
+        <AuthProvider>
         {children}
+        </AuthProvider>
       </body>
     </html>
   );

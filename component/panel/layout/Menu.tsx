@@ -1,33 +1,41 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const menuItems = [
-  { name: "خانه", url: "/panel/home", icon: "/image/home.svg" },
-  { name: "تعرفه ها", url: "/panel/book", icon: "/image/document.svg" },
-  { name: "آموزش", url: "/courses", icon: "/image/teacher.svg" },
-  { name: "مقالات", url: "/articles", icon: "/image/document-text.svg" },
-  { name: "پروفایل", url: "/profile", icon: "/image/user.svg" },
+  {name: "خانه",url: "/panel/home/",icon: "/image/home.svg",},
+  {name: "کتاب",url: "/panel/book/",icon: "/image/document.svg",subPages: {"/panel/book/tariffs": "تعرفه ها","/panel/book/categories": "دسته‌بندی‌ها","/panel/book/author": "نویسندگان",},},
+  {name: "آموزش",url: "/panel/course/",icon: "/image/tr.svg",},
+  {name: "دانستنی",url: "/panel/blog/",icon: "/image/document-text.svg",},
+  {name: "پروفایل",url: "/panel/profile/",icon: "/image/user.svg",},
 ];
 
 function Menu() {
   const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState(-1);
 
-
-  
-
   return (
-    <div className="max-md:fixed max-md:bottom-6 max-md:w-full max-md:flex max-md:justify-center md:absolute md:top-32 md:right-[9vw]">
+    <div className="max-md:fixed max-md:bottom-6 max-md:w-full max-md:flex max-md:justify-center md:absolute md:top-32 md:right-[9vw] z-[1000]">
       <nav className="md:w-40 max-md:py-3 w-[83%] rounded-3xl bg-white px-3 py-5 shadow-[0_0_20px_rgba(0,0,0,0.12)]">
         <ul className="flex justify-around md:flex-col md:gap-4">
           {menuItems.map((item, index) => {
-            const isActive = pathname === item.url;
+            console.log(item,pathname,item.url)
+            const isSubPageActive = item.subPages
+              ? Object.keys(item.subPages).some((subUrl) =>
+                  pathname.startsWith(subUrl)
+                )
+              : false;
+            const displayName = isSubPageActive
+              ? item.subPages![pathname]
+              : item.name;
+            const isActive =
+              pathname === item.url ||
+              (item.url === "/panel/book" && isSubPageActive) ||
+              (item.subPages && Object.keys(item.subPages).includes(pathname));
+              
             const isHovered = hoveredIndex === index;
-
             return (
               <Link href={item.url} key={item.url}>
                 <li
@@ -44,7 +52,7 @@ function Menu() {
                     ${
                       isHovered
                         ? "md:bg-gradient-to-b from-[#5764EF] to-[#3E47AD] md:text-white md:pr-16"
-                        : "text-gray-500 md:pr-12 "
+                        : "text-gray-500 md:pr-12"
                     }
                   `}
                 >
@@ -63,8 +71,8 @@ function Menu() {
                       }
                     `}
                   />
-                  <span className="max-md:hidden">{item.name}</span>
-                  {isActive && <span className="mr-2 md:hidden">{item.name}</span>}
+                  <span className="max-md:hidden font-bold">{displayName}</span>
+                  {isActive && <span className="mr-2 md:hidden">{displayName}</span>}
                 </li>
               </Link>
             );
@@ -74,5 +82,4 @@ function Menu() {
     </div>
   );
 }
-
 export default Menu;
