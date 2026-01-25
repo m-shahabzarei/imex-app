@@ -1,5 +1,4 @@
 "use client"
-import LogoutButton from "@/component/panel/common/LogoutButton";
 import Item from "@/component/panel/profile/Item";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -15,7 +14,6 @@ function Profile() {
       <Item variant="primary" icon="/image/messages-2.svg">مشاوره های من</Item>
       <Item variant="primary" icon="/image/bookmark-2.svg">تعرفه های نشان شده</Item>
       <Item variant="primary" icon="/image/exit.svg">خروج از حساب کاربری</Item>
-      <LogoutButton/>
     </div>
   );
 }

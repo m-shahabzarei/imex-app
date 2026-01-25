@@ -3,7 +3,7 @@ import React from "react";
 
 function page() {
   return (
-    <div className="grid md:grid-cols-2 gap-8">
+    <div className="grid lg:grid-cols-2 gap-8">
       <Item
         image={"/image/blog.jpg"}
         title="تجارت خارجی چیست ؟ نکات صادرات و...

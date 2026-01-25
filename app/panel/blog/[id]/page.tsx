@@ -3,6 +3,13 @@ import Link from "next/link";
 import React from "react";
 
 function page() {
+ 
+ const date = "2026-01-06T15:00:00+03:30";
+  const getDate = (data:string) =>{
+   return data.slice(0,10)
+  }
+
+
   return (
     <div className="md:pb-6">
       <Link
@@ -40,7 +47,7 @@ function page() {
               اخبار
             </div>
             <div className="bg-[#5764ef34] text-[#5764EF] p-1 rounded text-xs flex gap-2">
-              1404/12/04
+              {getDate(date)}
               <Image
                 src="/image/calendar.svg"
                 width={15}

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
+import MockAutoLogin from "@/component/mockAutoLogin";
+import AuthGuard from "@/component/AuthGuard";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,14 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
     <html lang="fa">
-      <body
-        dir="rtl"
-        className="max-md:pb-40 debug-screens"
-      >
+      <body dir="rtl" className="max-md:pb-40 debug-screens">
+        {/* <MockAutoLogin /> */}
         <AuthProvider>
-        {children}
+          {/* <AuthGuard> */}
+            {children}
+          {/* </AuthGuard> */}
         </AuthProvider>
       </body>
     </html>

@@ -21,7 +21,6 @@ function Menu() {
       <nav className="md:w-40 max-md:py-3 w-[83%] rounded-3xl bg-white px-3 py-5 shadow-[0_0_20px_rgba(0,0,0,0.12)]">
         <ul className="flex justify-around md:flex-col md:gap-4">
           {menuItems.map((item, index) => {
-            console.log(item,pathname,item.url)
             const isSubPageActive = item.subPages
               ? Object.keys(item.subPages).some((subUrl) =>
                   pathname.startsWith(subUrl)

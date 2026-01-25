@@ -48,13 +48,14 @@ function Login() {
   const handleVerifyOtp = async () => {
     if (!validateOtp()) return;
 
-    const code = otp.join("");
-    const res = await verifyOtp(phone, code);
+    const user_otp = otp.join("");
+    const res = await verifyOtp(phone, user_otp);
     console.log(error , phone, otp , step)
 
 
     // فقط user – نه token
     login(res.data.user);
+    
   };
 
   const handleOtpChange = (
@@ -70,6 +71,7 @@ function Login() {
     if (value && index < OTP_LENGTH - 1) {
       (e.target.nextElementSibling as HTMLInputElement)?.focus();
     }
+
   };
 
   const handleOtpBackspace = (
@@ -139,7 +141,7 @@ function Login() {
               ویرایش شماره
             </span>
 
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-2 justify-center flex-row-reverse">
               {otp.map((digit, i) => (
                 <input
                   key={i}

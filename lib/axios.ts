@@ -1,7 +1,7 @@
-// lib/axios.ts
+// src/lib/axios.ts
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: "/users",
   withCredentials: true,
 });

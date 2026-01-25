@@ -18,13 +18,13 @@ function Home() {
     if(screen.width >= 1024){
     return (
       <>
-        <Item icon="/image/bookC.svg" link="/" variant="primary">
+        <Item icon="/image/bookC.svg" link="/panel/book" variant="primary">
           کتاب صادرات و واردات
         </Item>
         <Item icon="/image/shipC.svg" link="/" variant="primary">
           اطلاعات تجاری
         </Item>
-        <Item icon="/image/messagesC.svg" link="/" variant="primary">
+        <Item icon="/image/messagesC.svg" link="/panel/home/mentors" variant="primary">
           مشاوره تجاری
         </Item>
         <Item icon="/image/teacher.svg" link="/" variant="primary">
@@ -41,7 +41,7 @@ function Home() {
   }else if(screen.width <= 1024){
     return (
       <div className="grid max-md:grid-cols-3 grid-cols-2 gap-3 items-center md:pb-10">
-        <Item icon="/image/bookC.svg" link="/" variant="primary">
+        <Item icon="/image/bookC.svg" link="/panel/book" variant="primary">
           کتاب صادرات و واردات
         </Item>
         <Item icon="/image/shipC.svg" link="/" variant="primary">

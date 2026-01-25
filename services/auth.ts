@@ -7,9 +7,14 @@ export const sendOtp = (username: string) => {
   });
 };
 
-export const verifyOtp = (username: string, code: string) => {
-  return api.post("/users/auth/otp/", {
+export const verifyOtp = (username: string, user_otp: string) => {
+  return api.post("/users/auth/login", {
     username,
-    code,
+    user_otp,
   });
+
 };
+
+export const getMe = () => {
+  return api.get('/auth/me')
+}

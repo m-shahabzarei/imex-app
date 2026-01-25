@@ -5,7 +5,7 @@ const nextConfig : NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/:path*/",
+        source: "/users/:path*/",
         destination: "https://api.imexapp.ir/:path*/",
         basePath : false
       },

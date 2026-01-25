@@ -3,8 +3,8 @@ import Image from "next/image";
 
 function NoSub() {
   return (
-    <div className="w-full h-96">
-      <div className="w-full grid grid-cols-2 h-full">
+    <div className="w-full max-md:py-5">
+      <div className="w-full grid lg:grid-cols-2 h-full">
         <div className="flex flex-col items-center justify-center gap-2">
           <Image src="/image/24.svg" width={210} height={260} alt="no-sub" />
           <h1 className="text-custom font-bold text-lg">شما اشتراک ندارید!</h1>

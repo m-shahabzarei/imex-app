@@ -14,7 +14,7 @@ interface IItem {
 function Item(props: IItem) {
   return (
     <Link href={props.link}>
-      <div className="bg-white w-full h-32 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex max-md:flex gap-2 p-4 max-md:p-2 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
+      <div className="bg-white w-full h-32 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex gap-2 p-4 max-md:p-2 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
         <div className="w-fit h-fit overflow-hidden rounded-xl">
           <Image
             src={props.image}
