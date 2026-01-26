@@ -2,20 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Iitem } from "./type";
 
-interface IItem {
-  image: string;
-  name: string;
-  group: string;
-  progress: string;
-  country: string;
-}
 
-function Item(props: IItem) {
+function Item(props: Iitem) {
   return (
-    <Link href={"/"}>
-      <div className="bg-white w-1/2 max-md:w-full h-32 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex gap-3 p-4 max-md:p-2 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
-        <div className="w-fit h-full items-center justify-center flex">
+    <Link href={props.link}>
+      <div className="bg-white max-md:w-full h-32 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex gap-3 p-4 max-md:p-2 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
+        <div className="w-fit h-full items-center justify-center flex overflow-hidden rounded-xl">
           <Image
             src={props.image}
             width={160}

@@ -2,6 +2,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
 
+interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 interface UseListQueryProps {
   url: string;
   page?: number;
@@ -13,16 +20,26 @@ export function useListQuery<T>({
   page,
   search,
 }: UseListQueryProps) {
-  return useQuery<T[]>({
+  return useQuery({
     queryKey: [url, page, search],
     queryFn: async () => {
+      console.log("QUERY FN RUNNING", { page, search });
+
       const res = await api.get(url, {
         params: {
           page,
-          search,
+          search: search?.trim() || undefined,
         },
       });
-      return res.data;
+
+
+      return res.data as PaginatedResponse<T>;
     },
+
+    enabled: true,
+    staleTime: 0,
+    cacheTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 }

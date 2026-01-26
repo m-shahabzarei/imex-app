@@ -5,7 +5,7 @@ export const useTariff = ()=>{
         isLoading,
         error
     } = useQuery({
-        queryKey : ['course'],
+        queryKey : ['tariff'],
         queryFn: async () =>{
             const res = await fetch ("https://api.imexapp.ir/book/tariff/?page=1&search=&date_range_after=2025-03-21&date_range_before=2026-03-20")
             return res.json()

@@ -18,7 +18,30 @@ function Home() {
     if(screen.width >= 1024){
     return (
       <>
-        <Item icon="/image/bookC.svg" link="/panel/book" variant="primary">
+        <Item icon="/image/bookC.svg" link="/panel/book/rules" variant="primary">
+          کتاب مقررات صادرات و واردات
+        </Item>
+        <Item icon="/image/shipC.svg" link="/panel" variant="primary">
+          اطلاعات تجاری
+        </Item>
+        <Item icon="/image/messagesC.svg" link="/panel/home/mentors" variant="primary">
+          مشاوره تجاری
+        </Item>
+        <Item icon="/image/teacher.svg" link="/panel/course" variant="primary">
+          دوره های تخصصی
+        </Item>
+        <Item icon="/image/bookC.svg" link="/" variant="primary">
+          نمایشگاه های تجاری
+        </Item>
+        <Item icon="/image/message-questionC.svg" link="/panel/blog" variant="primary">
+          دانستنی های تجاری
+        </Item>
+        </>
+    );
+  }else if(screen.width <= 1024){
+    return (
+      <div className="grid max-md:grid-cols-3 grid-cols-2 gap-3 items-center md:pb-10">
+        <Item icon="/image/bookC.svg" link="/panel/book/rules" variant="primary">
           کتاب صادرات و واردات
         </Item>
         <Item icon="/image/shipC.svg" link="/" variant="primary">
@@ -27,36 +50,13 @@ function Home() {
         <Item icon="/image/messagesC.svg" link="/panel/home/mentors" variant="primary">
           مشاوره تجاری
         </Item>
-        <Item icon="/image/teacher.svg" link="/" variant="primary">
+        <Item icon="/image/teacher.svg" link="/panel/course" variant="primary">
           دوره های تخصصی
         </Item>
         <Item icon="/image/bookC.svg" link="/" variant="primary">
           نمایشگاه های تجاری
         </Item>
-        <Item icon="/image/message-questionC.svg" link="/" variant="primary">
-          دانستنی های تجاری
-        </Item>
-        </>
-    );
-  }else if(screen.width <= 1024){
-    return (
-      <div className="grid max-md:grid-cols-3 grid-cols-2 gap-3 items-center md:pb-10">
-        <Item icon="/image/bookC.svg" link="/panel/book" variant="primary">
-          کتاب صادرات و واردات
-        </Item>
-        <Item icon="/image/shipC.svg" link="/" variant="primary">
-          اطلاعات تجاری
-        </Item>
-        <Item icon="/image/messagesC.svg" link="/" variant="primary">
-          مشاوره تجاری
-        </Item>
-        <Item icon="/image/teacher.svg" link="/" variant="primary">
-          دوره های تخصصی
-        </Item>
-        <Item icon="/image/bookC.svg" link="/" variant="primary">
-          نمایشگاه های تجاری
-        </Item>
-        <Item icon="/image/message-questionC.svg" link="/" variant="primary">
+        <Item icon="/image/message-questionC.svg" link="/panel/home/blog" variant="primary">
           دانستنی های تجاری
         </Item>
       </div>

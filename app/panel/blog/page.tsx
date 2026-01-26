@@ -1,25 +1,40 @@
-import Item from "@/component/panel/blog/Item";
-import React from "react";
+"use client";
 
-function page() {
+import Item from "@/component/panel/blog/Item";
+import LoadingSpinner from "@/component/ui/Loading";
+import { useFetch } from "@/hooks/useFetch";
+
+interface Iitem {
+  id: number;
+  title: string;
+  image: string;
+  description: string;
+  category:{
+    title:string
+  };
+}
+
+export default function Page() {
+  const { data, isLoading, error } = useFetch<Iitem>({
+    queryKey: ["items"],
+    url: "/knowledge/business-knowledge/",
+  });
+
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <LoadingSpinner error />;
+
   return (
-    <div className="grid lg:grid-cols-2 gap-8">
-      <Item
-        image={"/image/blog.jpg"}
-        title="تجارت خارجی چیست ؟ نکات صادرات و...
-"
-        description="رم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و"
-        link={"/panel/blog/1"}
-      />
-      <Item
-        image={"/image/blog.jpg"}
-        title="تجارت خارجی چیست ؟ نکات صادرات و...
-"
-        description="رم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و"
-        link={""}
-      />
+    <div className="grid lg:grid-cols-2 gap-8 pb-6">
+      {data?.map((item) => (
+        <Item
+          key={item.id}
+          image={item.image}
+          title={item.title}
+          description={item.description}
+          category={item.category.title}
+          link={`/panel/blog/${item.id}`}
+        />
+      ))}
     </div>
   );
 }
-
-export default page;
