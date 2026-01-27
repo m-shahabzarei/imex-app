@@ -15,7 +15,10 @@ export default function NewLayout({
 
   const showLayout = () => {
     // use the pathname string and ensure id is present in it
-    if (id && pathname?.includes(`/panel/book/tariffs/${id}`) || id && pathname?.includes(`/panel/home/mentors/${id}`)) {
+    if (
+      (id && pathname?.includes(`/panel/book/tariffs/${id}`)) ||
+      (id && pathname?.includes(`/panel/home/mentors/${id}`))
+    ) {
       return (
         <>
           <div className="md:hidden">
@@ -29,6 +32,15 @@ export default function NewLayout({
         <>
           <Header />
           <div className="md:w-[60%] lg:w-[63%] xl:w-[67%] h-fit max-md:m-3 absolute md:top-32 max-md:right-[10%] md:right-[17%]">
+            {children}
+          </div>
+        </>
+      );
+    } else if (pathname?.includes(`/panel/home/exhibition/`)) {
+      return (
+        <>
+          <Header />
+          <div className="max-lg:w-full lg:w-[80%] xl:w-[80%] h-fit p-3 lg:absolute md:top-32 md:right-[10%]">
             {children}
           </div>
         </>

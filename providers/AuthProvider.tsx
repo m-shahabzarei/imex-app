@@ -1,8 +1,7 @@
-// app/providers/AuthProvider.tsx
 "use client";
 
 import { useEffect } from "react";
-import { getMe } from "@/services/me";
+import { getMe } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 
 export default function AuthProvider({
@@ -10,18 +9,21 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const setUser = useAuthStore((s) => s.login);
+  const login = useAuthStore((s) => s.login);
   const logout = useAuthStore((s) => s.logout);
 
   useEffect(() => {
-    getMe()
-      .then((res) => {
-        setUser(res.data.user);
-      })
-      .catch(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await getMe();
+        login(res.data);
+      } catch {
         logout();
-      });
-  }, []);
+      }
+    };
+
+    checkAuth();
+  }, [login, logout]);
 
   return <>{children}</>;
 }

@@ -1,33 +1,33 @@
 "use client";
 
-import Button from "@/component/ui/Button";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-
-import { sendOtp, verifyOtp } from "@/services/auth";
+import Button from "@/component/ui/Button";
+import { getMe, sendOtp, verifyOtp } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 
 const OTP_LENGTH = 5;
 
-function Login() {
+export default function Login() {
+  const login = useAuthStore((s) => s.login);
+
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const login = useAuthStore((s) => s.login);
-
-  /* ------------------ validation ------------------ */
-  const validatePhone = () => {
+  /* ---------------- validation ---------------- */
+  const isValidPhone = () => {
     if (phone.length !== 11 || !phone.startsWith("09")) {
-      setError("شماره تلفن معتبر نیست");
+      setError("شماره موبایل معتبر نیست");
       return false;
     }
     return true;
   };
 
-  const validateOtp = () => {
+  const isValidOtp = () => {
     if (otp.some((d) => d === "")) {
       setError("کد تایید باید ۵ رقم باشد");
       return false;
@@ -35,27 +35,42 @@ function Login() {
     return true;
   };
 
-  /* ------------------ handlers ------------------ */
+  /* ---------------- handlers ---------------- */
   const handleSendOtp = async () => {
-    if (!validatePhone()) return;
+    if (!isValidPhone()) return;
 
-    await sendOtp(phone);
-    setStep("otp");
-    setError("");
-    console.log(error , phone, otp , step)
+    try {
+      setLoading(true);
+      await sendOtp(phone);
+      setStep("otp");
+      setError("");
+    } catch {
+      setError("خطا در ارسال کد");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyOtp = async () => {
-    if (!validateOtp()) return;
+    if (!isValidOtp()) return;
 
-    const user_otp = otp.join("");
-    const res = await verifyOtp(phone, user_otp);
-    console.log(error , phone, otp , step)
+    try {
+      setLoading(true);
 
+      // 1. verify otp (توکن‌ها توی cookie ست میشن)
+      await verifyOtp(phone, otp.join(""));
 
-    // فقط user – نه token
-    login(res.data.user);
-    
+      // 2. گرفتن اطلاعات کاربر
+      const meRes = await getMe();
+
+      // 3. ذخیره user در store
+      login(meRes.data);
+
+    } catch {
+      setError("کد وارد شده صحیح نیست");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOtpChange = (
@@ -63,7 +78,6 @@ function Login() {
     index: number
   ) => {
     const value = e.target.value.replace(/\D/g, "").slice(-1);
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -71,7 +85,6 @@ function Login() {
     if (value && index < OTP_LENGTH - 1) {
       (e.target.nextElementSibling as HTMLInputElement)?.focus();
     }
-
   };
 
   const handleOtpBackspace = (
@@ -88,6 +101,7 @@ function Login() {
     setOtp(Array(OTP_LENGTH).fill(""));
     setError("");
   };
+
 
   /* ------------------ UI ------------------ */
   return (
@@ -201,4 +215,14 @@ function Login() {
   );
 }
 
-export default Login;
+
+
+
+
+
+
+
+
+
+
+

@@ -25,7 +25,7 @@ function Item(props: IItem) {
           className={` ${
             hover ? "bg-linear-to-b  from-[#5764EF] to-[#3E47AD] " : "bg-white"
           } max-md:flex-col max-md:justify-around md:h-20 h-28 shadow-[0_0_20px_rgba(0,0,0,0.12)] md:py-1 p-3 md:px-14 rounded-xl relative flex items-center transition duration-500
-            hover:cursor-pointer justify-start `}
+            hover:cursor-pointer justify-start w-full `}
         >
           <Image
             src={props.icon}

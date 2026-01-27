@@ -1,14 +1,24 @@
 "use client"
 
 import Item from '@/component/panel/book/tariffs/Item'
-import { useTariff } from '@/hooks/useTariff'
+import axios from 'axios';
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react';
 
 function Page() {
 
-  const {tariff,isLoading,error}= useTariff();
-  console.log(tariff , error)
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get(`https://api.imexapp.ir/book/tariff/`)
+      .then((res) => setData(res.data.results))
+      .finally(() => setLoading(false));
+  }, []);
+
+console.log(data)
 
   return (
     <div className="grid gap-4 pb-7">

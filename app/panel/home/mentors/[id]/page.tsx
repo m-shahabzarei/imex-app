@@ -71,7 +71,7 @@ export default function Page() {
                   <div className="flex flex-col gap-1 mt-3">
                     {data.online_working_days.map((day) => (
                       <p key={day.id} className="text-xs text-gray-600">
-                        {day.day_name} :{" "}
+                        {day.day_name} :
                         {day.time_slots.map((time) => time.start_time)} الی{" "}
                         {day.time_slots.map((time) => time.end_time)}
                       </p>
