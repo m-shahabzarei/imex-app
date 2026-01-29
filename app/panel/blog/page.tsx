@@ -17,7 +17,7 @@ interface Iitem {
 export default function Page() {
   const { data, isLoading, error } = useFetch<Iitem>({
     queryKey: ["items"],
-    url: "/knowledge/business-knowledge/",
+    url: "/users/knowledge/business-knowledge/",
   });
 
   if (isLoading) return <LoadingSpinner />;

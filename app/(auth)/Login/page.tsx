@@ -1,17 +1,16 @@
+
+
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/component/ui/Button";
-import { getMe, sendOtp, verifyOtp } from "@/services/auth";
-import { useAuthStore } from "@/stores/auth.store";
+import { sendOtp, verifyOtp } from "@/services/auth";
 
 const OTP_LENGTH = 5;
 
-export default function Login() {
-  const login = useAuthStore((s) => s.login);
-
+export default function LoginPage() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
@@ -57,14 +56,9 @@ export default function Login() {
     try {
       setLoading(true);
 
-      // 1. verify otp (توکن‌ها توی cookie ست میشن)
       await verifyOtp(phone, otp.join(""));
 
-      // 2. گرفتن اطلاعات کاربر
-      const meRes = await getMe();
-
-      // 3. ذخیره user در store
-      login(meRes.data);
+      window.location.href = "/panel/home";
 
     } catch {
       setError("کد وارد شده صحیح نیست");
@@ -102,11 +96,9 @@ export default function Login() {
     setError("");
   };
 
-
   /* ------------------ UI ------------------ */
   return (
     <div className="w-[100vw] h-[100vh] md:bg-linear-to-b  from-[#5764EF] to-[#3E47AD] flex items-center justify-evenly">
-
       <div className="max-md:hidden absolute top-[40px] right-10 text-white cursor-pointer">
         <a href="https://imexapp.ir/" className="flex flex-row-reverse gap-3">
           <span>بازگشت</span>
@@ -214,15 +206,3 @@ export default function Login() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

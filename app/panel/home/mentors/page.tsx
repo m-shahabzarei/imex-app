@@ -1,17 +1,4 @@
-// import Item from '@/component/panel/home/mentors/Item'
 
-// function page() {
-//   return (
-//     <div>
-//         <Item image="/image/blog.jpg" name={'منوچهر پوررحیم'} country={'ایران'} progress={"حسابرسی و ممیزی مالیاتی و بیمه"} group={'محصولات نفت ، گاز و پتروشیمی'} />
-
-//     </div>
-//   )
-// }
-
-// export default page
-
-// src/app/consultants/page.tsx
 "use client";
 
 import { useState } from "react";

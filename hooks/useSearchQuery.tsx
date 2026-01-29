@@ -1,6 +1,6 @@
 // hooks/useSearchQuery.ts
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/axios";
+import { api } from "@/lib/api";
 
 interface UseSearchQueryProps {
   url: string;

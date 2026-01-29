@@ -1,6 +1,6 @@
 // src/hooks/useListQuery.ts
+import api from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/axios";
 
 interface PaginatedResponse<T> {
   count: number;

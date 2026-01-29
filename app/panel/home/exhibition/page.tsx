@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useListQuery } from "@/hooks/useListQuery";
 import LoadingSpinner from "@/component/ui/Loading";
@@ -8,6 +8,8 @@ import { Iexhibition } from "@/component/panel/home/exhibition/type";
 import Item from "@/component/panel/home/exhibition/Item";
 import Link from "next/link";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import axios from "axios";
 
 interface Consultant {
   id: number;
@@ -17,20 +19,18 @@ interface Consultant {
 }
 
 export default function ExhibitionPage() {
-  const [search, setSearch] = useState("");
-  const [page] = useState(1);
-
-  const debouncedSearch = useDebounce(search);
-
-  const { data, isLoading } = useListQuery<Consultant>({
-    url: "/knowledge/exhibition/",
-    page,
-    search: debouncedSearch,
-  });
+  const [data, setData] = useState<Consultant>();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios
+      .get(`https://api.imexapp.ir/knowledge/exhibition/`)
+      .then((res) => setData(res.data))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="max-md:pt-9 md:pt-3">
-      {isLoading && <LoadingSpinner />}
+      {loading && <LoadingSpinner />}
       <Link
         href="/panel/home"
         className="gap-1 hover:gap-3 transition-all duration-300 flex w-fit hover:text-custom2 absolute -top-2 max-md:top-51 max-md:right-7"

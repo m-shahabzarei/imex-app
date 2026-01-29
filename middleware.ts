@@ -1,25 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get('access_token')?.value
-  const pathname = req.nextUrl.pathname
-  console.log('cookies:', req.cookies.getAll())
+  const accessToken = req.cookies.get("access_token");
+  const refreshToken = req.cookies.get("refresh_token");
 
+  const isAuth = !!(accessToken || refreshToken);
+  const pathname = req.nextUrl.pathname;
 
-  // const protectedRoutes = [
-  //   '/panel/home',
-  //   '/panel/profile',
-  //   '/panel/settings',
-  // ]
-  const protectedRoutes = ['/panel/setting']
-
-  const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  )
-
-  if (isProtected && !token) {
-    return NextResponse.redirect(new URL('/Login', req.url))
+  if (pathname.startsWith("/panel") && !isAuth) {
+    return NextResponse.redirect(new URL("/Login", req.url));
   }
 
-  return NextResponse.next()
+  if (pathname.startsWith("/Login") && isAuth) {
+    return NextResponse.redirect(new URL("/panel/home", req.url));
+  }
+
+  return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/panel/:path*", "/Login"],
+};

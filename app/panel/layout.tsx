@@ -1,43 +1,51 @@
-// import NewLayout from "./newLayout";
-// import ReactQueryProvider from "@/providers/ReactQuery";
+"use client";
 
-// export default function Layout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   return (
-//     <div className="debug-screens">
-//       <NewLayout>
-//         <ReactQueryProvider>{children}</ReactQueryProvider>
-//       </NewLayout>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-import { cookies } from "next/headers";
+import { useEffect } from "react";
+import { getMe } from "@/services/auth";
+import { useAuthStore } from "@/stores/auth.store";
 import NewLayout from "./newLayout";
 import ReactQueryProvider from "@/providers/ReactQuery";
 
-export default async function PanelLayout({
+export default function PanelLayout({
   children,
 }: {
-
   children: React.ReactNode;
 }) {
+  const setUser = useAuthStore((s) => s.setUser);
 
-  const cookieStorage = await cookies()
-  const accessCookie =  cookieStorage.get("access")
-  console.log(accessCookie)
+  useEffect(() => {
+    let isMounted = true;
 
-  return (
+    const fetchMe = async () => {
+      try {
+        const res = await getMe();
+        if (isMounted) {
+          setUser(res.data);
+        }
+      } catch {
+        setTimeout(async () => {
+          try {
+            const res = await getMe();
+            if (isMounted) {
+              setUser(res.data);
+            }
+          } catch {
+            window.location.href = "/Login";
+          }
+        }, 500);
+      }
+    };
+
+    fetchMe();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  return(
     <NewLayout>
       <ReactQueryProvider>{children}</ReactQueryProvider>
     </NewLayout>
-  );
+  )
 }

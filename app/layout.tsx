@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AuthProvider from "@/providers/AuthProvider";
-import MockAutoLogin from "@/component/mockAutoLogin";
-import AuthGuard from "@/component/AuthGuard";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,13 +13,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa">
-      <body dir="rtl" className="max-md:pb-40 debug-screens">
-        {/* <MockAutoLogin /> */}
-        <AuthProvider>
-          {/* <AuthGuard> */}
-            {children}
-          {/* </AuthGuard> */}
-        </AuthProvider>
+      <body dir="rtl" className=" debug-screens">
+        {children}
       </body>
     </html>
   );

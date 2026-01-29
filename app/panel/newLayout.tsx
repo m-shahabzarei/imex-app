@@ -15,10 +15,7 @@ export default function NewLayout({
 
   const showLayout = () => {
     // use the pathname string and ensure id is present in it
-    if (
-      (id && pathname?.includes(`/panel/book/tariffs/${id}`)) ||
-      (id && pathname?.includes(`/panel/home/mentors/${id}`))
-    ) {
+    if ((id && pathname?.includes(`/panel/book/tariffs/${id}`)) || (id && pathname?.includes(`/panel/home/mentors/${id}`)) || pathname?.includes(`panel/profile/subscribe`) || pathname?.includes(`panel/chat`)) {
       return (
         <>
           <div className="md:hidden">

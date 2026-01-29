@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Star, StarOff } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 interface Iitem {
@@ -10,6 +11,7 @@ interface Iitem {
   icon?: string;
   children: string | number | undefined;
   subscription?: boolean;
+  link?:string | undefined;
   onClick?: () => void;
 }
 const variants = {
@@ -24,6 +26,7 @@ function Item({
   variant,
   icon,
   children,
+  link = "",
   phone,
   subscription,
   onClick,
@@ -32,7 +35,7 @@ function Item({
 
   if (variant === "primary") {
     return (
-      <div>
+      <Link href={link}>
         <div
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => {
@@ -68,7 +71,7 @@ function Item({
             <Image src="/image/alt arrow left.svg" alt="arrow left" width={29} height={24} />
           </div>
         </div>
-      </div>
+      </Link>
     );
   } else if (variant === "profile") {
     return (
@@ -112,7 +115,7 @@ function Item({
     );
   } else if (variant === "subscribe") {
     return (
-      <div>
+      <Link href={link}>
         <div
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => {
@@ -157,7 +160,7 @@ function Item({
             )}
           </div>
         </div>
-      </div>
+      </Link>
     );
   }
 }

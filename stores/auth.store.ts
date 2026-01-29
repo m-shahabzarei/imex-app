@@ -1,33 +1,44 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
-interface User {
-  id: number
-  username: string
+export interface User {
+  id: number;
+  name: string;
+  phone: string;
+  has_active_subscription: boolean;
+  [key: string]: any; 
 }
 
 interface AuthState {
-  [x: string]: any
-  user: User | null
-  isAuthenticated: boolean
-  setUser: (user: User) => void
-  logout: () => void
+  user: User | null;
+  accessToken: string | null;
+
+  setUser: (user: User) => void;
+  setAccessToken: (token: string) => void;
+
+  setUserSubscription: (active: boolean) => void;
+
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  isAuthenticated: false,
+  accessToken: null,
 
-  setUser: (user) => {
-    set({
-      user,
-      isAuthenticated: true,
-    })
-  },
+  setUser: (user) => set({ user }),
 
-  logout: () => {
+  setAccessToken: (token) => set({ accessToken: token }),
+
+  setUserSubscription: (active) =>
+    set((state) => {
+      if (!state.user) return state;
+      return {
+        user: { ...state.user, has_active_subscription: active },
+      };
+    }),
+
+  logout: () =>
     set({
       user: null,
-      isAuthenticated: false,
-    })
-  },
-}))
+      accessToken: null,
+    }),
+}));

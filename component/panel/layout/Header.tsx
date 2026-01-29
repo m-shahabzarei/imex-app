@@ -8,6 +8,11 @@ function Header() {
   const pathname = usePathname();
   const isActive = pathname === "/panel/home";
 
+  function openChat(){
+          window.location.href = "/panel/chat";
+
+  }
+
   return (
     <div
       className={`w-full flex md:top-32 justify-center max-md:items-center md:mt-10 ${
@@ -33,7 +38,7 @@ function Header() {
               </span>
             </div>
           </div>
-          <Button variant="primary" icon="/image/AI.svg">
+          <Button onClick={openChat} variant="primary" icon="/image/AI.svg">
             دستیار هوش مصنوعی
           </Button>
         </div>
