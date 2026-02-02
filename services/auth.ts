@@ -20,3 +20,8 @@ export const getMe = () => {
   return api.get('/users/users/me')
 }
 
+export const refresh = (refresh : string) =>{
+  return api.post("/auth/refresh" , {
+    refresh
+  })
+}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Iitem } from "./type";
 import Button from "@/component/ui/Button";
+import { gregorianToJalali } from "@/utils/date";
 
 
 function Item(props: Iitem) {
@@ -23,9 +24,9 @@ function Item(props: Iitem) {
 
         <div className="h-full justify-between flex flex-col w-full">
             <h1 className="text-custom2 text-[0.92rem]">{props.title}</h1>
-            <div className="w-full my-1 flex justify-between"><span className="text-[0.7rem] text-gray-400">مکان</span><p className="text-[0.75rem] text-gray-500">{props.location}</p></div>
-            <div className="w-full mb-1 flex justify-between"><span className="text-[0.7rem] text-gray-400">تاریخ شروع</span><p className="text-[0.75rem] text-gray-500">{props.start_date}</p></div>
-            <div className="w-full flex justify-between"><span className="text-[0.7rem] text-gray-400">تاریخ پایان</span><p className="text-[0.75rem] text-gray-500">{props.end_date}</p></div>
+            <div className="w-full my-1 flex justify-between"><span className="text-[0.7rem] text-gray-400">مکان</span><p className="text-[0.75rem] text-gray-500">{props?.location}</p></div>
+            <div className="w-full mb-1 flex justify-between"><span className="text-[0.7rem] text-gray-400">تاریخ شروع</span><p className="text-[0.75rem] text-gray-500">{gregorianToJalali(props.start_date)}</p></div>
+            <div className="w-full flex justify-between"><span className="text-[0.7rem] text-gray-400">تاریخ پایان</span><p className="text-[0.75rem] text-gray-500">{gregorianToJalali(props.end_date)}</p></div>
           <Button variant="glassy" >درحال برگزاری</Button>
         </div>
 

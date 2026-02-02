@@ -1,7 +1,7 @@
 "use client"
 import Accordion from "@/component/panel/book/tariffs/Accordion";
 import LoadingSpinner from "@/component/ui/Loading";
-import axios from "axios";
+import api from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -16,7 +16,7 @@ function Item() {
   const [data, setData] = useState<IData[]>();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    axios
+    api
       .get(`https://api.imexapp.ir/book/rule/`)
       .then((res) => setData(res.data.results))
       .finally(() => setLoading(false));

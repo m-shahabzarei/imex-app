@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import HighlightText from "../common/HighlightText";
 
 interface IItem {
   image: string;
   title: string;
   description: string;
   link: string;
-  category:string;
+  category: string;
+  query: string;
 }
 
 function Item(props: IItem) {
@@ -27,10 +29,11 @@ function Item(props: IItem) {
 
         <div className="h-full flex flex-col w-full justify-start max-md:py-4">
           <h1 className="text-[0.9rem] text-[#5764EF] font-bold mb-2 line-clamp-1">
-            {props.title}
+            <HighlightText text={props.title} highlight={props.query} />
           </h1>
           <p className="line-clamp-2 text-[0.8rem] text-gray-500">
-            {props.description}
+            {/* {props.description} */}
+            <HighlightText text={props.description} highlight={props.query} />
           </p>
 
           <div className="mt-1 flex gap-3">
@@ -38,7 +41,6 @@ function Item(props: IItem) {
               {props.category}
             </div>
           </div>
-
         </div>
       </div>
     </Link>

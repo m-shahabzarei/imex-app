@@ -2,8 +2,8 @@
 export interface Iitem{
     start_date:string;
     end_date:string;
-    image:string;
-    location:string;
+    image:string | "";
+    location:string | "";
     title:string;
     link:string;
 }

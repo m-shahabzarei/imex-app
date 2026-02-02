@@ -1,23 +1,36 @@
 import Image from "next/image";
 import Link from "next/link";
 
-function Item() {
+
+interface Iitem{
+  name:string;
+  code:string;
+  product_group:[];
+  customs_duty:string;
+
+}
+
+function Item(props :Iitem) {
+
   return (
     <div>
     <Link href="/panel/book/tariffs/1">
     <div className="bg-white max-md:w-[80vw] h-28 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl grid md:grid-cols-3 max-md:flex max-md:flex-col gap-2 p-4 max-md:p-6 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
 
       <div className="flex flex-col justify-between md:w-[120%] font-black h-full max-md:gap-5">
-        <h1 className="text-sm  text-custom2">دستگاه جوشکاری با قوس الکتریکی از نوع دستی</h1>
+        <h1 className="text-sm  text-custom2">{props.name}</h1>
         <div className="flex max-md:text-xs md:text-[1.2vw] lg:text-xs text-gray-400 justify-between">
         <div className="flex gap-1">
           <span className="font-light">شماره تعرفه : </span>
-          <span>01012100</span>
+          <span>{props.code}</span>
         </div>
-        <div className="flex gap-1">
-          <span className="font-light"> حقوق ورودی : </span>
-          <span>12%</span>
+        {
+          props.customs_duty ?         <div className="flex gap-1">
+          <span className="font-light">حقوق ورودی : </span>
+          <span>{props.customs_duty}%</span>
         </div>
+        : ""
+        }
         </div>
       </div>
 
@@ -26,10 +39,11 @@ function Item() {
       </div>
 
       <div className="flex flex-col justify-evenly max-md:justify-between md:-mr-16 text-gray-400 text-xs gap-1">
-        <span>01 حیوان زنده</span>
-        <span>0101 اسب، الاغ، قاطر و استر،زنده</span>
-        <span>010121 - - حیوانات مولد نژاد خالص</span>
+        {props.product_group.map(({tariffCode , faDescription} : {tariffCode:string,faDescription:string},index)=>(
+          <span key={index}> {tariffCode} {faDescription}</span>
+        ))}
       </div>
+
       
     </div>
     </Link>

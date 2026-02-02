@@ -2,8 +2,8 @@
 
 export interface ICourse {
   id: number;
-  title: string;
-  description: string;
+  title: any;
+  description: any;
   image: string;
   time: string;
   price: any;

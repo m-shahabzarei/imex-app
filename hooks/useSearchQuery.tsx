@@ -1,23 +1,32 @@
 // hooks/useSearchQuery.ts
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/api";
+"use client";
 
-interface UseSearchQueryProps {
-  url: string;
-  search: string;
-}
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export function useSearchQuery<T>({
-  url,
-  search,
-}: UseSearchQueryProps) {
-  return useQuery<T[]>({
-    queryKey: [url, search],
-    queryFn: async () => {
-      const res = await api.get(url, {
-        params: search ? { search } : {},
-      });
-      return res.data;
-    },
-  });
+export function useSearchQuery(paramName: string = "search") {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const initialValue = searchParams.get(paramName) || "";
+  const [search, setSearch] = useState(initialValue);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (search) params.set(paramName, search);
+      else params.delete(paramName);
+
+      router.push(`?${params.toString()}`, { scroll: false });
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  return {
+    search,        // برای input
+    setSearch,     // برای onChange
+    query: initialValue, // برای API
+  };
 }

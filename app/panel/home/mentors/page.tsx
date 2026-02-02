@@ -1,48 +1,32 @@
-
-"use client";
-
-import { useState } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
-import { useListQuery } from "@/hooks/useListQuery";
+"use client"
 import Item from "@/component/panel/home/mentors/Item";
-import LoadingSpinner from "@/component/ui/Loading";
 import { Imentor } from "@/component/panel/home/mentors/type";
-
-interface Consultant{
-  id: number;
-  full_name: string;
-  education: string;
-  age: number;
-}
+import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
+import { getMentor, MentorsFilters } from "./mentors.filters";
+import NoItem from "@/component/Error/no-item";
+import HighlightText from "@/component/panel/common/HighlightText";
 
 export default function ConsultantsPage() {
-  const [search, setSearch] = useState("");
-  const [page] = useState(1);
 
-  const debouncedSearch = useDebounce(search);
-
-  const { data, isLoading } = useListQuery<Consultant>({
-    url: "/users/consultants/",
-    page,
-    search: debouncedSearch,
-  });
 
   return (
-    <div>
-      {isLoading && <LoadingSpinner />}
-      <div className="grid w-full lg:grid-cols-2 gap-6">
-        {data?.results.map((item:Imentor) => (
-          <Item
-            key={item.id}
-            image={item.image}
-            name={item.full_name}
-            group={item.product_group.title}
-            progress={item.process.title}
-            country={item.country.name}
-            link={`/panel/home/mentors/${item.id}`}
-          />
-        ))}
-      </div>
-    </div>
+    <DataListWithFilters<Imentor>
+      queryKey="blogs"
+      fetcher={getMentor}
+      filtersConfig={MentorsFilters}
+      searchPlaceholder="جستجو در دانستی و ..."
+      emptyComponent={<NoItem />}
+      renderItem={(item, search) => (
+        <Item
+          key={item.id}
+          image={item.image}
+          name={<HighlightText text={item.full_name} highlight={search} />}
+          group={item.product_group?.title}
+          progress={item.process.title}
+          country={item.country.name}
+          link={`/panel/home/mentors/${item.id}`}
+        />
+      )}
+    />
   );
 }

@@ -3,49 +3,73 @@
 import { useEffect } from "react";
 import { getMe } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
-import NewLayout from "./newLayout";
 import ReactQueryProvider from "@/providers/ReactQuery";
+import NewLayout from "./newLayout";
 
 export default function PanelLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // const setUser = useAuthStore((s) => s.setUser);
+  // const accessToken = useAuthStore().accessToken;
+
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   console.log(accessToken);
+  //   const fetchMe = async () => {
+  //     try {
+  //       const res = await getMe();
+  //       console.log(accessToken);
+
+  //       if (isMounted) {
+  //         setUser(res.data);
+  //         console.log(accessToken);
+  //       }
+  //     } catch {
+  //       setTimeout(async () => {
+  //         try {
+  //           const res = await getMe();
+  //           console.log(accessToken);
+
+  //           if (isMounted) {
+  //             setUser(res.data);
+  //             console.log(accessToken);
+  //           }
+  //         } catch {
+  //           window.location.href = "/Login";
+  //         }
+  //       }, 500);
+  //     }
+  //   };
+
+  //   fetchMe();
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
+
+
+
+  const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const fetchMe = async () => {
-      try {
-        const res = await getMe();
-        if (isMounted) {
-          setUser(res.data);
-        }
-      } catch {
-        setTimeout(async () => {
-          try {
-            const res = await getMe();
-            if (isMounted) {
-              setUser(res.data);
-            }
-          } catch {
-            window.location.href = "/Login";
-          }
-        }, 500);
-      }
-    };
-
-    fetchMe();
-
-    return () => {
-      isMounted = false;
-    };
+    if (!user) {
+      getMe()
+        .then((res) => setUser(res.data))
+        .catch(() => {
+          useAuthStore.getState().logout();
+          window.location.href = "/Login";
+        });
+    }
   }, []);
 
-  return(
+
+  return (
     <NewLayout>
       <ReactQueryProvider>{children}</ReactQueryProvider>
     </NewLayout>
-  )
+  );
 }

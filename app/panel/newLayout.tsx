@@ -37,7 +37,7 @@ export default function NewLayout({
       return (
         <>
           <Header />
-          <div className="max-lg:w-full lg:w-[80%] xl:w-[80%] h-fit p-3 lg:absolute md:top-32 md:right-[10%]">
+          <div className=" lg:w-[80%] xl:w-[80%] h-fit p-3 absolute md:top-32 max-lg:w-[80%] lg:right-[10vw] max-lg:right-[10vw] max-md:w-[90%] max-md:right-[4vw]">
             {children}
           </div>
         </>

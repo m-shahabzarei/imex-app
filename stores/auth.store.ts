@@ -1,11 +1,11 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export interface User {
+interface User {
   id: number;
-  name: string;
-  phone: string;
+  username: string;
   has_active_subscription: boolean;
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 interface AuthState {
@@ -14,31 +14,26 @@ interface AuthState {
 
   setUser: (user: User) => void;
   setAccessToken: (token: string) => void;
-
-  setUserSubscription: (active: boolean) => void;
-
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  accessToken: null,
-
-  setUser: (user) => set({ user }),
-
-  setAccessToken: (token) => set({ accessToken: token }),
-
-  setUserSubscription: (active) =>
-    set((state) => {
-      if (!state.user) return state;
-      return {
-        user: { ...state.user, has_active_subscription: active },
-      };
-    }),
-
-  logout: () =>
-    set({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
       user: null,
       accessToken: null,
+
+      setUser: (user) => set({ user }),
+      setAccessToken: (token) => set({ accessToken: token }),
+
+      logout: () =>
+        set({
+          user: null,
+          accessToken: null,
+        }),
     }),
-}));
+    {
+      name: "auth-storage", // localStorage
+    }
+  )
+);

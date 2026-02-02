@@ -10,6 +10,7 @@ interface Iprops{
 }
 
 function Item(props:Iprops) {
+  console.log(props.name)
   return (
     <Link href={props.link} className='shadow-[0_0_20px_rgba(0,0,0,0.12)] flex flex-col items-center justify-evenly rounded-xl w-fit px-4 h-45'>
         <Image src={props.image} width={130} height={50} alt={props.name} className='rounded-lg'/>

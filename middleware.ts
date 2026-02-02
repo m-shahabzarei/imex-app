@@ -7,8 +7,9 @@ export function middleware(req: NextRequest) {
   const isAuth = !!(accessToken || refreshToken);
   const pathname = req.nextUrl.pathname;
 
+
   if (pathname.startsWith("/panel") && !isAuth) {
-    return NextResponse.redirect(new URL("/Login", req.url));
+    return NextResponse.redirect(new URL("/Login", req.url)) 
   }
 
   if (pathname.startsWith("/Login") && isAuth) {
