@@ -11,11 +11,12 @@ import Accordion from "../../book/tariffs/Accordion";
 
 interface Props {
   config: FilterConfig[];
-  open: boolean;
-  onClose: () => void;
+  open?: boolean;
+  onClose?: () => void;
+  second?: boolean;
 }
 
-export default function Filters({ config, open, onClose }: Props) {
+export default function Filters({ second, config, open, onClose }: Props) {
   const { params, setParams } = useQueryParams();
 
   const [localFilters, setLocalFilters] = useState<Record<string, any>>({});
@@ -62,54 +63,90 @@ export default function Filters({ config, open, onClose }: Props) {
     onClose();
   };
 
-  if (!open) return null;
 
-  return (
-    <div className="absolute left-0 mt-4 w-84 bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.12)] p-3 z-[1000] space-y-6 max-md:fixed max-md:space-y-10 max-md:w-full max-md:bottom-0">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="font-bold text-custom">فیلتر</h1>
-        <span
-          onClick={onClose}
-          className="cursor-pointer"
-        >
-          <Image
-            src="/image/close.png"
-            alt="close icon"
-            width={20}
-            height={20}
-          />
-        </span>
+  if (second == true) {
+    return (
+      <div className=" bg-white rounded-xl  space-y-6 w-full bottom-0">
+       
+        {/* Filters */}
+        <div className="space-y-4">
+          {config.map((filter) => (
+            <Accordion title={filter?.label} key={filter.key} isFilter>
+              <FilterItem
+                filter={filter}
+                value={localFilters[filter.key]}
+                onChange={(key, value) =>
+                  setLocalFilters((prev) => ({
+                    ...prev,
+                    [key]: value,
+                  }))
+                }
+              />
+            </Accordion>
+          ))}
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 h-9 justify-end mb-2">
+          <Button variant="glassy" onClick={resetFilters}>
+            حذف فیلتر
+          </Button>
+
+          <Button variant="secondary" onClick={applyFilters}>
+            اعمال
+          </Button>
+        </div>
       </div>
+    );
+  } else {
+    return (
+      <>
+      {open?
+            <div className="absolute left-0 mt-4 w-84 bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.12)] p-3 z-[1000] space-y-6 max-md:fixed max-md:space-y-10 max-md:w-full max-md:bottom-0">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <h1 className="font-bold text-custom">فیلتر</h1>
+          <span onClick={onClose} className="cursor-pointer">
+            <Image
+              src="/image/close.png"
+              alt="close icon"
+              width={20}
+              height={20}
+            />
+          </span>
+        </div>
 
-      {/* Filters */}
-      <div className="space-y-4">
-        {config.map((filter) => (
-          <Accordion title={filter.label} key={filter.key} isFilter>
-          <FilterItem
-            filter={filter}
-            value={localFilters[filter.key]}
-            onChange={(key, value) =>
-              setLocalFilters((prev) => ({
-                ...prev,
-                [key]: value,
-              }))
-            }
-          />
-          </Accordion>
-        ))}
+        {/* Filters */}
+        <div className="space-y-4">
+          {config.map((filter) => (
+            <Accordion title={filter.label} key={filter.key} isFilter>
+              <FilterItem
+                filter={filter}
+                value={localFilters[filter.key]}
+                onChange={(key, value) =>
+                  setLocalFilters((prev) => ({
+                    ...prev,
+                    [key]: value,
+                  }))
+                }
+              />
+            </Accordion>
+          ))}
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 justify-end">
+          <Button variant="glassy" onClick={resetFilters}>
+            حذف فیلتر
+          </Button>
+
+          <Button variant="secondary" onClick={applyFilters}>
+            اعمال
+          </Button>
+        </div>
       </div>
-
-      {/* Actions */}
-      <div className="flex gap-3 justify-end">
-        <Button variant="glassy" onClick={resetFilters}>
-          حذف فیلتر
-        </Button>
-
-        <Button variant="secondary" onClick={applyFilters}>
-          اعمال
-        </Button>
-      </div>
-    </div>
-  );
+      : null}
+      </>
+    );
+  }
 }

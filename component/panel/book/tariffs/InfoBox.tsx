@@ -1,48 +1,72 @@
+import { useEffect } from "react";
+
 interface InfoBoxProps {
-  label?: string | undefined;
-  value?: string | undefined;
+  label?: string | undefined | number;
+  value?: string | undefined | number;
   variant: "single" | "frame";
+
+
+  CountryID?:number;
+  CountryName?:string;
+  description?:string;
+  type?:string;
+  tariffPrecent?:string;
+  tariffRate?:string;
 }
 
-function InfoBox({ label, value, variant }: InfoBoxProps) {
-  if (variant === "single") {
+
+const getType = (type : string)=>{
+  if(type == null ){
+    return "-"
+  }
+  if(type === "to_iran"){
+    return "واردات"
+  }else{
+    return "صادرات"
+  }
+}
+
+
+function InfoBox(props: InfoBoxProps) {
+
+  if (props.variant === "single") {
     return (
       <div className="border-[1.4px] border-gray-300 py-3 px-2 rounded-xl flex flex-col justify-between items-start w-full gap-3 text-xs">
-        <span className="text-gray-400">{label}</span>
-        <span className="block text-gray-500 text-[0.8rem]">{value}</span>
+        <span className="text-gray-400">{props.label}</span>
+        <span className="block text-gray-500 text-[0.8rem]">{props.value}</span>
       </div>
     );
-  } else if (variant === "frame") {
+  } else if (props.variant === "frame") {
     return (
       <div className="border-[1.4px] border-gray-300 py-3 px-4 rounded-xl flex flex-col justify-between items-start w-full gap-9 text-xs">
         <div className="flex justify-between w-full items-start">
           <div className="w-full flex flex-col gap-2">
-            <span className="text-gray-400">کد کشور دارنده تعرفه ترجیحی</span>
-            <span className="block text-gray-500 text-[0.8rem]">8</span>
+            <span className="text-gray-400">کد کشور </span>
+            <span className="block text-gray-500 text-[0.8rem]">{props.CountryID}</span>
           </div>
           <div className="w-full flex flex-col gap-2">
             <span className="text-gray-400">نام کشور</span>
             <span className="block text-gray-500 text-[0.8rem]">
-              دولت جمهوری تونس
+             {props.CountryName}
             </span>
           </div>
         </div>
 
         <div className="flex justify-between w-full items-start">
           <div className="w-full flex flex-col gap-2">
-            <span className="text-gray-400">شماره تعرفه</span>
-            <span className="block text-gray-500 text-[0.8rem]">10212354</span>
+            <span className="text-gray-400">شرح </span>
+            <span className="block text-gray-500 text-[0.8rem]">{props.description}</span>
           </div>
         </div>
 
         <div className="flex justify-between w-full items-start">
           <div className="w-full flex flex-col gap-2">
-            <span className="text-gray-400">شرح تعرفه</span>
-            <span className="block text-gray-500 text-[0.8rem]">اسب برای سوارکاری</span>
+            <span className="text-gray-400">نوع تجارت</span>
+            <span className="block text-gray-500 text-[0.8rem]">{getType(props.type)}</span>
           </div>
         </div>
 
-        <div className="flex justify-between w-full items-start">
+        {/* <div className="flex justify-between w-full items-start">
           <div className="w-full flex flex-col gap-2">
             <span className="text-gray-400">سهمیه فصلی(تن)</span>
             <span className="block text-gray-500 text-[0.8rem]">1000</span>
@@ -53,25 +77,25 @@ function InfoBox({ label, value, variant }: InfoBoxProps) {
               1 جولای - 15 اکتبر
             </span>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex justify-between w-full items-start">
           <div className="w-full flex flex-col gap-2">
-            <span className="text-gray-400">حقوق گمرکی</span>
-            <span className="block text-gray-500 text-[0.8rem]">0،49/1</span>
+            <span className="text-gray-400">درصد کاهش تعرفه</span>
+            <span className="block text-gray-500 text-[0.8rem]">{props.tariffPrecent}</span>
           </div>
-          <div className="w-full flex flex-col gap-2">
+          {/* <div className="w-full flex flex-col gap-2">
             <span className="text-gray-400">درصد کاهش تعرفه</span>
             <span className="block text-gray-500 text-[0.8rem]">
               40%
             </span>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex justify-between w-full items-start">
           <div className="w-full flex flex-col gap-2">
-            <span className="text-gray-400">تعرفه پس از اعمال کاهش</span>
-            <span className="block text-gray-500 text-[0.8rem]">29/46</span>
+            <span className="text-gray-400">Tariff rate 2008 (Base)</span>
+            <span className="block text-gray-500 text-[0.8rem]">{props.tariffRate}</span>
           </div>
         </div>
       </div>

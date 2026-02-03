@@ -1,30 +1,49 @@
-"use client"
+"use client";
 
-import { refresh } from "@/services/auth"
-import axios from "axios"
-import { useState } from "react"
+import Item from "@/component/panel/book/tariffs/Item";
+import api from "@/lib/api";
+import { useEffect, useState } from "react";
 
-
-
-function Page() {
-  const [Data, setData] = useState()
-
-const getToken = ()=>{
-    refresh("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NTMzMjA4OSwiaWF0IjoxNzY5NzgwMDg5LCJqdGkiOiJjNjQ2YjZjN2E3NDY0NWJkYmRkOGIyYWZiYWIzNTQ2MiIsInVzZXJfaWQiOjEyNTV9.LaV91qiQR0qNdWWJB7CnpLqnctD-y1UItXMFoCo_Dco")
-    .then((res)=>(
-      setData(res.data),
-      console.log(res)
-    ))
+interface Iitem {
+  tariff: {
+    name: string;
+    code: string;
+    product_group: [];
+    customs_duty: string;
+    id: number;
+    mark: {
+      is_mark: boolean;
+      id: number;
+    };
+  };
 }
-console.log(Data)
+
+export default function Page() {
+  const [items, setItems] = useState<Iitem[]>([]);
+
+  useEffect(() => {
+    api
+      .get("https://api.imexapp.ir/users/marks/")
+      .then((res) => {
+        setItems(res.data.results);
+      });
+  }, []);
+
 
   return (
-    <div className='w-full h-full flex items-center justify-center'>
-        <p className='text-gray-500 mt-50'>شما هنوز تعرفه ی نشان شده ای ندارید!</p>
+    <div className={`flex flex-col items-center gap-7 md:pb-4`}>
 
-        <button onClick={getToken}>click me</button>
+      {items.map((item) => (
+        <Item
+          key={item.tariff.id}
+          name={item.tariff.name}
+          code={item.tariff.code}
+          product_group={item.tariff.product_group}
+          customs_duty={item.tariff.customs_duty}
+          isSaved={item.tariff.mark.is_mark}
+          id={item.tariff.id}
+          markID={item.tariff.mark.id}
+        />      ))}
     </div>
-  )
+  );
 }
-
-export default Page

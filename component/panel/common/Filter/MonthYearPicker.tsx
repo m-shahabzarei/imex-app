@@ -19,20 +19,6 @@ export default function DateFilterUI() {
 
   return (
     <div className="w-full bg-white p-4" dir="rtl">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <span className="font-medium text-gray-800">تاریخ شروع</span>
-        <button
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-1 text-sm text-gray-500"
-        >
-          همه
-          <ChevronDown
-            size={16}
-            className={`transition-transform ${open ? 'rotate-180' : ''}`}
-          />
-        </button>
-      </div>
 
       {/* Picker */}
       <div

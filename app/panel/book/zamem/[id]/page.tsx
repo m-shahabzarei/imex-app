@@ -86,7 +86,6 @@
 //   );
 // }
 
-
 // "use client";
 // import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
 // import NoItem from "@/component/Error/no-item";
@@ -94,7 +93,6 @@
 // import Link from "next/link";
 // import { useParams } from "next/navigation";
 // import { Iitem } from "@/component/panel/book/zamem/[id]/type";
-
 
 // const getTariff = async (params: any ) => {
 //   const res = await api.get(`book/preferential-tariff/?page=1&search=&date_after=2025-03-21&date_before=2026-03-20&country=4`, {
@@ -121,10 +119,8 @@
 //   };
 // };
 
-
 // export default function ConsultantsPage() {
 //     const { id } = useParams();
-
 
 //   return (
 //     <DataListWithFilters<Iitem>
@@ -170,12 +166,6 @@
 //   );
 // }
 
-
-
-
-
-
-
 "use client";
 
 import { useParams } from "next/navigation";
@@ -188,27 +178,31 @@ import NoItem from "@/component/Error/no-item";
 
 import { Iitem } from "@/component/panel/book/zamem/[id]/type";
 
-
 // preferentialTariff.filters.ts
 import api from "@/lib/api";
 import HighlightText from "@/component/panel/common/HighlightText";
 
-export const getPreferentialTariff = async (params: any) => {
+export const getPreferentialTariff = async ({
+  pageParam = 1,
+  filters,
+}: {
+  pageParam?: number;
+  filters?: Record<string, any>;
+}) => {
   const res = await api.get("/book/preferential-tariff/", {
     params: {
-      page: params.page || 1,
-      search: params.search || "",
-      date_after: params.date_after || "2025-03-21",
-      date_before: params.date_before || "2026-03-20",
-      country: params.country,
+      page: pageParam,
+      search: "",
+      ...filters,
     },
   });
 
   let nextPage = null;
+
   if (res.data.next) {
     try {
       const url = new URL(res.data.next);
-      nextPage = url.searchParams.get("page");
+      nextPage = Number(url.searchParams.get("page"));
     } catch {
       nextPage = null;
     }
@@ -219,7 +213,6 @@ export const getPreferentialTariff = async (params: any) => {
     next: nextPage,
   };
 };
-
 
 
 export default function Page() {
@@ -242,33 +235,30 @@ export default function Page() {
       </Link>
 
       <DataListWithFilters<Iitem>
-        queryKey={["PreferentialTariff", id]}
-        fetcher={getPreferentialTariff}
-        initialParams={{
-          country: id,
-        }}
+        queryKey={["preferentialTariff", id]}
+        fetcher={(params) =>
+          getPreferentialTariff({ ...params,filters: {...params.filters,country: id,date_after: "2025-03-21",date_before: "2026-03-20",},})
+        }
         emptyComponent={<NoItem />}
         loadingComponent={<LoadingSpinner />}
-        renderItem={(item , search) => (
-          <Link href={`/panel/book/zamem/${id}/${item.id}`} key={item.id}>
+        renderItem={(item, search) => (
+          <Link href={`/panel/book/zamem/${id}/${item?.id}`} key={item?.id}>
             <div
               className={`bg-white h-38 shadow-[0_0_20px_rgba(0,0,0,0.12)] p-5 rounded-xl relative flex flex-col transition duration-300
               hover:cursor-pointer justify-between`}
             >
               <h1 className="text-custom2 text-[0.9rem] line-clamp-1">
-                <HighlightText text={item.tariff.name} highlight={search}/>
+                <HighlightText text={item?.tariff.name} highlight={search} />
               </h1>
 
               <div className="grid grid-cols-2 gap-5 w-full">
                 <div className="w-full text-sm flex flex-row-reverse justify-between">
-                  <span className="text-gray-500">{item.tariff.code}</span>
+                  <span className="text-gray-500">{item?.tariff.code}</span>
                   <span className="text-gray-400">شماره تعریف:</span>
                 </div>
 
                 <div className="w-full text-sm flex flex-row-reverse justify-between">
-                  <span className="text-gray-500">
-                    {item.country.title}
-                  </span>
+                  <span className="text-gray-500">{item?.country.title}</span>
                   <span className="text-gray-400">کشور:</span>
                 </div>
 
@@ -279,11 +269,9 @@ export default function Page() {
 
                 <div className="w-full text-sm flex flex-row-reverse justify-between">
                   <span className="text-gray-500">
-                    {item.tariff_reduction_percent}
+                    {item?.tariff_reduction_percent}
                   </span>
-                  <span className="text-gray-400">
-                    مقدار کاهش تعرفه:
-                  </span>
+                  <span className="text-gray-400">مقدار کاهش تعرفه:</span>
                 </div>
               </div>
             </div>

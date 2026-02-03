@@ -36,7 +36,6 @@ export const ExhibitionFilters: FilterConfig[] = [
   },
 ];
 
-import { jalaliToGregorian } from "@/utils/date";
 
 export const getExhi = async (params: any) => {
   const res = await api.get("/knowledge/exhibition/", {
