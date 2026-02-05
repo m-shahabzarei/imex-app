@@ -12,6 +12,7 @@ interface Iitem {
   children: string | number | undefined;
   subscription?: boolean;
   link?:string | undefined;
+  day?:number;
   onClick?: () => void;
 }
 const variants = {
@@ -30,6 +31,7 @@ function Item({
   phone,
   subscription,
   onClick,
+  day,
 }: Iitem) {
   const [hover, setHover] = useState(false);
 
@@ -115,23 +117,23 @@ function Item({
     );
   } else if (variant === "subscribe") {
     return (
-      <Link href={link}>
+      <Link href={!subscription ? link : ""}>
         <div
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => {
             setHover(false);
           }}
           onClick={onClick}
-          className={`${baseStyle} ${
+          className={!subscription?`${baseStyle} ${
             hover ? "bg-linear-to-b  from-[#5764EF] to-[#3E47AD] " : "bg-white"
-          } hover:cursor-pointer pr-6 `}
+          } hover:cursor-pointer pr-6 ` : `${baseStyle} bg-linear-to-b  from-[#3C9024] to-[#2C6A1B] text-white `}
         >
           <div className="w-full flex justify-between pl-3 pr-16 text-sm items-center">
-            <span className={`${hover ? "text-white" : "text-black"}`}>
+            <span className={subscription ? "" : `${hover ? "text-white" : "text-black"}`}>
               اشتراک
             </span>
-            <span className="text-xs text-gray-400">
-              {subscription ? "شما اشتراک دارید" : "شما اشتراکی ندارید"}
+            <span className= {subscription ? "" : "text-xs text-gray-400"}>
+              {subscription ? `${day} روز باقی مانده ` : "شما اشتراکی ندارید"}
             </span>
           </div>
 
@@ -144,12 +146,7 @@ function Item({
           </div>
           <div>
             {subscription ? (
-              <div className="text-white bg-[#4c6d00] text-xs px-2 py-1 rounded-lg flex items-center justify-between ">
-                <div className="left-[5%] absolute">
-                  {/* <ArrowLeft color={`${hover ? "white" : "black"}`} /> */}
-                </div>
-                <span>تمدید</span>
-              </div>
+              <></>
             ) : (
               <div className="text-white bg-[#4c6d00] text-xs px-2 py-1 rounded-lg flex items-center justify-between ">
                 <div className="left-[5%] absolute">

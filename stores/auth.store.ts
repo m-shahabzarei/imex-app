@@ -5,7 +5,9 @@ interface User {
   id: number;
   username: string;
   has_active_subscription: boolean;
+  is_active_date : number;
   [key: string]: any;
+  type_subscription:string;
 }
 
 interface AuthState {

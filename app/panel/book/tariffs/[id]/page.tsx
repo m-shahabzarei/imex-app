@@ -58,17 +58,6 @@ function Page() {
   const [report, setReport] = useState<IReport>();
   const [loading, setLoading] = useState(true);
 
-  // const [appliedFilters, setAppliedFilters] =
-  //   useState<FilterState>({
-  //     code: data1?.code,
-  //   })
-
-  // const { data, isLoading } = useQuery({
-  //   queryKey: [`book/tariff/${id}/trade`, appliedFilters],
-  //   queryFn: () => getTrades(appliedFilters),
-  //   keepPreviousData: true,
-  // })
-
 
 
 
@@ -201,27 +190,10 @@ function Page() {
         </Accordion>
 
         <Accordion title="آمار صادرات و واردات" share>
-          {/* <Filters config={TariffFilters} second /> */}
+          {/* محل نمایش  فیلتر پیشرفته  */}
 
-           <AdvancedFilter
-        code={data1?.code}
-        onApply={setAppliedFilters}
-      />
 
-      {isLoading && <p>در حال دریافت داده…</p>}
-
-      <div className="space-y-2">
-        {data?.results?.map((item: any) => (
-          <div
-            key={item.id}
-            className="rounded border p-3"
-          >
-            {item.title}
-          </div>
-        ))}
-      </div>
-
-          {/* <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             <InfoBox variant="single" label="شماره تعرفه" value={data?.code} />
             <InfoBox variant="single" label="شرح تعرفه" value={data?.name} />
           </div>
@@ -254,7 +226,7 @@ function Page() {
               label="فی(ارزی)"
               value={report?.per_unit_dollar}
             />
-          </div> */}
+          </div>
         </Accordion>
       </div>
 

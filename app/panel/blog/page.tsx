@@ -1,117 +1,3 @@
-// "use client";
-
-// import NoItem from "@/component/Error/no-item";
-// import Item from "@/component/panel/blog/Item";
-// import Filters from "@/component/panel/common/Filter/Filter";
-// import InfiniteLoader from "@/component/panel/common/InfiniteLoader";
-// import InfiniteScrollTrigger from "@/component/panel/common/InfiniteLoader";
-// import Search from "@/component/panel/common/Search";
-// import LoadingSpinner from "@/component/ui/Loading";
-// import { useInfiniteDataList } from "@/hooks/useInfiniteDataList";
-// import { useInfiniteSearchList } from "@/hooks/useInfiniteSearchList";
-// import api from "@/lib/api";
-// import { useState } from "react";
-// import { BlogsFilters } from "./blogs.filters";
-
-// interface Iitem {
-//   id: number;
-//   title: string;
-//   image: string;
-//   description: string;
-//   category: {
-//     title: string;
-//   };
-// }
-
-// const getUsersInfinite = async ({
-//   search,
-//   page,
-// }: {
-//   search: string;
-//   page: number;
-// }) => {
-//   const res = await api.get("/knowledge/business-knowledge/", {
-//     params: {
-//       search,
-//       page,
-//     },
-//   });
-
-//   return {
-//     results: res.data.results,
-//     next: res.data.next, // number | null
-//   };
-// };
-
-// export default function Page() {
-//   const {
-//     data,
-//     params,
-//     fetchNextPage,
-//     hasNextPage,
-//     setParams,
-//     isFetchingNextPage,
-//   } = useInfiniteDataList("consultants", getBlogs);
-
-//   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-//   const allResults = data?.pages.flatMap((page) => page.results) || [];
-
-//   return (
-    // <div className="max-md:pb-4">
-    //   <Search
-    //     variant="secondary"
-    //     placeholder="جستجوی مشاور..."
-    //     value={params.search || ""}
-    //     onChange={(value) => setParams({ search: value })}
-    //     onClick={() => setIsFilterOpen(true)}
-    //   />
-
-    //   <Filters
-    //     config={BlogsFilters}
-    //     open={isFilterOpen}
-    //     onClose={() => setIsFilterOpen(false)}
-    //   />
-    //               <div>
-    //     {isLoading ? (
-    //       <LoadingSpinner />
-    //     ) : (
-    //       allResults.length == 0 ? <NoItem />
-    //       : (
-    //         <div className="grid lg:grid-cols-2 gap-8 pb-6 mt-4">
-    //         {data?.pages.flatMap((page) =>
-    //           page.results.map((item: any) => (
-    //             <Item
-    //               key={item.id}
-    //               image={item.image}
-    //               title={item.title}
-    //               description={item.description}
-    //               category={item.category?.title}
-    //               link={`/panel/blog/${item.id}`}
-    //               query={query}
-    //             />
-    //           ))
-    //         )}
-    //       </div>
-    //       )
-    //     )
-    //     }
-
-    //     {isFetchingNextPage && (
-    //       <LoadingSpinner />
-    //     )}
-
-    //     <InfiniteLoader
-    //       onLoadMore={fetchNextPage}
-    //       hasNextPage={hasNextPage}
-    //       isFetchingNextPage={isFetchingNextPage}
-    //     />
-
-    //   </div>
-
-    // </div>
-//   );
-// }
 
 "use client";
 
@@ -121,6 +7,8 @@ import HighlightText from "@/component/panel/common/HighlightText";
 import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
 import { BlogsFilters , getBlog, loadBlogsFilterOptions } from "./blogs.filters";
 import { useEffect } from "react";
+import { useAuthStore } from "@/stores/auth.store";
+import NoSub from "@/component/panel/profile/subscription/no-sub";
 
 interface BlogItem {
   id: number;
@@ -135,12 +23,17 @@ interface BlogItem {
 
 export default function BlogsPage() {
 
+    const user = useAuthStore((s) => s.user);
+  
+
 useEffect(() => {
   loadBlogsFilterOptions();
 }, []);
 
-  return (
-    <DataListWithFilters<BlogItem>
+
+ return (
+  user?.has_active_subscription ? 
+      <DataListWithFilters<BlogItem>
       queryKey="blogs"
       fetcher={getBlog}
       filtersConfig={BlogsFilters}
@@ -156,6 +49,9 @@ useEffect(() => {
           link={`/panel/blog/${item.id}`}
         />
       )}
-    />
+    /> 
+    : <><NoSub /></>
   );
+ 
+ 
 }

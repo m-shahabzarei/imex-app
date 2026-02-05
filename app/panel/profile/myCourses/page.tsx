@@ -1,31 +1,53 @@
+"use client"
+
+import AdvancedFilter from "@/component/panel/common/AdvanceFilter/AdvancedFilter"
+import { filterService } from "@/component/panel/common/AdvanceFilter/filter.service"
+import { AdvancedFilters } from "@/component/panel/common/AdvanceFilter/type"
+import { useEffect, useState } from "react"
 
 
-"use client";
+export default function ReportPage() {
+  const [filters, setFilters] = useState<AdvancedFilters>({
+    code: "01012100"
+  })
 
-import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
-import HighlightText from "@/component/panel/common/HighlightText";
-import { getBlog } from "../../blog/blogs.filters"
-import { BlogsFilters } from "../../blog/blogs.filters";
+  const [data, setData] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
 
-export default function BlogsPage() {
-  const fetchBlogs = async (params: any) => {
-    return getBlog(params);
-  };
+  // وقتی کاربر Apply می‌زنه
+  const onApplyFilters = async (newFilters: AdvancedFilters) => {
+    setFilters(newFilters)
+  }
+
+  // گرفتن دیتای اصلی
+  useEffect(() => {
+    setLoading(true)
+
+    filterService
+      .getReport({
+        page: 1,
+        country: filters.country,
+        customs_name: filters.customs,
+        code: filters.code,
+        date: filters.date
+      })
+      .then(setData)
+      .finally(() => setLoading(false))
+  }, [filters])
 
   return (
-    <DataListWithFilters
-      queryKey="blogs"
-      fetcher={fetchBlogs}
-      filtersConfig={BlogsFilters}
-      searchPlaceholder="جستجوی مقاله..."
-      renderItem={(item: any, search) => (
-        <div key={item.id}>
-          <HighlightText
-            text={item.title}
-            highlight={search}
-          />
-        </div>
-      )}
-    />
-  );
+    <div>
+      <AdvancedFilter onApply={onApplyFilters} />
+
+      {loading && <p>در حال بارگذاری...</p>}
+
+      {!loading && data.length === 0 && <p>یافت نشد</p>}
+
+      <ul>
+        {data.map((item, i) => (
+          <li key={i}>{JSON.stringify(item)}</li>
+        ))}
+      </ul>
+    </div>
+  )
 }

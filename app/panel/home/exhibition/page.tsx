@@ -5,9 +5,16 @@ import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
 import NoItem from "@/component/Error/no-item";
 import HighlightText from "@/component/panel/common/HighlightText";
 import { ExhibitionFilters, getExhi } from "./exhibition.filters";
+import { useAuthStore } from "@/stores/auth.store";
 
 export default function ConsultantsPage() {
+  const user = useAuthStore((s) => s.user);
+
+
+
+  
   return (
+          user?.has_active_subscription ? 
     <DataListWithFilters<Iexhibition>
       queryKey="Exhibition"
       fetcher={getExhi}
@@ -25,6 +32,6 @@ export default function ConsultantsPage() {
           location={item.location?.title}
         />
       )}
-    />
+    /> : <NoItem />
   );
 }

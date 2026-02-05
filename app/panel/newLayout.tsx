@@ -2,7 +2,10 @@
 "use client";
 import Header from "@/component/panel/layout/Header";
 import Menu from "@/component/panel/layout/Menu";
+import { getMe } from "@/services/auth";
+import { useAuthStore } from "@/stores/auth.store";
 import { useParams, usePathname } from "next/navigation";
+import { useEffect } from "react";
 // ...existing code...
 export default function NewLayout({
   children,
@@ -13,15 +16,40 @@ export default function NewLayout({
   const params = useParams();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
+  // const user = useAuthStore((s) => s.user);
+  // const setUser = useAuthStore((s) => s.setUser);
+
+  // useEffect(() => {
+  //   if (!user) {
+  //     getMe()
+  //       .then((res) => setUser(res.data))
+  //       .catch(() => {
+  //         useAuthStore.getState().logout();
+  //         window.location.href = "/Login";
+  //       });
+  //   }
+  // }, []);
+
+
+
+
   const showLayout = () => {
     // use the pathname string and ensure id is present in it
-    if ((id && pathname?.includes(`/panel/book/tariffs/${id}`)) || (id && pathname?.includes(`/panel/home/mentors/${id}`)) || pathname?.includes(`panel/profile/subscribe`) || pathname?.includes(`panel/chat`)) {
+    if ((id && pathname?.includes(`/panel/book/tariffs/${id}`)) || (id && pathname?.includes(`/panel/home/mentors/${id}`)) || pathname?.includes(`panel/chat`)) {
       return (
         <>
           <div className="md:hidden">
             <Header />
           </div>
           {children}
+        </>
+      );
+    } else if (pathname?.includes(`panel/profile/subscribe`)) {
+      return (
+        <>
+          <div>
+            {children}
+          </div>
         </>
       );
     } else if (pathname?.includes(`/panel/book/tariffs`)) {
@@ -33,7 +61,7 @@ export default function NewLayout({
           </div>
         </>
       );
-    } else if (pathname?.includes(`/panel/home/exhibition/`)) {
+    }else if (pathname?.includes(`/panel/home/exhibition/`)) {
       return (
         <>
           <Header />

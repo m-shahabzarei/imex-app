@@ -1,5 +1,8 @@
+"use client";
 import Button from "@/component/ui/Button";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 function NoSub() {
   return (
@@ -67,8 +70,12 @@ function NoSub() {
           </div>
 
           <div className="flex gap-3 w-full">
-            <Button variant="glassy">بازگشت به خانه</Button>
-            <Button variant="secondary"> خرید اشتراک</Button>
+            <Link href="/panel/home" className="w-full">
+              <Button variant="glassy">بازگشت به خانه</Button>
+            </Link>
+            <Link href="/panel/profile/subscribe" className="w-full">
+              <Button variant="secondary"> خرید اشتراک</Button>
+            </Link>
           </div>
         </div>
       </div>

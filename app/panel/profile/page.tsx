@@ -22,6 +22,9 @@ function Profile() {
     setIsEditing(false);
   };
 
+
+
+  console.log(user.has_active_subscription)
   return (
     <div className="grid lg:grid-cols-2 gap-7 items-center">
 
@@ -60,11 +63,13 @@ function Profile() {
         variant="subscribe"
         subscription={user.has_active_subscription}
         link="/panel/profile/subscribe"
+        day={user.is_active_date}
       >
         {user.has_active_subscription
           ? "اشتراک فعال"
           : "فاقد اشتراک"}
       </Item>
+
       <Item link="/panel/profile/myCourses" variant="primary" icon="/image/messages-2.svg">
         مشاوره های من
       </Item>

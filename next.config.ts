@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
         destination: "https://api.imexapp.ir/book/tariff/:path*/",
         basePath: false,
       },
+      {
+        source: "/subscription/:path*/",
+        destination: "https://api.imexapp.ir/subscription/:path*/",
+        basePath: false,
+      },
     ];
   },
 };

@@ -1,117 +1,117 @@
-// "use client"
+"use client"
 
-// import React from "react"
-// import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+import { AdvancedFilters, Option } from "./type"
+import { filterService } from "./filter.service"
 
-// import { getCountries, getCustoms } from "./filter.service"
+export default function AdvancedFilter() {
+  // 🔹 Draft (در حال انتخاب)
+  const [draftFilters, setDraftFilters] = useState<AdvancedFilters>({
+    code: "01012100"
+  })
 
-// export type AdvancedFilterState = {
-//   country?: number
-//   customs?: number
-//   code: string
-// }
+  // 🔹 Applied (اعمال‌شده)
+  const [appliedFilters, setAppliedFilters] =
+    useState<AdvancedFilters | null>(null)
 
+  // 🔹 Option states
+  const [countries, setCountries] = useState<Option[]>([])
+  const [customs, setCustoms] = useState<Option[]>([])
 
-// type Props = {
-//   code: string
-//   onApply: (filters: AdvancedFilterState) => void
-// }
+  // =============================
+  // Load Countries (once)
+  // =============================
+  useEffect(() => {
+    filterService.getCountries().then(setCountries)
+  }, [])
 
-// export default function AdvancedFilter({
-//   code,
-//   onApply,
-// }: Props) {
-//   const [filters, setFilters] =
-//     React.useState<AdvancedFilterState>({
-//       code,
-//     })
+  // =============================
+  // Load Customs (dependent)
+  // =============================
+  useEffect(() => {
+    filterService
+      .getCustoms({
+        country: draftFilters.country,
+        code: draftFilters.code
+      })
+      .then(setCustoms)
+  }, [draftFilters.country, draftFilters.code])
 
-//   /* -------- Countries -------- */
-//   const { data: countries, isLoading: countryLoading } =
-//     useQuery({
-//       queryKey: ["countries", filters.customs, code],
-//       queryFn: () =>
-//         getCountries({
-//           customs: filters.customs,
-//           code,
-//         }),
-//     })
+  // =============================
+  // Apply Filters
+  // =============================
+  useEffect(() => {
+    if (!appliedFilters) return
 
-//   /* -------- Customs -------- */
-//   const { data: customs, isLoading: customsLoading } =
-//     useQuery({
-//       queryKey: ["customs", filters.country, code],
-//       queryFn: () =>
-//         getCustoms({
-//           country: filters.country,
-//           code,
-//         }),
-//     })
+    filterService.getReport({
+      page: 1,
+      country: appliedFilters.country,
+      customs_name: appliedFilters.customs,
+      code: appliedFilters.code,
+      date: appliedFilters.date
+    })
+  }, [appliedFilters])
 
-//   return (
-//     <div className="space-y-4 rounded-xl bg-white p-4 shadow">
+  // =============================
+  // Handlers
+  // =============================
+  const onCountryChange = (id: number) => {
+    setDraftFilters(prev => ({
+      ...prev,
+      country: id,
+      customs: undefined
+    }))
+  }
 
-//       {/* Country */}
-//       <div>
-//         <label className="block mb-1">
-//           کشور
-//         </label>
-//         <select
-//           className="w-full border p-2"
-//           value={filters.country ?? ""}
-//           onChange={(e) =>
-//             setFilters((prev) => ({
-//               ...prev,
-//               country: e.target.value
-//                 ? Number(e.target.value)
-//                 : undefined,
-//             }))
-//           }
-//         >
-//           <option value="">همه</option>
-//           {countries?.results?.map((c: any) => (
-//             <option key={c.id} value={c.id}>
-//               {c.name}
-//             </option>
-//           ))}
-//         </select>
-//         {countryLoading && <p>در حال بارگذاری…</p>}
-//       </div>
+  const onCustomsChange = (id: number) => {
+    setDraftFilters(prev => ({
+      ...prev,
+      customs: id
+    }))
+  }
 
-//       {/* Customs */}
-//       <div>
-//         <label className="block mb-1">
-//           گمرک
-//         </label>
-//         <select
-//           className="w-full border p-2"
-//           value={filters.customs ?? ""}
-//           onChange={(e) =>
-//             setFilters((prev) => ({
-//               ...prev,
-//               customs: e.target.value
-//                 ? Number(e.target.value)
-//                 : undefined,
-//             }))
-//           }
-//         >
-//           <option value="">همه</option>
-//           {customs?.results?.map((c: any) => (
-//             <option key={c.id} value={c.id}>
-//               {c.name}
-//             </option>
-//           ))}
-//         </select>
-//         {customsLoading && <p>در حال بارگذاری…</p>}
-//       </div>
+  const onApply = () => {
+    setAppliedFilters(draftFilters)
+  }
 
-//       {/* Apply */}
-//       <button
-//         className="w-full rounded bg-blue-600 py-2 text-white"
-//         onClick={() => onApply(filters)}
-//       >
-//         اعمال فیلتر
-//       </button>
-//     </div>
-//   )
-// }
+  // =============================
+  // UI
+  // =============================
+  return (
+    <div>
+      {/* Country */}
+      <select
+        value={draftFilters.country ?? ""}
+        onChange={e => onCountryChange(Number(e.target.value))}
+      >
+        <option value="">همه کشورها</option>
+        {countries.map(c => (
+          <option key={c.id} value={c.id}>
+            {c.title}
+          </option>
+        ))}
+      </select>
+
+      {/* Customs */}
+      <select
+        value={draftFilters.customs ?? ""}
+        onChange={e => onCustomsChange(Number(e.target.value))}
+        disabled={!draftFilters.country}
+      >
+        <option value="">
+          {draftFilters.country
+            ? "انتخاب گمرک"
+            : "ابتدا کشور را انتخاب کنید"}
+        </option>
+        {customs.map(c => (
+          <option key={c.id} value={c.id}>
+            {c.title}
+          </option>
+        ))}
+      </select>
+
+      {/* Apply */}
+      <button onClick={onApply}>اعمال فیلتر</button>
+    </div>
+  )
+}

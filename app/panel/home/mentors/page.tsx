@@ -5,11 +5,14 @@ import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
 import { getMentor, MentorsFilters } from "./mentors.filters";
 import NoItem from "@/component/Error/no-item";
 import HighlightText from "@/component/panel/common/HighlightText";
+import { useAuthStore } from "@/stores/auth.store";
 
 export default function ConsultantsPage() {
+  const user = useAuthStore((s) => s.user);
 
 
   return (
+      user?.has_active_subscription ? 
     <DataListWithFilters<Imentor>
       queryKey="blogs"
       fetcher={getMentor}
@@ -28,5 +31,7 @@ export default function ConsultantsPage() {
         />
       )}
     />
+
+    :<NoItem/>
   );
 }
