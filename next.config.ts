@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         basePath: false,
       },
       {
+        source: "/auth/:path*/",
+        destination: "https://api.imexapp.ir/auth/:path*/",
+        basePath: false,
+      },
+      {
         source: "/knowledge/business-knowledge/:path*/",
         destination:
           "https://api.imexapp.ir/knowledge/business-knowledge/:path*/",

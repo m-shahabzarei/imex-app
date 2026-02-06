@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { useAuthStore } from "./stores/auth.store";
 
 export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("access_token");

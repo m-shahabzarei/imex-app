@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth.store";
+import { refresh } from "@/services/auth";
 
 const api = axios.create({
   baseURL: "/",
@@ -52,11 +53,8 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(
-          "/auth/refresh",
-          {},
-          { withCredentials: true }
-        );
+        const refreshToken = useAuthStore.getState().refreshToken
+        const res = await refresh(refreshToken)
 
         const newAccess = res.data.access;
 

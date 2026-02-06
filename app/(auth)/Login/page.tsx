@@ -74,6 +74,7 @@ export default function LoginPage() {
 
   // access فقط اینجا میاد
   useAuthStore.getState().setAccessToken(res.data.access_token);
+  useAuthStore.getState().setRefreshToken(res.data.refresh_token);
 
   const me = await getMe();
   useAuthStore.getState().setUser(me.data);

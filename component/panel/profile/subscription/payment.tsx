@@ -122,52 +122,7 @@ function Payment() {
         {error && <p className="text-red-300 text-sm mt-2">{error}</p>}
 
         {isCouponOpen && (
-          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40">
-            <div
-              className="
-        w-full md:w-[420px]
-        bg-white
-        rounded-t-2xl md:rounded-2xl
-        p-6
-        animate-slideUp md:animate-fadeIn
-      "
-            >
-              <h2 className="text-center text-custom2 text-lg font-bold mb-4">
-                افزودن کد تخفیف
-              </h2>
 
-              <label className="text-sm text-gray-600 mb-1 block">
-                کد تخفیف
-              </label>
-
-              <input
-                value={coupon}
-                onChange={(e) => setCoupon(e.target.value)}
-                className="w-full border rounded-lg p-3 focus:outline-none bg-gray-100 border-0"
-                placeholder="کد تخفیف را وارد کنید"
-              />
-
-              {couponError && (
-                <p className="text-red-500 text-sm mt-2">{couponError}</p>
-              )}
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => setIsCouponOpen(false)}
-                  className="flex-1 bg-gray-100 rounded-lg py-3"
-                >
-                  بازگشت
-                </button>
-                <button
-                  onClick={applyCoupon}
-                  disabled={couponLoading}
-                  className="flex-1 bg-indigo-600 text-white rounded-lg py-3 disabled:opacity-50"
-                >
-                  اعمال
-                </button>
-              </div>
-            </div>
-          </div>
         )}
       </div>
     </div>

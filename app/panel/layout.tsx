@@ -59,10 +59,7 @@ export default function PanelLayout({
     if (!user) {
       getMe()
         .then((res) => setUser(res.data))
-        .catch(() => {
-          useAuthStore.getState().logout();
-          window.location.href = "/Login";
-        });
+
     }
   }, []);
 
