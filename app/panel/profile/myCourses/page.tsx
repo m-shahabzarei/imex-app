@@ -14,12 +14,10 @@ export default function ReportPage() {
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
-  // وقتی کاربر Apply می‌زنه
   const onApplyFilters = async (newFilters: AdvancedFilters) => {
     setFilters(newFilters)
   }
 
-  // گرفتن دیتای اصلی
   useEffect(() => {
     setLoading(true)
 

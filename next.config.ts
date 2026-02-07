@@ -35,17 +35,23 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/book/preferential-tariff-country/:path*/",
-        destination: "https://api.imexapp.ir/book/preferential-tariff-country/:path*/",
+        destination:
+          "https://api.imexapp.ir/book/preferential-tariff-country/:path*/",
         basePath: false,
-      },      
+      },
       {
         source: "/book/preferential-tariff/:path*/",
         destination: "https://api.imexapp.ir/book/preferential-tariff/:path*/",
         basePath: false,
-      },      
+      },
       {
         source: "/book/tariff/:path*/",
         destination: "https://api.imexapp.ir/book/tariff/:path*/",
+        basePath: false,
+      },
+      {
+        source: "/book/statistics/:path*/",
+        destination: "https://api.imexapp.ir/book/statistics/:path*/",
         basePath: false,
       },
       {

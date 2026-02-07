@@ -10,16 +10,16 @@ import { useState } from "react";
 
 function Home() {
   const user = useAuthStore((s) => s.user);
-  const [Show, setShow] = useState(true)
-
-
+  const [Show, setShow] = useState(true);
 
   function getSuggest() {
-    
     if (user?.type_subscription === "free") {
-
       return (
-        <div className={`${Show ? "" : "hidden"} fixed inset-0 z-5000 flex items-end md:items-center justify-center bg-black/40`}>
+        <div
+          className={`${
+            Show ? "" : "hidden"
+          } fixed inset-0 z-5000 flex items-end md:items-center justify-center bg-black/40`}
+        >
           <div
             className="
                   w-full md:w-[420px]
@@ -30,16 +30,27 @@ function Home() {
                   animate-slideUp md:animate-fadeIn
                 "
           >
-
-            <Image src="/image/image 1.png" width={180} height={100} alt="payment" />
-            <h1 className="text-custom2 font-bold text-lg">۱ روز اشتراک رایگان شما برای استفاده از کلیه سرویس های اپلیکیشن فعال شد.</h1> 
-            <p className="text-gray-600">برای ادامه استفاده در طول یک سال, به تمدید اشتراک نیاز است.</p>
+            <Image
+              src="/image/image 1.png"
+              width={180}
+              height={100}
+              alt="payment"
+            />
+            <h1 className="text-custom2 font-bold text-lg">
+              ۱ روز اشتراک رایگان شما برای استفاده از کلیه سرویس های اپلیکیشن
+              فعال شد.
+            </h1>
+            <p className="text-gray-600">
+              برای ادامه استفاده در طول یک سال, به تمدید اشتراک نیاز است.
+            </p>
 
             <div className="flex gap-3 mt-6 w-full">
-              <Button onClick={()=>setShow(false)} variant="glassy">تایید</Button>
-            <Link href="/panel/profile/subscribe" className="w-full">
-              <Button variant="secondary"> خرید اشتراک</Button>
-            </Link>
+              <Button onClick={() => setShow(false)} variant="glassy">
+                تایید
+              </Button>
+              <Link href="/panel/profile/subscribe" className="w-full">
+                <Button variant="secondary"> خرید اشتراک</Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -82,6 +93,13 @@ function Home() {
           variant="primary"
         >
           کتاب مقررات صادرات و واردات
+        </Item>
+        <Item
+          icon="/image/shipC.svg"
+          link="/panel/home/report"
+          variant="primary"
+        >
+          آمار و اطلاعات تجاری
         </Item>
 
         <Item
