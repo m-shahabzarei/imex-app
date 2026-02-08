@@ -95,7 +95,7 @@ function Profile() {
       </Item>
 
       <Item
-        link="/panel/profile/myCourses"
+        link="/panel/profile/myMentor"
         variant="primary"
         icon="/image/messages-2.svg"
       >

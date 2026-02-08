@@ -3,7 +3,7 @@ import InfoBox from "@/component/panel/book/tariffs/InfoBox";
 import { IData } from "@/component/panel/home/mentors/[id]/Type";
 import Button from "@/component/ui/Button";
 import LoadingSpinner from "@/component/ui/Loading";
-import axios from "axios";
+import api from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -15,7 +15,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!id) return;
-    axios
+    api
       .get(`https://api.imexapp.ir/users/consultants/${id}`)
       .then((res) => setData(res.data))
       .finally(() => setLoading(false));
@@ -72,8 +72,13 @@ export default function Page() {
                     {data.online_working_days.map((day) => (
                       <p key={day.id} className="text-xs text-gray-600">
                         {day.day_name} :
-                        {day.time_slots.map((time) => time.start_time)} الی{" "}
-                        {day.time_slots.map((time) => time.end_time)}
+                        <div className="flex gap-2">
+                        {day.time_slots.map((time,index)=>(
+                          <div key={index}>
+                          {time.start_time.slice(0,5)} الی {time.end_time.slice(0,5)}
+                          </div>
+                        ))}
+                        </div>
                       </p>
                     ))}
                   </div>

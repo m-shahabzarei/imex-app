@@ -14,6 +14,7 @@ export default function ConsultantsPage() {
   return (
       user?.has_active_subscription ? 
     <DataListWithFilters<Imentor>
+      Ment
       queryKey="blogs"
       fetcher={getMentor}
       filtersConfig={MentorsFilters}
@@ -25,8 +26,8 @@ export default function ConsultantsPage() {
           image={item.image}
           name={<HighlightText text={item.full_name} highlight={search} />}
           group={item.product_group?.title}
-          progress={item.process.title}
-          country={item.country.name}
+          progress={item.process?.title}
+          country={item.country?.name}
           link={`/panel/home/mentors/${item.id}`}
         />
       )}

@@ -24,3 +24,19 @@ export const gregorianToJalali = (date?: string) => {
     .locale("fa")
     .format("YYYY/MM/DD");
 };
+
+
+export function getDateRangeByYear(year: 1403 | 1404) {
+  if (year === 1403) {
+    return {
+      date_range_after: "2024-03-20",
+      date_range_before: "2025-03-19",
+    };
+  }
+
+  // 1404
+  return {
+    date_range_after: "2025-03-21",
+    date_range_before: "2026-03-20",
+  };
+}

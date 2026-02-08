@@ -3,10 +3,29 @@ import Image from "next/image";
 import Button from "@/component/ui/Button";
 import { usePathname } from "next/navigation";
 import Search from "../common/Search";
+import { useState } from "react";
+import { SEARCH_TARGETS, SearchTarget } from "@/app/panel/home/page";
+import { useRouter } from "next/navigation";
 
 function Header() {
+    const router = useRouter();
   const pathname = usePathname();
-  const isActive = pathname === "/panel/home";
+  const isActive = pathname === "/panel/home/";
+
+
+    const [searchText, setSearchText] = useState("");
+    const [showSearchModal, setShowSearchModal] = useState(false);
+    const [searchTarget, setSearchTarget] = useState<SearchTarget>("zamem");
+  
+    const handleSearch = () => {
+      if (!searchText) return;
+  
+      router.push(
+        `${SEARCH_TARGETS[searchTarget]}?search=${encodeURIComponent(searchText)}`
+      );
+  
+      setShowSearchModal(false);
+    };
 
   function openChat(){
           window.location.href = "/panel/chat";
@@ -19,7 +38,7 @@ function Header() {
         isActive ? "h-80" : "h-48"
       }`}
     >
-      <header className="md:w-[83%] md:h-16 max-md:items-center max-md:pb-7 max-md:rounded-b-3xl max-md:justify-end h-full w-full bg-linear-to-b  from-[#5764EF] to-[#3E47AD]  flex flex-col justify-center px-4 md:rounded-lg">
+      <header className="md:w-[83%] md:h-16 max-md:items-center max-md:pb-7 max-md:rounded-b-3xl max-md:gap-3 max-md:justify-end h-full w-full bg-linear-to-b  from-[#5764EF] to-[#3E47AD]  flex flex-col justify-center px-4 md:rounded-lg">
         <div className="w-full flex items-center h-fit justify-between">
           <div className="flex">
             <Image
@@ -42,6 +61,7 @@ function Header() {
             دستیار هوش مصنوعی
           </Button>
         </div>
+
         {isActive && (
           <div className="w-full flex">
             <Image
@@ -51,19 +71,70 @@ function Header() {
               height="24"
               className="absolute mt-10 right-6"
             />
-            <div className="w-full md:hidden">
-            <Search variant="primary" text="جستجو در ایمکس ..." />
-            </div>
-            <Image
-              src="/image/setting-4.svg"
-              alt="search icon"
-              width="24"
-              height="24"
-              className="absolute mt-10 left-6 "
-            />
+            <div className="w-full md:hidden ">
+                      <Search
+                      
+                      placeholder="جستجو در تمام قابلیت های اپلیکیشن"
+                        variant="primary"
+                        value={searchText}
+                        onChange={(value) => setSearchText(value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && searchText) {
+                            setShowSearchModal(true);
+                          }
+                        }}
+                        home
+                      />
+          </div>
           </div>
         )}
+
       </header>
+
+
+      {/* Search Modal */}
+      {showSearchModal && (
+        <div className="fixed inset-0 z-5000 bg-black/40 flex items-end md:items-center justify-center">
+          <div className="bg-white w-full md:w-[420px] rounded-t-2xl md:rounded-2xl p-6 animate-slideUp">
+            <h2 className="text-custom2 font-bold text-lg mb-4 text-center">
+              محدوده جستجو
+            </h2>
+
+            <div className="flex flex-col gap-3">
+              {[
+                { key: "zamem", label: "کتاب صادرات و واردات (تعرفه‌ها)" },
+                { key: "consultants", label: "مشاوران" },
+                { key: "knowledge", label: "دانستنی‌ها" },
+                { key: "exhibitions", label: "نمایشگاه‌ها" },
+                { key: "ryzen", label: "رایزن بازرگانی" },
+                { key: "course", label: "دوره‌های آموزشی" },
+              ].map((item) => (
+                <label key={item.key} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={searchTarget === item.key}
+                    onChange={() => setSearchTarget(item.key as SearchTarget)}
+                  />
+                  <span>{item.label}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <Button
+                variant="glassy"
+                onClick={() => setShowSearchModal(false)}
+              >
+                بازگشت
+              </Button>
+              <Button variant="secondary" onClick={handleSearch}>
+                جستجو
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

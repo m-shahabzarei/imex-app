@@ -6,6 +6,7 @@ export interface Iitem{
     location:string | "";
     title:string;
     link:string;
+    type:string;
 }
 
 export interface Iexhibition{
@@ -22,7 +23,10 @@ export interface Iexhibition{
     description:string;
     address:string;
     supervising_manager:string;
-    phone:string;
+    phone:[];
     site:string;
     fax:string;
+    visiting_hour:[]
+    type:string;
+    presenter:string;
 }

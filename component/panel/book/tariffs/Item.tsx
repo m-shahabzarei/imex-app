@@ -8,88 +8,106 @@ interface Iitem {
   code: string;
   product_group: [];
   customs_duty: string;
-  id:number;
+  id: number;
   isSaved: boolean;
-  markID:number;
+  markID: number;
 }
 
 function Item(props: Iitem) {
   const [isSaved, setIsSaved] = useState(props.isSaved);
+  const [markID, setMarkID] = useState<number | null>(props.markID);
 
   const toggleSave = async () => {
     try {
-      if (isSaved) {
-        await removeFromMarket(props.markID);
+      if (isSaved && markID) {
+        await removeFromMarket(markID);
         setIsSaved(false);
+        setMarkID(null);
       } else {
-        await addToMarket(props.id);
+        const res = await addToMarket(props.id);
         setIsSaved(true);
+        setMarkID(res.data.id);
       }
-    } catch {
-    } finally {
+    } catch (e) {
+      console.error(e);
     }
   };
 
   return (
-    <div >
-      <div  className="bg-white max-md:w-[80vw] h-28 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl grid md:grid-cols-3 max-md:flex max-md:flex-col gap-2 p-4 max-md:p-6 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
-        <div className="flex flex-col justify-between md:w-[120%] font-black h-full max-md:gap-5">
-          <div className="flex justify-between w-full">
-            <Link href={`${props.id}`} className="text-sm  text-custom2">{props.name}</Link>
+    <div className="w-full">
+      <div className="relative bg-white shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:py-6 md:px-8 gap-4 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)] transition-all duration-300">
+        
+        {/* بخش راست: عنوان و مشخصات */}
+        <div className="flex flex-col justify-between w-full md:w-5/12 gap-4 md:gap-6 h-full">
+          <div className="flex justify-between items-center w-full">
+            <Link href={`${props.id}`} className="text-sm md:text-base font-bold text-custom2 block">
+              {props.name}
+            </Link>
+            {/* آیکون بوک‌مارک فقط برای موبایل در اینجا */}
             <Image
               src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
               width={20}
               height={20}
               alt="bookmark"
               onClick={toggleSave}
-              className={`hover:cursor-pointer md:hidden  ${isSaved ? "w-6" : ""}`}
+              className={`hover:cursor-pointer md:hidden ${isSaved ? "w-6" : ""}`}
             />
           </div>
-          <div className="flex max-md:text-xs md:text-[1.2vw] lg:text-xs text-gray-400 justify-between">
+
+          <div className="flex text-xs md:text-sm text-gray-400 justify-between items-center">
             <div className="flex gap-1">
-              <span className="font-light">شماره تعرفه : </span>
-              <span>{props.code}</span>
+              <span className="font-light">شماره تعرفه:</span>
+              <span className="font-medium text-gray-500">{props.code}</span>
             </div>
-            {props.customs_duty ? (
+            {props.customs_duty && (
               <div className="flex gap-1">
-                <span className="font-light">حقوق ورودی : </span>
-                <span>{props.customs_duty}%</span>
+                <span className="font-light">حقوق ورودی:</span>
+                <span className="font-medium text-gray-500">{props.customs_duty}%</span>
               </div>
-            ) : (
-              ""
             )}
           </div>
         </div>
-        <Link href={`${props.id}`}>
-        <div className="text-center flex items-center justify-center">
-          <hr className="md:rotate-90 w-full md:w-20 text-gray-300 h-1 max-md:my-1" />
+
+        {/* خط جداکننده عمودی برای دسکتاپ */}
+        <div className="hidden md:block w-[1px] h-16 bg-gray-200 mx-2"></div>
+
+        {/* خط جداکننده افقی برای موبایل */}
+        <hr className="md:hidden w-full text-gray-200" />
+
+        {/* بخش چپ: توضیحات سلسله مراتبی */}
+        <Link href={`${props.id}`} className="w-full md:w-5/12">
+          <div className="flex flex-col gap-2 text-gray-400 text-xs md:text-right">
+            {props.product_group.map(
+              (
+                {
+                  tariffCode,
+                  faDescription,
+                }: { tariffCode: string; faDescription: string },
+                index
+              ) => (
+                <span key={index} className="line-clamp-1">
+                  {tariffCode} {faDescription}
+                </span>
+              )
+            )}
+          </div>
+        </Link>
+
+        {/* آیکون بوک‌مارک برای دسکتاپ (سمت چپ مطلق) */}
+        <div className="hidden md:flex justify-end items-center md:absolute md:left-6 md:top-1/2 md:-translate-y-1/2">
+             <Image
+              src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
+              width={24} // سایز کمی بزرگتر برای دسکتاپ
+              height={24}
+              alt="bookmark"
+              onClick={(e) => {
+                e.preventDefault(); // جلوگیری از کلیک روی لینک والد اگر وجود داشته باشد
+                toggleSave();
+              }}
+              className={`hover:cursor-pointer transition-all ${isSaved ? "scale-110" : ""}`}
+            />
         </div>
 
-        <div className="flex flex-col justify-evenly max-md:justify-between md:-mr-16 text-gray-400 text-xs gap-1">
-          {props.product_group.map(
-            (
-              {
-                tariffCode,
-                faDescription,
-              }: { tariffCode: string; faDescription: string },
-              index
-            ) => (
-              <span key={index}>
-                {" "}
-                {tariffCode} {faDescription}
-              </span>
-            )
-          )}
-        </div>
-      </Link>
-      <Image
-        src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
-        width={20}
-        height={20}
-        alt="bookmark"
-        onClick={toggleSave}
-        className={`max-md:hidden absolute left-4 hover:cursor-pointer ${isSaved ? "w-6" : ""} `}
-      />
       </div>
     </div>
   );

@@ -30,6 +30,7 @@ export default function ConsultantsPage() {
           image={item.image}
           link={`/panel/home/exhibition/${item.id}`}
           location={item.location?.title}
+          type={item.type}
         />
       )}
     /> : <NoItem />

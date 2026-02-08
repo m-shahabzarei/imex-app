@@ -1,6 +1,4 @@
-// components/filters/FilterItem.tsx
 "use client";
-
 
 import DateFilterUI from "./MonthYearPicker";
 import RemoteMultiCheckbox from "./RemoteMultiCheckbox";
@@ -12,11 +10,7 @@ interface Props {
   onChange: (key: string, value: any) => void;
 }
 
-export default function FilterItem({
-  filter,
-  value,
-  onChange,
-}: Props) {
+export default function FilterItem({ filter, value, onChange }: Props) {
   // ---------- SINGLE CHECKBOX ----------
   if (filter.type === "checkbox") {
     return (
@@ -24,9 +18,7 @@ export default function FilterItem({
         <input
           type="checkbox"
           checked={value === "true" || value === true}
-          onChange={(e) =>
-            onChange(filter.key, e.target.checked)
-          }
+          onChange={(e) => onChange(filter.key, e.target.checked)}
         />
         {filter.label}
       </label>
@@ -34,17 +26,15 @@ export default function FilterItem({
   }
 
   // --------------- DATE FILTER -----------
-if (filter.type === "Date") {
-  return (
-    <DateFilterUI
-      label={filter.label}
-      value={value}
-      onChange={(v) => onChange(filter.key, v)}
-    />
-
-  );
-}
-
+  if (filter.type === "Date") {
+    return (
+      <DateFilterUI
+        label={filter.label}
+        value={value || ""}
+        onChange={(gregorianDate) => onChange(filter.key, gregorianDate)}
+      />
+    );
+  }
 
   // ---------- MULTI CHECKBOX ----------
   if (filter.type === "multi-checkbox") {
@@ -59,17 +49,14 @@ if (filter.type === "Date") {
         ? selectedValues.filter((v) => v !== String(val))
         : [...selectedValues, String(val)];
 
-      // اگر خالی شد → حذف از query
       if (updated.length === 0) {
         onChange(filter.key, undefined);
         return;
       }
 
-      // backend comma separated
       if (filter.separator) {
         onChange(filter.key, updated.join(filter.separator));
       } else {
-        // backend array style
         onChange(filter.key, updated);
       }
     };
@@ -78,15 +65,10 @@ if (filter.type === "Date") {
       <div>
         <div className="space-y-2">
           {filter.options?.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex text-sm items-center gap-2"
-            >
+            <label key={opt.value} className="flex text-sm items-center gap-2">
               <input
                 type="checkbox"
-                checked={selectedValues.includes(
-                  String(opt.value)
-                )}
+                checked={selectedValues.includes(String(opt.value))}
                 onChange={() => toggleValue(opt.value)}
               />
               {opt.label}
@@ -97,17 +79,11 @@ if (filter.type === "Date") {
     );
   }
 
-
   if (filter.type === "multi-checkbox-remote") {
-  return (
-    <RemoteMultiCheckbox
-      filter={filter}
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
-
+    return (
+      <RemoteMultiCheckbox filter={filter} value={value} onChange={onChange} />
+    );
+  }
 
   return null;
 }

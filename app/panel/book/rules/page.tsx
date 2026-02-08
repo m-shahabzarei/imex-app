@@ -33,6 +33,8 @@ function Item() {
   return (
     <>
       <DataListWithFilters<IData>
+        NoFilter
+        Date
         grid1
         queryKey="Rules"
         fetcher={getRules}

@@ -1,7 +1,7 @@
-import axios from "axios";
+import api from "@/lib/api";
 
-export const addToMarket = (tariff: string) =>
-  axios.post("/users/marks", { tariff });
+export const addToMarket = (tariff: number) =>
+  api.post("/users/marks", { tariff });
 
-export const removeFromMarket = (tariff: string) =>
-  axios.delete(`/users/marks/${tariff}`);
+export const removeFromMarket = (tariff: number) =>
+  api.delete(`/users/marks/${tariff}`);

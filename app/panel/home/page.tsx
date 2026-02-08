@@ -1,83 +1,118 @@
 /* eslint-disable react-hooks/immutability */
 "use client";
+
 import Search from "@/component/panel/common/Search";
 import Item from "@/component/panel/home/item";
 import Button from "@/component/ui/Button";
 import { useAuthStore } from "@/stores/auth.store";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+export type SearchTarget =
+  | "zamem"
+  | "consultants"
+  | "knowledge"
+  | "exhibitions"
+  | "ryzen"
+  | "course";
+
+export const SEARCH_TARGETS: Record<SearchTarget, string> = {
+  zamem: "/panel/book/zamem",
+  consultants: "/panel/home/mentors",
+  knowledge: "/panel/blog/",
+  exhibitions: "/panel/home/exhibition",
+  ryzen: "/panel/home/ryzen",
+  course: "/panel/course",
+};
 
 function Home() {
   const user = useAuthStore((s) => s.user);
-  const [Show, setShow] = useState(true);
+  const router = useRouter();
 
-  function getSuggest() {
-    if (user?.type_subscription === "free") {
-      return (
-        <div
-          className={`${
-            Show ? "" : "hidden"
-          } fixed inset-0 z-5000 flex items-end md:items-center justify-center bg-black/40`}
-        >
-          <div
-            className="
-                  w-full md:w-[420px]
-                  bg-white
-                  rounded-t-2xl md:rounded-2xl
-                  p-6
-                  flex flex-col items-center  text-center gap-3
-                  animate-slideUp md:animate-fadeIn
-                "
-          >
-            <Image
-              src="/image/image 1.png"
-              width={180}
-              height={100}
-              alt="payment"
-            />
-            <h1 className="text-custom2 font-bold text-lg">
-              ۱ روز اشتراک رایگان شما برای استفاده از کلیه سرویس های اپلیکیشن
-              فعال شد.
-            </h1>
-            <p className="text-gray-600">
-              برای ادامه استفاده در طول یک سال, به تمدید اشتراک نیاز است.
-            </p>
+  const [showSuggest, setShowSuggest] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchTarget, setSearchTarget] = useState<SearchTarget>("zamem");
 
-            <div className="flex gap-3 mt-6 w-full">
-              <Button onClick={() => setShow(false)} variant="glassy">
-                تایید
-              </Button>
-              <Link href="/panel/profile/subscribe" className="w-full">
-                <Button variant="secondary"> خرید اشتراک</Button>
-              </Link>
-            </div>
+  const handleSearch = () => {
+    if (!searchText) return;
+
+    router.push(
+      `${SEARCH_TARGETS[searchTarget]}?search=${encodeURIComponent(searchText)}`
+    );
+
+    setShowSearchModal(false);
+  };
+
+  const getSuggest = () => {
+    if (user?.type_subscription !== "free" || !showSuggest) return null;
+
+    return (
+      <div className="fixed inset-0 z-5000 flex items-end md:items-center justify-center bg-black/40">
+        <div className="w-full md:w-[420px] bg-white rounded-t-2xl md:rounded-2xl p-6 flex flex-col items-center text-center gap-3 animate-slideUp md:animate-fadeIn">
+          <Image
+            src="/image/image 1.png"
+            width={180}
+            height={100}
+            alt="payment"
+          />
+
+          <h1 className="text-custom2 font-bold text-lg">
+            ۱ روز اشتراک رایگان شما برای استفاده از کلیه سرویس های اپلیکیشن فعال
+            شد.
+          </h1>
+
+          <p className="text-gray-600">
+            برای ادامه استفاده در طول یک سال, به تمدید اشتراک نیاز است.
+          </p>
+
+          <div className="flex gap-3 mt-6 w-full">
+            <Button onClick={() => setShowSuggest(false)} variant="glassy">
+              تایید
+            </Button>
+            <Link href="/panel/profile/subscribe" className="w-full">
+              <Button variant="secondary">خرید اشتراک</Button>
+            </Link>
           </div>
         </div>
-      );
-    }
-  }
+      </div>
+    );
+  };
 
   return (
     <div className="grid gap-3 items-center md:pb-10">
+      {/* Search + Banner */}
       <div className="grid md:grid-cols-2 gap-3">
-        <div className="h-32 flex flex-col justify-between shadow-[0_0_20px_rgba(0,0,0,0.12)] py-4 px-3 rounded-xl max-md:hidden">
+        <div className="h-32 flex flex-col justify-between shadow-[0_0_20px_rgba(0,0,0,0.12)] py-4 px-3 rounded-xl max-md:hidden relative">
           <p className="text-[#5764EF] bg-white text-sm font-bold">
             جستجو بوسیله نام و یا کد تعرفه
           </p>
+
           <Image
             src="/image/search-normal.svg"
             alt="search icon"
-            width="23"
-            height="22"
+            width={23}
+            height={22}
             className="absolute mt-14 right-6 invert brightness-50 contrast-200"
           />
+
           <Search
+          placeholder="جستجو در تمام قابلیت های اپلیکیشن"
             variant="secondary"
-            text="جستجو در تعرفه‌ها، مقررات، آمار صادرات و واردات و ..."
+            value={searchText}
+            onChange={(value) => setSearchText(value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && searchText) {
+                setShowSearchModal(true);
+              }
+            }}
+            home
           />
         </div>
-        <div className=" shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl h-32 overflow-hidden">
+
+        <div className="shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl h-32 overflow-hidden">
           <img
             src="https://webapp.imexapp.ir/media/sliders/1404.jpg"
             alt="banner"
@@ -86,6 +121,7 @@ function Home() {
         </div>
       </div>
 
+      {/* Menu Items */}
       <div className="grid-cols-2 grid gap-3 w-full">
         <Item
           icon="/image/bookC.svg"
@@ -94,6 +130,7 @@ function Home() {
         >
           کتاب مقررات صادرات و واردات
         </Item>
+
         <Item
           icon="/image/shipC.svg"
           link="/panel/home/report"
@@ -109,9 +146,11 @@ function Home() {
         >
           مشاوره تجاری
         </Item>
+
         <Item icon="/image/teacher.svg" link="/panel/course" variant="primary">
           دوره های تخصصی
         </Item>
+
         <Item
           icon="/image/bookC.svg"
           link="/panel/home/exhibition"
@@ -119,6 +158,7 @@ function Home() {
         >
           نمایشگاه های تجاری
         </Item>
+
         <Item
           icon="/image/message-questionC.svg"
           link="/panel/blog"
@@ -126,6 +166,7 @@ function Home() {
         >
           دانستنی های تجاری
         </Item>
+
         <Item
           icon="/image/moneyBagC.svg"
           link="/panel/home/ryzen"
@@ -134,6 +175,49 @@ function Home() {
           صفحه اختصاصی رایزن اقتصادی
         </Item>
       </div>
+
+      {/* Search Modal */}
+      {showSearchModal && (
+        <div className="fixed inset-0 z-5000 bg-black/40 flex items-end md:items-center justify-center">
+          <div className="bg-white w-full md:w-[420px] rounded-t-2xl md:rounded-2xl p-6 animate-slideUp">
+            <h2 className="text-custom2 font-bold text-lg mb-4 text-center">
+              محدوده جستجو
+            </h2>
+
+            <div className="flex flex-col gap-3">
+              {[
+                { key: "zamem", label: "کتاب صادرات و واردات (تعرفه‌ها)" },
+                { key: "consultants", label: "مشاوران" },
+                { key: "knowledge", label: "دانستنی‌ها" },
+                { key: "exhibitions", label: "نمایشگاه‌ها" },
+                { key: "ryzen", label: "رایزن بازرگانی" },
+                { key: "course", label: "دوره‌های آموزشی" },
+              ].map((item) => (
+                <label key={item.key} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={searchTarget === item.key}
+                    onChange={() => setSearchTarget(item.key as SearchTarget)}
+                  />
+                  <span>{item.label}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <Button
+                variant="glassy"
+                onClick={() => setShowSearchModal(false)}
+              >
+                بازگشت
+              </Button>
+              <Button variant="secondary" onClick={handleSearch}>
+                جستجو
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {getSuggest()}
     </div>

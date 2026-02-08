@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import api from "@/lib/api";
 import Image from "next/image";
 import Button from "@/component/ui/Button";
@@ -10,9 +10,9 @@ const MONTHS = [
   'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
   'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
 ];
-const YEARS = Array.from({ length: 7 }, (_, i) => 1400 + i);
+// بازه سال‌ها (مثلاً از ۱۴۰۰ تا ۱۰ سال بعد)
+const YEARS = Array.from({ length: 10 }, (_, i) => 1400 + i);
 
-// دیکشنری ترجمه برای تایپ‌ها
 const TYPE_LABELS: Record<string, string> = {
   "export": "صادرات",
   "import": "واردات",
@@ -26,6 +26,7 @@ export interface FilterItem {
   title?: string;
   code?: string;
   value?: string;
+  season?: { name: string };
   [key: string]: any;
 }
 
@@ -42,18 +43,20 @@ interface FilterState {
 
 interface AdvancedFilterProps {
   onApply: (queryString: string) => void;
+  /** لیست کلیدهایی که می‌خواهید دکمه‌شان مخفی شود (مثلاً ['code']) */
+  hiddenFields?: string[]; 
 }
 
 // --- Configuration ---
 const FIELDS_CONFIG = [
-  { key: "code", label: "کد تعرفه", endpoint: "/book/tariff", valueKey: "code", type: "list" },
+  { key: "code", label: "شماره تعرفه", endpoint: "/book/tariff", valueKey: "code", type: "list" },
   { key: "type", label: "نوع", endpoint: "/book/statistics/type", valueKey: "id", type: "list" },
   { key: "country", label: "نام کشور", endpoint: "/core/country", valueKey: "id", type: "list" },
   { key: "customs_name", label: "نام گمرک", endpoint: "/core/customs-name", valueKey: "id", type: "list" },
   { key: "date", label: "تاریخ", endpoint: null, type: "custom_date" },
 ];
 
-// --- Sub-Component: ScrollColumn (تاریخ) - اصلاح شده ---
+// --- Sub-Component: ScrollColumn ---
 function ScrollColumn<T extends string | number>({
   items,
   selected,
@@ -74,11 +77,19 @@ function ScrollColumn<T extends string | number>({
     }
   }, [selected, items]);
 
-  const handleScrollEnd = (e: any) => {
-    const index = Math.round(e.target.scrollTop / ITEM_HEIGHT);
+  const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    const index = Math.round(e.currentTarget.scrollTop / ITEM_HEIGHT);
+    if (index !== active && index >= 0 && index < items.length) {
+      setActive(index);
+    }
+  };
+
+  const handleScrollEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    const scrollTop = e.target?.scrollTop || ref.current?.scrollTop || 0;
+    const index = Math.round(scrollTop / ITEM_HEIGHT);
     if (index >= 0 && index < items.length) {
-        setActive(index);
-        onSelect(items[index]);
+      onSelect(items[index]);
+      ref.current?.scrollTo({ top: index * ITEM_HEIGHT, behavior: 'smooth' });
     }
   };
 
@@ -86,29 +97,21 @@ function ScrollColumn<T extends string | number>({
     <div className="flex-1 h-full overflow-hidden relative">
       <ul
         ref={ref}
-        onScroll={(e) => {
-             const index = Math.round(e.currentTarget.scrollTop / ITEM_HEIGHT);
-             if (index !== active) setActive(index);
-        }}
+        onScroll={handleScroll}
         onMouseUp={handleScrollEnd}
         onTouchEnd={handleScrollEnd}
-        // تغییرات اینجاست: overflow-x-hidden و مخفی کردن اسکرول بار
-        className="h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory py-[60px] [&::-webkit-scrollbar]:hidden"
-        style={{ 
-          scrollbarWidth: 'none',  /* Firefox */
-          msOverflowStyle: 'none'  /* IE/Edge */
-        }}
+        className="h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory py-[50px] [&::-webkit-scrollbar]:hidden scroll-smooth"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {items.map((item, i) => (
           <li
             key={item}
             onClick={() => {
-              ref.current?.scrollTo({ top: i * ITEM_HEIGHT, behavior: 'smooth' });
               onSelect(item);
+              ref.current?.scrollTo({ top: i * ITEM_HEIGHT, behavior: 'smooth' });
             }}
-            className={`h-[40px] flex items-center justify-center snap-center cursor-pointer transition-all duration-200 w-full
-              ${i === active ? 'text-2xl font-bold text-black scale-110' : 'text-sm text-gray-400 font-medium'}
-            `}
+            className={`h-[40px] flex items-center justify-center snap-center cursor-pointer transition-all duration-200 w-full 
+              ${i === active ? 'text-xl font-bold text-black scale-110' : 'text-sm text-gray-400 font-medium'}`}
           >
             {item}
           </li>
@@ -119,7 +122,7 @@ function ScrollColumn<T extends string | number>({
 }
 
 // --- Main Component ---
-const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
+const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields = [] }) => {
   const [filters, setFilters] = useState<FilterState>({
     code: null, type: null, country: null, customs_name: null, date: null,
   });
@@ -127,20 +130,25 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
   const [activeField, setActiveField] = useState<string | null>(null);
   const [options, setOptions] = useState<FilterItem[]>([]);
   const [tempSelection, setTempSelection] = useState<any>(null);
-  
-  // Search & Pagination
+
+  // Search & Pagination State
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  
+
   const listContainerRef = useRef<HTMLDivElement>(null);
 
   // --- Logic Helpers ---
   const convertToApiDate = (year: number, month: number, isEnd: boolean) => {
     const m = month < 10 ? `0${month}` : month;
-    const d = isEnd ? (month <= 6 ? 31 : (month === 12 ? 29 : 30)) : "01";
-    return `${year}-${m}-${d}`; 
+    let d: string | number = "01";
+    if (isEnd) {
+      if (month <= 6) d = 31;
+      else if (month < 12) d = 30;
+      else d = 29; 
+    }
+    return `${year}-${m}-${d}`;
   };
 
   const buildQueryString = (currentFilters: FilterState) => {
@@ -148,7 +156,7 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
     Object.entries(currentFilters).forEach(([key, item]) => {
       if (!item) return;
       const fieldConfig = FIELDS_CONFIG.find((f) => f.key === key);
-      
+
       if (key === "date" && fieldConfig?.type === "custom_date") {
         const dateObj = item as DateRange;
         const afterDate = convertToApiDate(dateObj.startYear, dateObj.startMonth, false);
@@ -170,11 +178,17 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
     setActiveField(fieldKey);
     setSearchTerm("");
     
+    // Reset Scroll
+    if (listContainerRef.current) {
+        listContainerRef.current.scrollTop = 0;
+    }
+
     if (fieldKey === "date") {
       setTempSelection(filters.date || {
-        startYear: 1404, startMonth: 11,
-        endYear: 1404, endMonth: 11
+        startYear: 1404, startMonth: 1,
+        endYear: 1404, endMonth: 12
       });
+      setOptions([]); 
     } else {
       setTempSelection(filters[fieldKey] || null);
       if (endpoint) {
@@ -187,13 +201,16 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
   };
 
   // --- Fetch Function ---
-  const fetchOptions = async (fieldKey: string, endpoint: string, pageNum: number, search: string) => {
+  const fetchOptions = useCallback(async (fieldKey: string, endpoint: string, pageNum: number, search: string) => {
     setLoading(true);
-    const currentQuery = buildQueryString(filters);
-    const cleanEndpoint = endpoint.endsWith("/") ? endpoint.slice(0, -1) : endpoint;
+    const otherFilters = { ...filters };
+    delete otherFilters[fieldKey]; 
     
+    const currentQuery = buildQueryString(otherFilters);
+    const cleanEndpoint = endpoint.endsWith("/") ? endpoint.slice(0, -1) : endpoint;
+
     let url = `${cleanEndpoint}/?${currentQuery}&page=${pageNum}`;
-    if (search) url += `&search=${search}`; 
+    if (search) url += `&search=${search}`;
 
     try {
       const response = await api.get(url);
@@ -221,20 +238,20 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
       setHasMore(hasNext);
 
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching options:", error);
       setHasMore(false);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]); 
 
-  // --- Infinite Scroll Handler ---
+  // --- Infinite Scroll ---
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 50) {
       if (hasMore && !loading && activeField) {
         const config = FIELDS_CONFIG.find((f) => f.key === activeField);
-        if (config && config.type !== 'custom_date' && config.endpoint) {
+        if (config && config.endpoint) {
           const nextPage = page + 1;
           setPage(nextPage);
           fetchOptions(activeField, config.endpoint, nextPage, searchTerm);
@@ -243,43 +260,30 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
     }
   };
 
-  // --- Auto Load More Check ---
-  useEffect(() => {
-    if (!loading && hasMore && options.length > 0 && activeField && activeField !== 'date') {
-        const container = listContainerRef.current;
-        if (container && container.scrollHeight <= container.clientHeight) {
-            const config = FIELDS_CONFIG.find((f) => f.key === activeField);
-            if(config?.endpoint) {
-                const nextPage = page + 1;
-                setPage(nextPage);
-                fetchOptions(activeField, config.endpoint, nextPage, searchTerm);
-            }
-        }
-    }
-  }, [options, loading, hasMore, activeField]);
-
-
-  // --- Search Debounce Handler ---
+  // --- Search Debounce ---
   useEffect(() => {
     if (!activeField || activeField === 'date') return;
-    if (page === 1 && searchTerm === "" && options.length === 0) return;
+    if (page === 1 && searchTerm === "" && options.length > 0) return;
 
     const delayDebounceFn = setTimeout(() => {
       const config = FIELDS_CONFIG.find((f) => f.key === activeField);
       if (config?.endpoint) {
           setPage(1);
           setHasMore(true);
+          if(listContainerRef.current) listContainerRef.current.scrollTop = 0;
           fetchOptions(activeField, config.endpoint, 1, searchTerm);
       }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, activeField]);
 
 
+  // --- Confirm & Clear ---
   const handleConfirm = () => {
     const newFilters = { ...filters, [activeField!]: tempSelection };
     if (activeField === "country") newFilters.customs_name = null;
+    
     setFilters(newFilters);
     setActiveField(null);
     onApply(buildQueryString(newFilters));
@@ -296,41 +300,48 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
   const renderFilterLabel = (field: typeof FIELDS_CONFIG[0]) => {
     const val = filters[field.key];
     if (!val) return "همه";
+    
     if (field.key === "date") {
       const d = val as DateRange;
       return `${d.startYear}/${d.startMonth} تا ${d.endYear}/${d.endMonth}`;
     }
+    
     const item = val as FilterItem;
     return item.name || item.title || item.code || "انتخاب شده";
   };
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-sm mb-6 border border-gray-100">
-      <h1 className="w-full text-custom font-bold text-lg mb-4">آمار صادرات و واردات</h1>
-
       <div className="flex flex-col gap-3">
-        {FIELDS_CONFIG.map((field) => (
+        {FIELDS_CONFIG
+          .filter((field) => !hiddenFields.includes(field.key))
+          .map((field) => (
           <div
             key={field.key}
             onClick={() => openFieldSelection(field.key, field.endpoint)}
-            className="flex flex-row-reverse items-center opacity-90 justify-between bg-[#5764ef34] p-3 rounded-lg cursor-pointer hover:bg-blue-100 transition duration-200"
+            className="flex flex-row-reverse items-center justify-between bg-[#5764ef34] p-3 rounded-lg cursor-pointer hover:bg-[#8890f034] transition duration-200 border border-transparent hover:border-blue-300"
           >
-            <div className="flex items-center text-blue-600 text-sm font-medium">
-              <span>{renderFilterLabel(field)}</span>
-               <Image src="/image/Alt Arrow Left.svg" alt="left arrow " width={22} height={26}  />
+            <div className="flex items-center text-blue-600 text-sm font-medium gap-2">
+              <span className="truncate max-w-[150px] md:max-w-xs text-left" dir="ltr">{renderFilterLabel(field)}</span>
+              <Image src="/image/Alt Arrow Left.svg" alt="arrow" width={20} height={20} className="opacity-70" />
             </div>
-            <div className="text-blue-800 font-semibold">{field.label}</div>
+            <div className="text-blue-800 font-semibold text-sm md:text-base">{field.label}</div>
           </div>
         ))}
       </div>
 
+      {/* Modal / Bottom Sheet */}
       {activeField && (
-        <div className="fixed inset-0 z-5000 flex items-end md:items-center justify-center bg-black/40">
-          <div className="bg-white md:w-1/2 max-md:w-full md:rounded-xl md:h-[80vh] max-md:max-h-[55vh] rounded-t-3xl sm:rounded-3xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-10 duration-300">
+        <div className="fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-sm transition-all">
+          <div 
+             className="bg-white md:w-1/2 max-md:w-full md:rounded-xl md:h-[80vh] max-md:max-h-[55vh] rounded-t-3xl sm:rounded-3xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-10 duration-300"
+             onClick={(e) => e.stopPropagation()}
+          >
             
-            <div className="flex flex-col items-center pt-3 pb-2 px-4 shrink-0">
-              <div className="w-12 h-1.5 bg-gray-200 rounded-full mb-4"></div>
-              <h4 className="text-blue-800 font-bold text-lg">
+            {/* Modal Header */}
+            <div className="flex flex-col items-center pt-4 pb-2 px-4 shrink-0 border-b border-gray-100">
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full mb-4 md:hidden"></div>
+              <h4 className="text-blue-900 font-bold text-lg">
                 {FIELDS_CONFIG.find(f => f.key === activeField)?.label}
               </h4>
             </div>
@@ -339,22 +350,22 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
             {activeField === 'date' ? (
               // --- Date Picker UI ---
               <div className="flex-1 overflow-y-auto px-6 py-4">
-                <div className="space-y-10" dir="rtl">
+                <div className="space-y-8" dir="rtl">
                   <div className="relative">
-                    <div className="text-center mb-6 text-gray-600 text-lg">از تاریخ</div>
-                    <div className="relative flex h-[160px]">
-                      <div className="absolute top-1/2 -translate-y-1/2 w-full h-[40px] border-t border-b border-gray-200 pointer-events-none z-10"></div>
-                      <ScrollColumn items={MONTHS} selected={MONTHS[(tempSelection?.startMonth || 11) - 1]} onSelect={(m) => setTempSelection({...tempSelection, startMonth: MONTHS.indexOf(m as string)+1})} />
-                      <ScrollColumn items={YEARS} selected={tempSelection?.startYear || 1404} onSelect={(y) => setTempSelection({...tempSelection, startYear: y})} />
+                    <div className="text-center mb-4 text-blue-800 font-medium">از تاریخ</div>
+                    <div className="relative flex h-[140px] bg-gray-50 rounded-xl overflow-hidden">
+                      <div className="absolute top-1/2 -translate-y-1/2 w-full h-[40px] bg-blue-100/30 border-t border-b border-blue-200 pointer-events-none z-10"></div>
+                      <ScrollColumn items={MONTHS} selected={MONTHS[(tempSelection?.startMonth || 1) - 1]} onSelect={(m) => setTempSelection({...tempSelection, startMonth: MONTHS.indexOf(m as string)+1})} />
+                      <ScrollColumn items={YEARS} selected={tempSelection?.startYear || 1400} onSelect={(y) => setTempSelection({...tempSelection, startYear: y})} />
                     </div>
                   </div>
-                  <div className="border-t border-gray-100 mx-10"></div>
+                  
                   <div className="relative">
-                    <div className="text-center text-gray-600 mb-6 text-lg">تا تاریخ</div>
-                    <div className="relative flex h-[160px]">
-                      <div className="absolute top-1/2 -translate-y-1/2 w-full h-[40px] border-t border-b border-gray-200 pointer-events-none z-10"></div>
-                      <ScrollColumn items={MONTHS} selected={MONTHS[(tempSelection?.endMonth || 11) - 1]} onSelect={(m) => setTempSelection({...tempSelection, endMonth: MONTHS.indexOf(m as string)+1})} />
-                      <ScrollColumn items={YEARS} selected={tempSelection?.endYear || 1404} onSelect={(y) => setTempSelection({...tempSelection, endYear: y})} />
+                    <div className="text-center mb-4 text-blue-800 font-medium">تا تاریخ</div>
+                    <div className="relative flex h-[140px] bg-gray-50 rounded-xl overflow-hidden">
+                      <div className="absolute top-1/2 -translate-y-1/2 w-full h-[40px] bg-blue-100/30 border-t border-b border-blue-200 pointer-events-none z-10"></div>
+                      <ScrollColumn items={MONTHS} selected={MONTHS[(tempSelection?.endMonth || 12) - 1]} onSelect={(m) => setTempSelection({...tempSelection, endMonth: MONTHS.indexOf(m as string)+1})} />
+                      <ScrollColumn items={YEARS} selected={tempSelection?.endYear || 1400} onSelect={(y) => setTempSelection({...tempSelection, endYear: y})} />
                     </div>
                   </div>
                 </div>
@@ -362,28 +373,29 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
             ) : (
               // --- Normal List UI ---
               <>
-                <div className="px-4 mb-2 shrink-0">
-                  <div className="bg-gray-100 rounded-xl flex items-center px-3 py-3">
-                    <Image src="/image/search-normal.svg" width={22} height={22} alt="search icon" className="invert brightness-34 ml-2"/>
+                <div className="px-4 py-3 shrink-0">
+                  <div className="bg-gray-100 rounded-xl flex items-center px-3 py-2 border border-transparent focus-within:border-blue-400 transition-colors">
+                    <Image src="/image/search-normal.svg" width={20} height={20} alt="search" className="opacity-50 ml-2"/>
                      <input 
                         type="text"
                         placeholder="جستجو..."
-                        className="bg-transparent border-none outline-none w-full text-right text-gray-700"
+                        className="bg-transparent border-none outline-none w-full text-right text-gray-700 placeholder-gray-400"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        autoFocus
                      />
                   </div>
                 </div>
 
                 <div 
                   ref={listContainerRef}
-                  className="flex-1 overflow-y-auto px-4 py-2 min-h-0" 
+                  className="flex-1 overflow-y-auto px-4 min-h-0" 
                   onScroll={handleScroll}
                 >
                   {loading && page === 1 ? (
-                    <div className="flex justify-center items-center py-10 gap-2 text-gray-400">
-                      <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                      <span>در حال دریافت...</span>
+                    <div className="flex flex-col justify-center items-center py-20 gap-3 text-gray-400">
+                      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm">در حال دریافت اطلاعات...</span>
                     </div>
                   ) : (
                     <ul className="space-y-1 pb-4">
@@ -392,32 +404,43 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
                                (item.id && tempSelection.id === item.id) || 
                                (item.code && tempSelection.code === item.code)
                            );
+                           
                            return (
                              <li
                                key={`${item.id}-${idx}`}
                                onClick={() => setTempSelection(item)}
-                               className="flex items-center justify-between p-3 border-b border-gray-50 cursor-pointer hover:bg-gray-50"
+                               className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors border
+                                 ${isSelected 
+                                   ? 'bg-blue-50 border-blue-200' 
+                                   : 'bg-white border-transparent hover:bg-gray-50 border-b-gray-100'}`}
                              >
-                               <span className="text-gray-800">
-                                  {item.name || item.title || item.code}
-                                  {item.code && item.season?.name ? ` - ${item.season.name}` : ""}
-                               </span>
-                               <div className={`w-6 h-6 rounded border-2 flex items-center justify-center
-                                 ${isSelected ? 'bg-blue-600 border-blue-600' : 'bg-white border-gray-200'}`}>
-                                 {isSelected && <span className="text-white text-xs">✓</span>}
+                               <div className="flex flex-col">
+                                 <span className={`text-sm ${isSelected ? 'text-blue-800 font-bold' : 'text-gray-700'}`}>
+                                    {item.name || item.title || item.code}
+                                 </span>
+                                 {(item.code && item.name) && (
+                                    <span className="text-xs text-gray-400 mt-1">{item.code}</span>
+                                 )}
+                               </div>
+
+                               <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all
+                                 ${isSelected ? 'bg-blue-600 border-blue-600' : 'bg-white border-gray-300'}`}>
+                                 {isSelected && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                </div>
                              </li>
                            )
                        })}
                        
                        {options.length === 0 && !loading && (
-                         <li className="text-center text-gray-400 mt-4">موردی یافت نشد</li>
+                         <div className="text-center text-gray-400 mt-10 flex flex-col items-center">
+                            <span>موردی یافت نشد</span>
+                         </div>
                        )}
 
                        {loading && page > 1 && (
-                         <li className="flex justify-center items-center p-3 gap-2 text-gray-500 text-sm">
-                            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                            درحال دریافت بیشتر...
+                         <li className="flex justify-center items-center p-4 text-gray-500 text-xs">
+                            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin ml-2"></div>
+                            درحال بارگذاری بیشتر...
                          </li>
                        )}
                     </ul>
@@ -426,7 +449,8 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply }) => {
               </>
             )}
 
-            <div className="p-4 bg-white border-t border-gray-100 grid grid-cols-2 gap-3 pb-6 sm:pb-4 shrink-0 mt-auto md:rounded-xl">
+            {/* Footer Buttons */}
+            <div className="p-4 bg-white border-t border-gray-100 grid grid-cols-2 gap-3 pb-6 sm:pb-4 shrink-0 mt-auto rounded-b-2xl">
               <Button variant="glassy" onClick={handleClearFilter}>حذف فیلتر</Button>
               <Button variant="secondary" onClick={handleConfirm}>اعمال</Button>
             </div>

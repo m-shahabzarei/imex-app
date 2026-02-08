@@ -1,8 +1,6 @@
-
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/component/ui/Button";
@@ -17,6 +15,8 @@ export default function LoginPage() {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const otpRef = useRef<HTMLInputElement>(null);
 
   /* ---------------- validation ---------------- */
   const isValidPhone = () => {
@@ -51,37 +51,30 @@ export default function LoginPage() {
     }
   };
 
-  // const handleVerifyOtp = async () => {
-  //   if (!isValidOtp()) return;
+  const handleVerifyOtp = async (inputOtp?: string) => {
+    // اگر کد به صورت دستی پاس داده شده بود (حالت اتوماتیک) یا از استیت خوانده شود (حالت دکمه)
+    const codeToCheck = typeof inputOtp === "string" ? inputOtp : otp.join("");
 
-  //   try {
-  //     setLoading(true);
+    // اعتبارسنجی ساده برای طول کد
 
-  //     const res =  await verifyOtp(phone, otp.join(""));
-  //     console.log(res.data , res , res.data.access_token)
-  //     useAuthStore.getState().setAccessToken(res.data.access_token)                                                                    
+    try {
+      setLoading(true); // بهتر است لودینگ را فعال کنید
+      const res = await verifyOtp(phone, codeToCheck);
 
-  //     window.location.href = "/panel/home";
+      useAuthStore.getState().setAccessToken(res.data.access_token);
+      useAuthStore.getState().setRefreshToken(res.data.refresh_token);
 
-  //   } catch {
-  //     setError("کد وارد شده صحیح نیست");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  const handleVerifyOtp = async () => {
-  const res = await verifyOtp(phone, otp.join(""));
+      const me = await getMe();
+      useAuthStore.getState().setUser(me.data);
 
-  // access فقط اینجا میاد
-  useAuthStore.getState().setAccessToken(res.data.access_token);
-  useAuthStore.getState().setRefreshToken(res.data.refresh_token);
-
-  const me = await getMe();
-  useAuthStore.getState().setUser(me.data);
-
-  window.location.href = "/panel/home";
-};
-
+      window.location.href = "/panel/home";
+    } catch (err) {
+      setError("کد وارد شده صحیح نیست");
+    } finally {
+      setLoading(false);
+    }
+    isValidOtp();
+  };
 
   const handleOtpChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -92,9 +85,20 @@ export default function LoginPage() {
     newOtp[index] = value;
     setOtp(newOtp);
 
+    // اگر عدد وارد شده بود و ایندکس کمتر از آخری بود، برو بعدی
     if (value && index < OTP_LENGTH - 1) {
       (e.target.nextElementSibling as HTMLInputElement)?.focus();
     }
+
+    // ---------------- تغییر جدید: ارسال خودکار ----------------
+    // اگر عدد وارد شده بود و این آخرین خانه بود
+    if (value && index === OTP_LENGTH - 1) {
+      // کیبورد را در موبایل می‌بندیم (اختیاری)
+      (e.target as HTMLInputElement).blur();
+      // کد جدید را ساخته و مستقیماً ارسال می‌کنیم
+      handleVerifyOtp(newOtp.join(""));
+    }
+    // ---------------------------------------------------------
   };
 
   const handleOtpBackspace = (
@@ -111,6 +115,23 @@ export default function LoginPage() {
     setOtp(Array(OTP_LENGTH).fill(""));
     setError("");
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && step === "phone") {
+      handleSendOtp();
+    } else if (e.key === "Enter" && step === "otp") {
+      handleVerifyOtp();
+    }
+  };
+
+  useEffect(() => {
+    if (step == "phone") {
+      phoneRef.current?.focus();
+    } else if (step == "otp") {
+      // چون otpRef الان به اینپوت اول وصل است، فوکوس روی اولی می‌رود
+      otpRef.current?.focus();
+    }
+  }, [step]);
 
   /* ------------------ UI ------------------ */
   return (
@@ -137,11 +158,13 @@ export default function LoginPage() {
             <label className="flex flex-col gap-2">
               <span className="text-xs">شماره همراه</span>
               <input
+                ref={phoneRef}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 type="tel"
                 placeholder="09123456789"
                 className="bg-gray-100 p-3 rounded-lg focus:outline-none"
+                onKeyDown={handleKeyDown}
               />
               {error && <p className="text-red-500 text-xs">{error}</p>}
             </label>
@@ -163,16 +186,21 @@ export default function LoginPage() {
               ویرایش شماره
             </span>
 
-            <div className="flex gap-2 justify-center flex-row-reverse">
+            <div className="flex gap-2 justify-evenly flex-row-reverse">
               {otp.map((digit, i) => (
                 <input
                   key={i}
+                  // تغییر مهم: فقط اگر ایندکس ۰ بود، ref را ست کن
+                  ref={i === 0 ? otpRef : null}
                   value={digit}
                   onChange={(e) => handleOtpChange(e, i)}
-                  onKeyDown={(e) => handleOtpBackspace(e, i)}
+                  onKeyDown={(e) => {
+                    handleOtpBackspace(e, i);
+                    handleKeyDown(e);
+                  }}
                   inputMode="numeric"
                   maxLength={1}
-                  className="w-12 h-12 text-center bg-gray-100 rounded-lg text-lg"
+                  className="w-12 h-12 text-center bg-gray-100 rounded-lg text-lg focus:border-blue-500 focus:border-2 outline-none transition-all" // استایل فوکوس هم برای زیبایی اضافه شد
                 />
               ))}
             </div>
@@ -199,7 +227,7 @@ export default function LoginPage() {
       {/* Logo Section */}
 
       <div className="max-md:w-full max-md:h-[50%] max-md:bg-linear-300 max-md:absolute max-md:top-0 max-md:rounded-b-4xl from-[#5764EF] to-[#3E47AD] w-[400px] h-[400px] ">
-        <div className="flex flex-col gap-5 items-center justify-center h-full mt-5">
+        <div className="flex flex-col gap-5 max-sm:gap-2 items-center justify-center h-full max-sm:mt-1 mt-5">
           <Image src="/image/Logo.svg" alt="test" width="140" height="140" />
           <div className="flex flex-col text-white">
             <span className="z-[1000] text-4xl">ایمکس</span>

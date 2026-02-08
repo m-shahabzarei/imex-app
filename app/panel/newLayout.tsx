@@ -16,26 +16,10 @@ export default function NewLayout({
   const params = useParams();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
-  // const user = useAuthStore((s) => s.user);
-  // const setUser = useAuthStore((s) => s.setUser);
-
-  // useEffect(() => {
-  //   if (!user) {
-  //     getMe()
-  //       .then((res) => setUser(res.data))
-  //       .catch(() => {
-  //         useAuthStore.getState().logout();
-  //         window.location.href = "/Login";
-  //       });
-  //   }
-  // }, []);
-
-
-
 
   const showLayout = () => {
     // use the pathname string and ensure id is present in it
-    if ((id && pathname?.includes(`/panel/book/tariffs/${id}`)) || (id && pathname?.includes(`/panel/home/mentors/${id}`)) || pathname?.includes(`panel/chat`)) {
+    if ((id && pathname?.includes(`/panel/book/tariffs/${id}`)) || (id && pathname?.includes(`/panel/home/mentors/${id}`))) {
       return (
         <>
           <div className="md:hidden">
@@ -44,7 +28,7 @@ export default function NewLayout({
           {children}
         </>
       );
-    } else if (pathname?.includes(`panel/profile/subscribe`)) {
+    } else if (pathname?.includes(`panel/profile/subscribe`) || pathname?.includes(`panel/chat`)) {
       return (
         <>
           <div>
@@ -56,7 +40,7 @@ export default function NewLayout({
       return (
         <>
           <Header />
-          <div className="md:w-[60%] lg:w-[63%] xl:w-[67%] h-fit max-md:m-3 absolute md:top-32 max-md:right-[10%] md:right-[17%]">
+          <div className="md:w-[60%] lg:w-[63%] xl:w-[67%] h-fit max-md:m-3 absolute md:top-32 max-md:right-[0] md:right-[17%]">
             {children}
           </div>
         </>
@@ -76,7 +60,7 @@ export default function NewLayout({
           <Header />
           <div>
             <Menu />
-            <div className="md:w-[60%] lg:w-[63%] xl:w-[67%] h-fit top-0 md:mt-32 left-[8.5vw] md:absolute max-md:m-3">
+            <div className="md:w-[60%] lg:w-[63%] xl:w-[67%] h-fit top-0 md:mt-32 left-[8.5vw] md:absolute max-md:m-3 max-md:pb-[14vh]">
               {children}
             </div>
           </div>

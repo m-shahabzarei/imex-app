@@ -30,23 +30,11 @@ function Page() {
   console.log(data);
 
   return (
-    <div className="pt-7">
-      <Link
-        href="/panel/home/ryzen"
-        className="gap-1 mb-4 hover:gap-3 transition-all duration-300 flex w-fit absolute hover:text-custom2 -top-1 max-md:top-51 max-md:right-7"
-      >
-        <Image
-          src="/image/Alt Arrow Left.svg"
-          width={23}
-          height={25}
-          className="rotate-180"
-          alt="arrow"
-        />
-        <span>بازگشت</span>
-      </Link>
+    <div>
       {data?.map((item: IData) => {
         return (
-          <div
+          <Link
+          href={`/panel/home/ryzen/${id}/${item.id}`}
             key={item.id}
             className="bg-white w-full h-32 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex gap-2 p-4 max-md:p-2 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]"
           >
@@ -74,7 +62,7 @@ function Page() {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>

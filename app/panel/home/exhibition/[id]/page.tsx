@@ -26,7 +26,6 @@ export default function Page() {
     if (data?.fax !== null) {
       return (
         <>
-          <InfoBox variant="single" value={data?.phone} label="تلفن" />
           <InfoBox variant="single" value={data?.fax} label="فکس" />
           <InfoBox variant="single" value={data?.site} label="وبسایت" />
         </>
@@ -71,7 +70,7 @@ export default function Page() {
                     ساعت بازدید
                   </span>
                   <p className="text-[0.75rem] text-gray-500">
-                    {data?.end_date}
+                    {data?.visiting_hour}
                   </p>
                 </div>
 
@@ -92,28 +91,54 @@ export default function Page() {
                     {data?.end_date}
                   </p>
                 </div>
+
+                {data?.supervising_manager && (
+                  <InfoBox
+                    variant={"single"}
+                    value={data.supervising_manager}
+                    label="مدیر ناظر"
+                  />
+                )}
               </div>
             </div>
-
-
           </div>
 
           {/* Bottom */}
           <div className="gap-3 flex flex-col w-full">
-            
             {/*  */}
             <div className="shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl p-3 ">
               <h1>مجری</h1>
               <div className="flex flex-col gap-3 mt-3">
                 {getFax()}
+                {data?.presenter && (
+                  <InfoBox
+                    variant="single"
+                    value={data.presenter}
+                    label="نام مجری"
+                  />
+                )}
+                {data?.phone[0] && (
+                  <InfoBox
+                    variant="single"
+                    value={
+                      <a
+                        href={`tel:${data.phone}`}
+                        className="text-blue-700 underline"
+                      >
+                        {data.phone}
+                      </a>
+                    }
+                    label="تلفن"
+                  />
+                )}
                 <InfoBox variant="single" value={data?.address} label="آدرس" />
               </div>
             </div>
 
             <div className="shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl p-3 h-fit w-full">
               <h1 className="text-custom2 text-[0.92rem]">توضیحات</h1>
-              <p>{data?.head}</p>
-              <p>{data?.description}</p>
+              <h1>{data?.head}</h1>
+              <p className="text-sm text-gray-600">{data?.description}</p>
             </div>
           </div>
 

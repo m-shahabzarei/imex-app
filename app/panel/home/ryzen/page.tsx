@@ -49,6 +49,7 @@ export default function ConsultantsPage() {
   return (
     user?.has_active_subscription ? 
     <DataListWithFilters<Country>
+      NoFilter
       grid4
       queryKey="Mentor"
       fetcher={getMentor}

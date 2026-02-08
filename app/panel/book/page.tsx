@@ -1,6 +1,7 @@
 "use client";
 
 import Item from "@/component/panel/book/Item";
+import DateFilter from "@/component/panel/common/DateFilter/DateFilter";
 import NoSub from "@/component/panel/profile/subscription/no-sub";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -10,7 +11,14 @@ function Book() {
 
 
   return (
-   user?.has_active_subscription ?  <div className="flex flex-col gap-4">
+   user?.has_active_subscription ?  
+   <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-center">
+        <span className="text-gray-500 ">سال اطلاعات مندرج:</span>
+        <div>
+          <DateFilter />
+        </div>
+      </div>
       <Item icon="/image/bill1.svg" link="/panel/book/rules">
         مقررات و آیین نامه ها
       </Item>
