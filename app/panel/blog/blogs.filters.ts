@@ -1,6 +1,7 @@
 // filters/consultants.filters.ts
 import api from "@/lib/api";
 import { FilterConfig } from "../../../component/panel/common/Filter/type"
+import { BlogItem } from "./page";
 
 
 export const BlogsFilters: FilterConfig[] = [
@@ -34,27 +35,30 @@ export const loadBlogsFilterOptions = async () => {
 };
 
 
-export const getBlog = async (params: any) => {
+export const getBlog = async (params: any): Promise<{ results: BlogItem[]; next: number | null }> => {
   const res = await api.get("/knowledge/business-knowledge", {
     params,
-    paramsSerializer: {
-      indexes: false,
-    },
+    paramsSerializer: { indexes: false },
   });
 
-  let nextPage = null;
+let nextPage: number | null = null;
+if (res.data.next) {
+  try {
+    const url = new URL(res.data.next);
+    const pageParam = url.searchParams.get("page");
+    nextPage = pageParam ? Number(pageParam) : null;
 
-  if (res.data.next) {
-    try {
-      const url = new URL(res.data.next);
-      nextPage = url.searchParams.get("page");
-    } catch {
+    // ✅ فقط وقتی nextPage عدد هست چک isNaN
+    if (nextPage !== null && isNaN(nextPage)) {
       nextPage = null;
     }
+  } catch {
+    nextPage = null;
   }
+}
 
   return {
-    results: res.data.results,
+    results: Array.isArray(res.data.results) ? res.data.results : [],
     next: nextPage,
   };
 };

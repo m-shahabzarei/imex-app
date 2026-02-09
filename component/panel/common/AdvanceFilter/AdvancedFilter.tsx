@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import api from "@/lib/api";
 import Image from "next/image";
 import Button from "@/component/ui/Button";
+import jalaali from "jalaali-js"; // مطمئن شوید که این پکیج نصب است
 
 // --- Constants ---
 const ITEM_HEIGHT = 40;
@@ -10,7 +11,6 @@ const MONTHS = [
   'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
   'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
 ];
-// بازه سال‌ها (مثلاً از ۱۴۰۰ تا ۱۰ سال بعد)
 const YEARS = Array.from({ length: 10 }, (_, i) => 1400 + i);
 
 const TYPE_LABELS: Record<string, string> = {
@@ -43,7 +43,6 @@ interface FilterState {
 
 interface AdvancedFilterProps {
   onApply: (queryString: string) => void;
-  /** لیست کلیدهایی که می‌خواهید دکمه‌شان مخفی شود (مثلاً ['code']) */
   hiddenFields?: string[]; 
 }
 
@@ -84,14 +83,22 @@ function ScrollColumn<T extends string | number>({
     }
   };
 
-  const handleScrollEnd = (e: React.TouchEvent | React.MouseEvent) => {
-    const scrollTop = e.target?.scrollTop || ref.current?.scrollTop || 0;
-    const index = Math.round(scrollTop / ITEM_HEIGHT);
-    if (index >= 0 && index < items.length) {
-      onSelect(items[index]);
-      ref.current?.scrollTo({ top: index * ITEM_HEIGHT, behavior: 'smooth' });
-    }
-  };
+ const handleScrollEnd = (
+  e: React.MouseEvent<HTMLUListElement> | React.TouchEvent<HTMLUListElement>
+) => {
+  const target = e.currentTarget; // ✅ تایپ شده
+  const scrollTop = target.scrollTop;
+  const index = Math.round(scrollTop / ITEM_HEIGHT);
+
+  if (index >= 0 && index < items.length) {
+    onSelect(items[index]);
+    ref.current?.scrollTo({
+      top: index * ITEM_HEIGHT,
+      behavior: "smooth",
+    });
+  }
+};
+
 
   return (
     <div className="flex-1 h-full overflow-hidden relative">
@@ -139,16 +146,24 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
 
   const listContainerRef = useRef<HTMLDivElement>(null);
 
-  // --- Logic Helpers ---
-  const convertToApiDate = (year: number, month: number, isEnd: boolean) => {
-    const m = month < 10 ? `0${month}` : month;
-    let d: string | number = "01";
-    if (isEnd) {
-      if (month <= 6) d = 31;
-      else if (month < 12) d = 30;
-      else d = 29; 
+  // --- Date Logic Helper (Persian to Gregorian) ---
+  const convertToGregorianString = (jy: number, jm: number, isEndOfMonth: boolean) => {
+    let gy, gm, gd;
+
+    if (isEndOfMonth) {
+      // پیدا کردن روز آخر ماه شمسی
+      const daysInMonth = jalaali.jalaaliMonthLength(jy, jm);
+      const result = jalaali.toGregorian(jy, jm, daysInMonth);
+      gy = result.gy; gm = result.gm; gd = result.gd;
+    } else {
+      // روز اول ماه شمسی
+      const result = jalaali.toGregorian(jy, jm, 1);
+      gy = result.gy; gm = result.gm; gd = result.gd;
     }
-    return `${year}-${m}-${d}`;
+
+    const mm = String(gm).padStart(2, '0');
+    const dd = String(gd).padStart(2, '0');
+    return `${gy}-${mm}-${dd}`;
   };
 
   const buildQueryString = (currentFilters: FilterState) => {
@@ -159,8 +174,11 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
 
       if (key === "date" && fieldConfig?.type === "custom_date") {
         const dateObj = item as DateRange;
-        const afterDate = convertToApiDate(dateObj.startYear, dateObj.startMonth, false);
-        const beforeDate = convertToApiDate(dateObj.endYear, dateObj.endMonth, true);
+        // تبدیل تاریخ شروع به اولین روز ماه میلادی معادل
+        const afterDate = convertToGregorianString(dateObj.startYear, dateObj.startMonth, false);
+        // تبدیل تاریخ پایان به آخرین روز ماه میلادی معادل
+        const beforeDate = convertToGregorianString(dateObj.endYear, dateObj.endMonth, true);
+        
         params.append("date_range_after", afterDate);
         params.append("date_range_before", beforeDate);
       } else {
@@ -171,33 +189,6 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
       }
     });
     return params.toString();
-  };
-
-  // --- Handlers ---
-  const openFieldSelection = (fieldKey: string, endpoint: string | null) => {
-    setActiveField(fieldKey);
-    setSearchTerm("");
-    
-    // Reset Scroll
-    if (listContainerRef.current) {
-        listContainerRef.current.scrollTop = 0;
-    }
-
-    if (fieldKey === "date") {
-      setTempSelection(filters.date || {
-        startYear: 1404, startMonth: 1,
-        endYear: 1404, endMonth: 12
-      });
-      setOptions([]); 
-    } else {
-      setTempSelection(filters[fieldKey] || null);
-      if (endpoint) {
-        setPage(1);
-        setHasMore(true);
-        setOptions([]);
-        fetchOptions(fieldKey, endpoint, 1, ""); 
-      }
-    }
   };
 
   // --- Fetch Function ---
@@ -245,6 +236,34 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
     }
   }, [filters]); 
 
+  // --- Handlers ---
+  const openFieldSelection = (fieldKey: string, endpoint: string | null) => {
+    setActiveField(fieldKey);
+    setSearchTerm("");
+    
+    if (listContainerRef.current) {
+        listContainerRef.current.scrollTop = 0;
+    }
+
+    if (fieldKey === "date") {
+      // استفاده از تاریخ امروز برای پیش‌فرض (در صورت خالی بودن)
+      const today = jalaali.toJalaali(new Date());
+      setTempSelection(filters.date || {
+        startYear: today.jy, startMonth: 1,
+        endYear: today.jy, endMonth: today.jm
+      });
+      setOptions([]); 
+    } else {
+      setTempSelection(filters[fieldKey] || null);
+      if (endpoint) {
+        setPage(1);
+        setHasMore(true);
+        setOptions([]);
+        // درخواست دستی حذف شده تا از درخواست تکراری جلوگیری شود
+      }
+    }
+  };
+
   // --- Infinite Scroll ---
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
@@ -260,10 +279,12 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
     }
   };
 
-  // --- Search Debounce ---
+  // --- Search & Initial Fetch Debounce ---
   useEffect(() => {
     if (!activeField || activeField === 'date') return;
-    if (page === 1 && searchTerm === "" && options.length > 0) return;
+
+    // اجرای سریع برای بار اول یا وقتی سرچ خالی است، تاخیر برای تایپ کردن
+    const delay = searchTerm === "" ? 0 : 500;
 
     const delayDebounceFn = setTimeout(() => {
       const config = FIELDS_CONFIG.find((f) => f.key === activeField);
@@ -273,7 +294,7 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
           if(listContainerRef.current) listContainerRef.current.scrollTop = 0;
           fetchOptions(activeField, config.endpoint, 1, searchTerm);
       }
-    }, 500);
+    }, delay);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, activeField]);
@@ -332,7 +353,7 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
 
       {/* Modal / Bottom Sheet */}
       {activeField && (
-        <div className="fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-sm transition-all">
+        <div className="fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-xs transition-all">
           <div 
              className="bg-white md:w-1/2 max-md:w-full md:rounded-xl md:h-[80vh] max-md:max-h-[55vh] rounded-t-3xl sm:rounded-3xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-10 duration-300"
              onClick={(e) => e.stopPropagation()}
@@ -408,7 +429,8 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
                            return (
                              <li
                                key={`${item.id}-${idx}`}
-                               onClick={() => setTempSelection(item)}
+                               // Toggle Logic:
+                               onClick={() => setTempSelection(isSelected ? null : item)}
                                className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors border
                                  ${isSelected 
                                    ? 'bg-blue-50 border-blue-200' 

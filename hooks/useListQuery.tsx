@@ -38,7 +38,6 @@ export function useListQuery<T>({
 
     enabled: true,
     staleTime: 0,
-    cacheTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   });

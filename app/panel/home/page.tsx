@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/immutability */
 "use client";
 
@@ -99,7 +100,7 @@ function Home() {
           />
 
           <Search
-          placeholder="جستجو در تمام قابلیت های اپلیکیشن"
+            placeholder="جستجو در تمام قابلیت های اپلیکیشن"
             variant="secondary"
             value={searchText}
             onChange={(value) => setSearchText(value)}
@@ -178,8 +179,14 @@ function Home() {
 
       {/* Search Modal */}
       {showSearchModal && (
-        <div className="fixed inset-0 z-5000 bg-black/40 flex items-end md:items-center justify-center">
-          <div className="bg-white w-full md:w-[420px] rounded-t-2xl md:rounded-2xl p-6 animate-slideUp">
+        <div
+          className="fixed inset-0 z-5000 bg-black/40 backdrop-blur-xs  flex items-end md:items-center justify-center"
+          onClick={() => setShowSearchModal(false)} // کلیک بیرون = بستن
+        >
+          <div
+            className="bg-white w-full md:w-[420px] rounded-t-2xl md:rounded-2xl p-6 animate-slideUp"
+            onClick={(e) => e.stopPropagation()} // جلوگیری از بستن با کلیک داخل
+          >
             <h2 className="text-custom2 font-bold text-lg mb-4 text-center">
               محدوده جستجو
             </h2>

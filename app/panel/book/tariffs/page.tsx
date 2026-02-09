@@ -8,7 +8,7 @@ import Item from "@/component/panel/book/tariffs/Item";
 import HighlightText from "@/component/panel/common/HighlightText";
 import { usePublicStore } from "@/stores/public.store";
 import { getDateRangeByYear } from "@/utils/date";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Iitem {
   name: string;
@@ -24,61 +24,69 @@ interface Iitem {
 
 export default function Page() {
   const selectedYear = usePublicStore((state) => state.selectedYear);
+  const [count, setCount] = useState(null);
 
-  const getTariffs = async (params: any) => {
+  useEffect(() => {
+    api.get("/book/tariff").then((res) => setCount(res.data.count));
+  }, []);
+
+  const getTariffs = async (
+    params: any
+  ): Promise<{ results: Iitem[]; next: number | null }> => {
     const finalParams: any = { ...params };
 
-    // 👇 فقط اگر 1403 بود پارامتر تاریخ بفرست
     if (selectedYear === 1403) {
       Object.assign(finalParams, getDateRangeByYear(1403));
     }
 
     const res = await api.get("/book/tariff/", {
       params: finalParams,
-      paramsSerializer: {
-        indexes: false,
-      },
+      paramsSerializer: { indexes: false },
     });
 
-    let nextPage = null;
+    let nextPage: number | null = null;
 
     if (res.data.next) {
       try {
         const url = new URL(res.data.next);
-        nextPage = url.searchParams.get("page");
+        const pageParam = url.searchParams.get("page");
+        nextPage = pageParam ? Number(pageParam) : null;
+        if (nextPage !== null && isNaN(nextPage)) nextPage = null;
       } catch {
         nextPage = null;
       }
     }
 
     return {
-      results: res.data.results,
+      results: Array.isArray(res.data.results) ? res.data.results : [],
       next: nextPage,
     };
   };
 
-
   return (
-    <DataListWithFilters<Iitem>
-      NoFilter
-      grid1
-      Date
-      queryKey={["Tariffs", selectedYear]} // 👈 مهم برای refetch
-      fetcher={getTariffs}
-      searchPlaceholder="جستجو در تعرفه ها،ارزش ها و ..."
-      emptyComponent={<NoItem />}
-      renderItem={(item, search) => (
-        <Item
-          key={item.id}
-          name={<HighlightText text={item.name} highlight={search} />}
-          code={item.code}
-          product_group={item.product_group}
-          customs_duty={item.customs_duty}
-          isSaved={item.mark.is_mark}
-          id={item.id}
-          markID={item.mark.id}
-        />
-      )}
-    />
+    <div>
+      <DataListWithFilters<Iitem>
+        count={count}
+        NoFilter
+        grid1
+        Date
+        queryKey={["Tariffs", selectedYear]} // 👈 مهم برای refetch
+        fetcher={getTariffs}
+        searchPlaceholder="جستجو در تعرفه ها،ارزش ها و ..."
+        emptyComponent={<NoItem />}
+        renderItem={(item, search) => (
+          <Item
+            key={item.id}
+            name={<HighlightText text={item.name} highlight={search} />}
+            code={item.code}
+            product_group={item.product_group}
+            customs_duty={item.customs_duty}
+            isSaved={item.mark.is_mark}
+            id={item.id}
+            markID={item.mark.id}
+          />
+        )}
+      />
+    </div>
   );
 }

@@ -5,12 +5,13 @@ import React, { useState } from "react";
 import Share from "./Share";
 
 interface AccordionProps {
-  title: string;
+  title: string | undefined;
   defaultOpen?: boolean;
   className?: string;
   children: React.ReactNode;
   share?: boolean;
-  isFilter? : boolean;
+  isFilter?: boolean;
+  shareText?: string; // <--- این پراپ اضافه شد
 }
 
 export default function Accordion({
@@ -19,12 +20,13 @@ export default function Accordion({
   children,
   isFilter = false,
   share = false,
+  shareText = "", // مقدار پیش‌فرض
 }: AccordionProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
     <div
-      className={`  rounded-xl w-full h-fit  ${isFilter ? "" : "shadow-[0_0_20px_rgba(0,0,0,0.12)] bg-white md:shadow-[0_0_20px_rgba(0,0,0,0.1)] p-3"}`}
+      className={`rounded-xl w-full h-fit ${isFilter ? "" : "shadow-[0_0_20px_rgba(0,0,0,0.12)] bg-white md:shadow-[0_0_20px_rgba(0,0,0,0.1)] p-3"}`}
     >
       {/* Header */}
       <div
@@ -49,7 +51,8 @@ export default function Accordion({
           <div className="mt-4">
             {children}
           </div>
-          {share ? <Share /> : null}
+          {/* اینجا متن را به کامپوننت شیر پاس می‌دهیم */}
+          {share ? <Share text={shareText} /> : null}
         </>
       )}
     </div>

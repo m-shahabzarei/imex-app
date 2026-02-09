@@ -6,27 +6,32 @@ import Item from "@/component/panel/home/ryzen/item";
 import api from "@/lib/api";
 import Link from "next/link";
 
-const getZamem = async (params: any) => {
+interface Item {
+  id: number;
+  title: string;
+}
+
+const getZamem = async (params: any): Promise<{ results: Item[]; next: number | null }> => {
   const res = await api.get("/book/preferential-tariff-country/", {
     params,
-    paramsSerializer: {
-      indexes: false,
-    },
+    paramsSerializer: { indexes: false },
   });
 
-  let nextPage = null;
+  let nextPage: number | null = null;
 
   if (res.data.next) {
     try {
       const url = new URL(res.data.next);
-      nextPage = url.searchParams.get("page");
+      const pageParam = url.searchParams.get("page");
+      nextPage = pageParam ? Number(pageParam) : null;
+      if (nextPage !== null && isNaN(nextPage)) nextPage = null;
     } catch {
       nextPage = null;
     }
   }
 
   return {
-    results: res.data.results,
+    results: Array.isArray(res.data.results) ? res.data.results : [],
     next: nextPage,
   };
 };
@@ -39,6 +44,7 @@ interface Item {
 export default function ConsultantsPage() {
   return (
     <DataListWithFilters<Item>
+      NoFilter
       Date
       grid4
       queryKey="Zamem"
@@ -49,7 +55,7 @@ export default function ConsultantsPage() {
         <Link href={`/panel/book/zamem/${item.id}`} key={item.id}>
           <div
             className={`bg-white h-18 shadow-[0_0_20px_rgba(0,0,0,0.12)] p-5 rounded-xl relative flex items-center transition duration-300
-            hover:cursor-pointer justify-start hover:bg-custom hover:text-white`}
+            hover:cursor-pointer justify-center hover:bg-custom hover:text-white`}
           >
             <span
               className={`transition items-center text-center text-[1rem] md:text-[1rem] duration-500 max-md:mt-2 font-bold`}

@@ -1,10 +1,10 @@
 import { addToMarket, removeFromMarket } from "@/services/mark";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 interface Iitem {
-  name: string;
+  name: ReactElement | string;
   code: string;
   product_group: [];
   customs_duty: string;
@@ -34,15 +34,15 @@ function Item(props: Iitem) {
   };
 
   return (
-    <div className="w-full">
+    <Link href={`/panel/book/tariffs/${props.id}`}  className="w-full">
       <div className="relative bg-white shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:py-6 md:px-8 gap-4 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)] transition-all duration-300">
         
         {/* بخش راست: عنوان و مشخصات */}
         <div className="flex flex-col justify-between w-full md:w-5/12 gap-4 md:gap-6 h-full">
           <div className="flex justify-between items-center w-full">
-            <Link href={`${props.id}`} className="text-sm md:text-base font-bold text-custom2 block">
+            <div className="text-sm md:text-base font-bold text-custom2 block">
               {props.name}
-            </Link>
+            </div>
             {/* آیکون بوک‌مارک فقط برای موبایل در اینجا */}
             <Image
               src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
@@ -75,7 +75,7 @@ function Item(props: Iitem) {
         <hr className="md:hidden w-full text-gray-200" />
 
         {/* بخش چپ: توضیحات سلسله مراتبی */}
-        <Link href={`${props.id}`} className="w-full md:w-5/12">
+        <div className="w-full md:w-5/12">
           <div className="flex flex-col gap-2 text-gray-400 text-xs md:text-right">
             {props.product_group.map(
               (
@@ -91,7 +91,7 @@ function Item(props: Iitem) {
               )
             )}
           </div>
-        </Link>
+        </div>
 
         {/* آیکون بوک‌مارک برای دسکتاپ (سمت چپ مطلق) */}
         <div className="hidden md:flex justify-end items-center md:absolute md:left-6 md:top-1/2 md:-translate-y-1/2">
@@ -109,7 +109,7 @@ function Item(props: Iitem) {
         </div>
 
       </div>
-    </div>
+    </Link>
   );
 }
 

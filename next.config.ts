@@ -3,7 +3,14 @@ import { NextConfig } from "next";
 const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
-    domains: ["webapp.imexapp.ir"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'webapp.imexapp.ir',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   async rewrites() {
     return [

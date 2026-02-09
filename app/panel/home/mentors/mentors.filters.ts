@@ -1,5 +1,6 @@
 // filters/consultants.filters.ts
 import { FilterConfig } from "@/component/panel/common/Filter/type";
+import { Imentor } from "@/component/panel/home/mentors/type";
 import api from "@/lib/api";
 
 export const MentorsFilters: FilterConfig[] = [
@@ -70,30 +71,27 @@ export const MentorsFilters: FilterConfig[] = [
 ];
 
 
-
-export const getMentor = async (params: any) => {
+export const getMentor = async (params: any): Promise<{ results: Imentor[]; next: number | null }> => {
   const res = await api.get("/users/consultants/", {
     params,
-    paramsSerializer: {
-      indexes: false,
-    },
+    paramsSerializer: { indexes: false },
   });
 
-  let nextPage = null;
+  let nextPage: number | null = null;
 
   if (res.data.next) {
     try {
       const url = new URL(res.data.next);
-      nextPage = url.searchParams.get("page");
+      const pageParam = url.searchParams.get("page");
+      nextPage = pageParam ? Number(pageParam) : null;
+      if (nextPage !== null && isNaN(nextPage)) nextPage = null;
     } catch {
       nextPage = null;
     }
   }
 
   return {
-    results: res.data.results,
+    results: Array.isArray(res.data.results) ? res.data.results : [],
     next: nextPage,
   };
 };
-
-

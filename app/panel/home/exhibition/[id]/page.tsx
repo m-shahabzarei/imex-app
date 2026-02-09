@@ -43,13 +43,16 @@ export default function Page() {
           <div className="flex max-lg:flex-col max-lg:items-center gap-4 w-full">
             {/* Image */}
             <div className="shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl max-lg:w-full max-lg:flex justify-center h-fit p-3">
-              <Image
+              {
+                data?.image &&
+                <Image
                 src={data?.image}
                 width={180}
                 height={32}
                 alt="profile"
                 className="rounded-xl"
               />
+              }
             </div>
 
             {/* Info */}
@@ -117,15 +120,15 @@ export default function Page() {
                     label="نام مجری"
                   />
                 )}
-                {data?.phone[0] && (
+                { Array.isArray(data?.phone) && data.phone.length > 0 && (
                   <InfoBox
                     variant="single"
                     value={
                       <a
-                        href={`tel:${data.phone}`}
+                        href={`tel:${data?.phone}`}
                         className="text-blue-700 underline"
                       >
-                        {data.phone}
+                        {data?.phone}
                       </a>
                     }
                     label="تلفن"

@@ -8,6 +8,7 @@ import { getMe, sendOtp, verifyOtp } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 
 const OTP_LENGTH = 5;
+const TIMER_START = 120; // زمان تایمر به ثانیه (مثلا 2 دقیقه)
 
 export default function LoginPage() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const phoneRef = useRef<HTMLInputElement>(null);
   const otpRef = useRef<HTMLInputElement>(null);
+  const [timer, setTimer] = useState(TIMER_START);
 
   /* ---------------- validation ---------------- */
   const isValidPhone = () => {
@@ -29,7 +31,7 @@ export default function LoginPage() {
 
   const isValidOtp = () => {
     if (otp.some((d) => d === "")) {
-      setError("کد تایید باید ۵ رقم باشد");
+      setError("کد تایید اشتباه است");
       return false;
     }
     return true;
@@ -43,9 +45,28 @@ export default function LoginPage() {
       setLoading(true);
       await sendOtp(phone);
       setStep("otp");
+      setTimer(TIMER_START); // ریست کردن تایمر هنگام رفتن به مرحله بعد
+
       setError("");
     } catch {
       setError("خطا در ارسال کد");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+    // --- اضافه شده: تابع ارسال مجدد کد ---
+  const handleResendOtp = async () => {
+    if (timer > 0) return; // اگر تایمر هنوز تمام نشده، کاری نکن
+
+    try {
+      setLoading(true);
+      await sendOtp(phone); // استفاده از همان تابع ارسال کد
+      setTimer(TIMER_START); // شروع مجدد تایمر
+      setOtp(Array(OTP_LENGTH).fill("")); // پاک کردن اینپوت‌ها (اختیاری)
+      setError("");
+    } catch {
+      setError("خطا در ارسال مجدد کد");
     } finally {
       setLoading(false);
     }
@@ -70,10 +91,10 @@ export default function LoginPage() {
       window.location.href = "/panel/home";
     } catch (err) {
       setError("کد وارد شده صحیح نیست");
+    isValidOtp();
     } finally {
       setLoading(false);
     }
-    isValidOtp();
   };
 
   const handleOtpChange = (
@@ -123,6 +144,22 @@ export default function LoginPage() {
       handleVerifyOtp();
     }
   };
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (step === "otp" && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [step, timer]);
+
+  // --- اضافه شده: فرمت کردن زمان (تبدیل ثانیه به دقیقه:ثانیه) ---
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+  };
 
   useEffect(() => {
     if (step == "phone") {
@@ -135,7 +172,7 @@ export default function LoginPage() {
 
   /* ------------------ UI ------------------ */
   return (
-    <div className="w-[100vw] h-[100vh] md:bg-linear-to-b  from-[#5764EF] to-[#3E47AD] flex items-center max-md:mt-[25vh] justify-evenly">
+    <div className="w-[100vw] h-[100vh] md:bg-linear-to-b  from-[#5764EF] to-[#3E47AD] flex items-center max-md:mt-[20vh] justify-evenly">
       <div className="max-md:hidden absolute top-[40px] right-10 text-white cursor-pointer">
         <a href="/panel/home" className="flex flex-row-reverse gap-3">
           <span>بازگشت</span>
@@ -148,7 +185,7 @@ export default function LoginPage() {
         </a>
       </div>
 
-      <div className="w-full max-w-md bg-white rounded-2xl p-8 flex flex-col gap-6">
+      <div className="w-full max-w-md bg-white rounded-2xl p-8 flex flex-col md:gap-5 gap-6">
         <h1 className="text-center text-xl font-bold text-[#5764EF]">
           ورود | ثبت نام
         </h1>
@@ -208,7 +245,23 @@ export default function LoginPage() {
             {error && (
               <p className="text-red-500 text-xs text-center">{error}</p>
             )}
-
+            {/* --- اضافه شده: بخش تایمر و ارسال مجدد --- */}
+            <div className="flex justify-between flex-row-reverse items-center text-xs -my-1 px-1">
+              <span
+                onClick={handleResendOtp}
+                className={`transition-colors text-xs ${
+                  timer === 0
+                    ? "text-[#5764EF] cursor-pointer font-bold hover:text-blue-700"
+                    : "text-gray-400 cursor-default"
+                }`}
+              >
+                ارسال مجدد کد
+              </span>
+              <span className="text-gray-500 tabular-nums">
+                {formatTime(timer)}
+              </span>
+            </div>
+            {/* -------------------------------------- */}
             <Button onClick={handleVerifyOtp} variant="secondary">
               تایید
             </Button>

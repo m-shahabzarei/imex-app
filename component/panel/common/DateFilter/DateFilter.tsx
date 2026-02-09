@@ -26,47 +26,51 @@ function DateFilter() {
         />
       </div>
 
-      <div
-        className={`${
-          open ? "hidden" : ""
-        } fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40`}
-      >
-        <div
-          className="
-        w-full md:w-[340px]
-        bg-white
-        rounded-t-2xl md:rounded-2xl
-        p-6
-        animate-slideUp md:animate-fadeIn
-        flex flex-col gap-5
-      "
-        >
-          <h2 className="text-center text-custom2 text-lg font-bold mb-4">
-            انتخاب سال مندرج
-          </h2>
+<div
+  className={`${
+    open ? "hidden" : ""
+  } fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-xs`}
+  onClick={HandleOpen} // کلیک بیرون = بستن
+>
+  <div
+    className="
+      w-full md:w-[340px]
+      bg-white
+      rounded-t-2xl md:rounded-2xl
+      p-6
+      animate-slideUp md:animate-fadeIn
+      flex flex-col gap-5
+    "
+    onClick={(e) => e.stopPropagation()} // کلیک داخل = بسته نشه
+  >
+    <h2 className="text-center text-custom2 text-lg font-bold mb-4">
+      انتخاب سال مندرج
+    </h2>
 
-          <div className="flex justify-evenly">
-            <div
-              onClick={()=>(
-                HandleOpen(),
-                setYear(1404)
-              )}
-              className="bg-blue-100 p-3 rounded-xl text-custom2 border-[1.5px] border-custom hover:cursor-pointer flex gap-1"
-            >
-              1404
-            </div>
-            <div
-              onClick={()=>(
-                HandleOpen(),
-                setYear(1403)
-              )}
-              className="bg-blue-100 p-3 rounded-xl text-custom2 border-[1.5px] border-custom hover:cursor-pointer flex gap-1"
-            >
-              1403
-            </div>
-          </div>
-        </div>
+    <div className="flex justify-evenly">
+      <div
+        onClick={() => {
+          setYear(1404);
+          HandleOpen();
+        }}
+        className="bg-blue-100 p-3 rounded-xl text-custom2 border-[1.5px] border-custom hover:cursor-pointer flex gap-1"
+      >
+        1404
       </div>
+
+      <div
+        onClick={() => {
+          setYear(1403);
+          HandleOpen();
+        }}
+        className="bg-blue-100 p-3 rounded-xl text-custom2 border-[1.5px] border-custom hover:cursor-pointer flex gap-1"
+      >
+        1403
+      </div>
+    </div>
+  </div>
+</div>
+
     </>
   );
 }

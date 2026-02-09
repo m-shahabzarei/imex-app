@@ -1,7 +1,7 @@
 "use client";
 
 import NoItem from "@/component/Error/no-item";
-import Item from "@/component/panel/book/tariffs/Item";
+import Item from "@/component/panel/home/mentors/Item";
 import { Imentor } from "@/component/panel/home/mentors/type";
 import api from "@/lib/api";
 import { useEffect, useState } from "react";

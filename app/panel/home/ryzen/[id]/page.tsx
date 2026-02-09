@@ -17,7 +17,7 @@ interface IData {
 
 function Page() {
   const { id } = useParams();
-  const [data, setData] = useState<IData>();
+  const [data, setData] = useState<IData[]>();
   useEffect(() => {
     if (!id) return;
     axios

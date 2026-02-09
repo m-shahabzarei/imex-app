@@ -56,7 +56,7 @@ function Payment() {
   console.log(basePrice);
 
   return (
-    <div className="bg-linear-to-b from-[#5764EF] to-[#3E47AD] w-screen h-screen flex max-md:flex-col items-center justify-center gap-11">
+    <div className="bg-linear-to-b from-[#5764EF] to-[#3E47AD] w-screen h-screen flex max-md:flex-col items-center justify-center gap-11 max-md:pb-4">
       {/* سمت چپ */}
       <div className="flex flex-col items-center gap-3">
         <Image src="/image/image 1.png" width={220} height={200} alt="image" />
@@ -122,15 +122,19 @@ function Payment() {
         {error && <p className="text-red-300 text-sm mt-2">{error}</p>}
 
         {isCouponOpen && (
- <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40">
+          <div
+            className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-xs"
+            onClick={() => setIsCouponOpen(false)} // کلیک بیرون = بستن
+          >
             <div
               className="
-        w-full md:w-[420px]
-        bg-white
-        rounded-t-2xl md:rounded-2xl
-        p-6
-        animate-slideUp md:animate-fadeIn
-      "
+      w-full md:w-[420px]
+      bg-white
+      rounded-t-2xl md:rounded-2xl
+      p-6
+      animate-slideUp md:animate-fadeIn
+    "
+              onClick={(e) => e.stopPropagation()} // کلیک داخل = بسته نشه
             >
               <h2 className="text-center text-custom2 text-lg font-bold mb-4">
                 افزودن کد تخفیف
@@ -158,6 +162,7 @@ function Payment() {
                 >
                   بازگشت
                 </button>
+
                 <button
                   onClick={applyCoupon}
                   disabled={couponLoading}

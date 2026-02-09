@@ -35,13 +35,16 @@ export default function Page() {
             <div className="lg:w-3/5 shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl p-3 ">
               <h1 className="text-custom font-bold">{data?.full_name}</h1>
               <div className="flex w-full justify-evenly gap-3 pt-2">
-                <Image
+                {
+                  data?.image && 
+                  <Image
                   src={data?.image}
                   width={190}
                   height={302}
                   alt="profile"
                   className="rounded-xl"
                 />
+                }
                 <div className="w-full gap-2 flex flex-col ">
                   <InfoBox
                     label="گروه کالا"
@@ -193,27 +196,3 @@ export default function Page() {
     </>
   );
 }
-
-//   const { id } = useParams();
-//   const [Data, setData] = useState<any | null>(null);
-//   const [error, setError] = useState<string>("");
-
-//   useEffect(() => {
-//     if (!id) return;
-
-//     const fetchData = async () => {
-//       try {
-//         const res = await axios.get(`https://api.imexapp.ir/users/consultants/${id}`);
-//         console.log("axios response:", res);
-//         const payload = res?.data?.data ?? res?.data ?? null;
-//         setData(payload);
-//       } catch (err) {
-//         console.error("fetch error:", err);
-//         setError("error");
-//       }
-//     };
-
-//     fetchData();
-//   }, [id]);
-
-//   console.log("Data:", Data, "error:", error);

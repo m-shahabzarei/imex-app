@@ -16,6 +16,14 @@ function Item(props: Iitem) {
           خاتمه یافته
         </div>
       );
+    } else if (props.type === "wait") {
+      return (
+        <div
+          className={`px-[12px] py-[8px] rounded-[12px] text-sm font-medium cursor-pointer hover:opacity-90 transition-all duration-200 ease-in-out flex items-center gap-1 bg-gray-200 text-[#94949b] w-full text-center justify-center `}
+        >
+          {props.days_until_start} روز تا شروع
+        </div>
+      );
     } else {
       return (
         <div
@@ -30,13 +38,12 @@ function Item(props: Iitem) {
   return (
     <Link href={props.link} className="block h-full">
       <div className="bg-white w-full h-45 shadow-[0_0_20px_rgba(0,0,0,0.08)] hover:shadow-[0_0_20px_rgba(0,0,0,0.15)] rounded-xl flex gap-3 p-3 hover:cursor-pointer transition-all duration-300 border border-transparent hover:border-gray-100 relative overflow-hidden">
-        
         {/* بخش عکس */}
         <div className="w-fit shrink-0 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50">
           <Image
             src={props.image}
             width={160}
-            height={50} 
+            height={50}
             alt="icon"
             className="object-cover rounded-lg h-full max-md:w-28 md:w-[160px]" // کمی عرض عکس را در موبایل کمتر کردم تا فضا برای متن باز شود
           />
@@ -44,12 +51,10 @@ function Item(props: Iitem) {
 
         {/* بخش محتوا - اضافه شدن min-w-0 برای کار کردن truncate */}
         <div className="flex flex-col flex-1 justify-between py-1 min-w-0">
-          
           {/* گروه عنوان و اطلاعات */}
           <div className="flex flex-col gap-2">
             <h1
               className="text-custom2 font-bold text-[0.85rem] leading-snug line-clamp-2 pl-1"
-              title={props.title}
             >
               {props.title}
             </h1>

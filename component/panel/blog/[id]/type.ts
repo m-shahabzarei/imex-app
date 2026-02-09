@@ -10,4 +10,5 @@ export interface IData {
   created_at: string;
   image: string;
   description:string;
+  link:string;
 }

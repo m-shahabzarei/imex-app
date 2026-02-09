@@ -10,10 +10,10 @@ import { useEffect } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import NoSub from "@/component/panel/profile/subscription/no-sub";
 
-interface BlogItem {
+ export interface BlogItem {
   id: number;
   title: string;
-  image: string;
+  image?: string;
   description: string;
   category?: {
     title: string;
@@ -42,7 +42,7 @@ useEffect(() => {
       renderItem={(item, search) => (
         <Item
           key={item.id}
-          image={item.image}
+          image={item.image ?? ""}
           title={<HighlightText text={item.title} highlight={search} />}
           description={<HighlightText text={item.description} highlight={search} />}
           category={item.category?.title}

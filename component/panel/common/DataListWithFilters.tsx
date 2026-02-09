@@ -11,7 +11,7 @@ import DateFilter from "./DateFilter/DateFilter";
 import Link from "next/link";
 
 interface Props<T> {
-  queryKey: string;
+  queryKey: string | (string | number)[];
   fetcher: (params: any) => Promise<{
     results: T[];
     next: number | null;
@@ -22,9 +22,11 @@ interface Props<T> {
   emptyComponent?: ReactNode;
   grid4?: boolean;
   grid1?: boolean;
+  gridS?:boolean;
   Ment?: boolean;
   Date?: boolean;
   NoFilter?: boolean;
+  count?: number | null;
 }
 
 export default function DataListWithFilters<T>({
@@ -37,7 +39,9 @@ export default function DataListWithFilters<T>({
   grid1,
   Date,
   NoFilter,
+  gridS,
   Ment,
+  count,
   emptyComponent,
 }: Props<T>) {
   const {
@@ -116,18 +120,25 @@ export default function DataListWithFilters<T>({
         ) : allResults.length === 0 ? (
           emptyComponent ?? null
         ) : (
-          <div
-            className={`grid ${
-              grid4
-                ? "lg:grid-cols-4 max-md:grid-cols-3"
-                : grid1
-                ? ""
-                : "md:grid-cols-2"
-            } gap-7 md:pb-4`}
-          >
-            {allResults.map((item: T) =>
-              renderItem(item, searchInput)
+          <div className="w-full flex flex-col gap-2">
+            {count && (
+              <span className="text-center w-full text-sm text-gray-400">
+                {count} نتیجه یافت شد
+              </span>
             )}
+            <div
+              className={`grid ${
+                grid4
+                  ? "lg:grid-cols-4 max-lg:grid-cols-3"
+                  : grid1
+                  ? ""
+                  : gridS
+                  ? "lg:grid-cols-2"
+                  : "md:grid-cols-2"
+              } gap-7 md:pb-4`}
+            >
+              {allResults.map((item: T) => renderItem(item, searchInput))}
+            </div>
           </div>
         )}
 

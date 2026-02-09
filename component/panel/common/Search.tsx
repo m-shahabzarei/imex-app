@@ -37,7 +37,7 @@ export default function Search({
       <input
         type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange?.(e.target.value)}
         placeholder={placeholder}
         className={`${baseClass} focus:outline-0`}
       />

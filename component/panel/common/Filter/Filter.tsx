@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -45,7 +46,7 @@ export default function Filters({ second, config, open, onClose }: Props) {
    */
   const applyFilters = () => {
     setParams(localFilters);
-    onClose();
+    onClose?.();
   };
 
   /**
@@ -60,7 +61,7 @@ export default function Filters({ second, config, open, onClose }: Props) {
     setParams({});
     setLocalFilters({});
     setParams(cleared);
-    onClose();
+    onClose?.();
   };
 
 

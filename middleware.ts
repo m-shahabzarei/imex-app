@@ -10,10 +10,10 @@ export function middleware(req: NextRequest) {
 
 
   if (pathname.startsWith("/panel") && !isAuth) {
-    return NextResponse.redirect(new URL("/Login", req.url)) 
+    return NextResponse.redirect(new URL("/login", req.url)) 
   }
 
-  if (pathname.startsWith("/Login") && isAuth) {
+  if (pathname.startsWith("/login") && isAuth) {
     return NextResponse.redirect(new URL("/panel/home", req.url));
   }
 
@@ -21,5 +21,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/panel/:path*", "/Login"],
+  matcher: ["/panel/:path*", "/login"],
 };

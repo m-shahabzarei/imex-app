@@ -1,15 +1,17 @@
-// components/HighlightText.tsx
+import React from "react";
+
 interface Props {
-  text?: string | null;
-  highlight?: string;
+  text: string | React.ReactElement;
+  highlight: string | undefined;
 }
 
-export default function HighlightText({
-  text = "",
-  highlight = "",
-}: Props) {
-  if (!text) return null;
-  if (!highlight) return <span>{text}</span>;
+export default function HighlightText({ text, highlight }: Props) {
+  if (typeof text !== "string" || !highlight) {
+    return <>{text}</>;
+  }
+
+  const escapeRegExp = (str: string) =>
+    str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   const regex = new RegExp(`(${escapeRegExp(highlight)})`, "gi");
   const parts = text.split(regex);
@@ -18,10 +20,7 @@ export default function HighlightText({
     <span>
       {parts.map((part, index) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
-          <mark
-            key={index}
-            className="bg-yellow-300"
-          >
+          <mark key={index} className="bg-yellow-200">
             {part}
           </mark>
         ) : (

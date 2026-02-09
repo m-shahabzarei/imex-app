@@ -28,10 +28,16 @@ function Profile() {
     setIsEditing(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == "Enter") {
+      handleSaveName();
+    }
+  };
+
   const logoutHandle = async () => {
-    await logout(useAuthStore.getState().refreshToken)
+    await logout(useAuthStore.getState().refreshToken);
     useAuthStore.getState().logout();
-    window.location.href = "/Login";
+    window.location.href = "/login";
     // useAuthStore.getState().setRefreshToken()
   };
 
@@ -48,15 +54,19 @@ function Profile() {
 
       {/* مودال ویرایش */}
       {isEditing && (
-        <div className="fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40">
+        <div
+          className="fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-xs"
+          onClick={() => setIsEditing(false)} // کلیک بیرون = بستن مودال
+        >
           <div
             className="
-              w-full md:w-[420px]
-              bg-white
-              rounded-t-2xl md:rounded-2xl
-              p-6
-              animate-slideUp md:animate-fadeIn
-            "
+      w-full md:w-[420px]
+      bg-white
+      rounded-t-2xl md:rounded-2xl
+      p-6
+      animate-slideUp md:animate-fadeIn
+    "
+            onClick={(e) => e.stopPropagation()} // کلیک داخل = بسته نشه
           >
             <h2 className="text-center text-custom2 text-lg font-bold mb-4">
               ویرایش اطلاعات
@@ -67,6 +77,7 @@ function Profile() {
             </label>
 
             <input
+              onKeyDown={handleKeyDown}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full rounded-lg p-3 focus:outline-none bg-gray-100 border-0"

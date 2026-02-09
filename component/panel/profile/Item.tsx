@@ -38,41 +38,51 @@ function Item({
   if (variant === "primary") {
     return (
       <Link href={link}>
-        <div
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => {
-            setHover(false);
-          }}
-          onClick={onClick}
-          className={`${baseStyle} ${
-            hover ? "bg-linear-to-b  from-[#5764EF] to-[#3E47AD] " : "bg-white"
-          } hover:cursor-pointer  justify-center`}
-        >
-          <p
-            className={`${variants[variant]} ${
-              hover ? "text-white" : "text-gray-600"
-            }`}
-          >
-            {children}
-            {icon && (
-              <div
-                className={`${
-                  hover
-                    ? "invert brightness-0 contrast-200"
-                    : "invert brightness-180 contrast-200"
-                }  `}
-              >
-                <Image src={icon} alt="icon" width="23" height="22" />
-              </div>
-            )}
-          </p>
-          <div className={`left-[4%] absolute transition duration-300 ${hover
-                    ? "invert brightness-0 contrast-200"
-                    : ""
-                }`}>
-            <Image src="/image/alt arrow left.svg" alt="arrow left" width={29} height={24} />
-          </div>
-        </div>
+<div
+  onMouseEnter={() => setHover(true)}
+  onMouseLeave={() => setHover(false)}
+  onClick={onClick}
+  className={`${baseStyle} bg-white relative overflow-hidden hover:cursor-pointer justify-center`}
+>
+  {/* ✅ لایه گرادیانت */}
+  <div
+    className={`
+      absolute inset-0 rounded-[inherit]
+      bg-linear-to-b from-[#5764EF] to-[#3E47AD]
+      transition-opacity duration-500
+      ${hover ? "opacity-100" : "opacity-0"}
+    `}
+  />
+
+  {/* ✅ محتوا */}
+  <p
+    className={`${variants[variant]} relative z-10 transition-colors duration-500
+      ${hover ? "text-white" : "text-gray-600"}
+    `}
+  >
+    {children}
+    {icon && (
+      <div
+        className={`relative z-10 transition-all duration-500
+          ${hover
+            ? "invert brightness-0 contrast-200"
+            : "invert brightness-180 contrast-200"
+          }
+        `}
+      >
+        <Image src={icon} alt="icon" width="23" height="22" />
+      </div>
+    )}
+  </p>
+
+  <div
+    className={`left-[4%] absolute z-10 transition-all duration-500
+      ${hover ? "invert brightness-0 contrast-200" : ""}
+    `}
+  >
+    <Image src="/image/alt arrow left.svg" alt="arrow left" width={29} height={24} />
+  </div>
+</div>
       </Link>
     );
   } else if (variant === "profile") {
@@ -88,7 +98,7 @@ function Item({
             hover ? "bg-linear-to-b  from-[#5764EF] to-[#3E47AD] " : "bg-white"
           } hover:cursor-pointer pr-6 `}
         >
-          <div className="text-black text-[1rem] font-bold flex flex-col gap-1 ">
+          <div className="text-black text-[1rem] font-bold flex flex-col gap-1 items-start ">
             <p
               className={`transition duration-500 ${variants[variant]} ${
                 hover ? "text-white" : "text-[#5764EF]"
@@ -98,7 +108,7 @@ function Item({
             </p>
             <span
               className={` text-[0.8rem] transition duration-500 ${
-                hover ? "text-[#d12c2c]" : "text-gray-500"
+                hover ? "text-white" : "text-gray-500"
               } `}
             >
               {phone}
@@ -117,7 +127,7 @@ function Item({
     );
   } else if (variant === "subscribe") {
     return (
-      <Link href={!subscription ? link : ""}>
+      <div >
         <div
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => {
@@ -152,12 +162,12 @@ function Item({
                 <div className="left-[5%] absolute">
                   {/* <ArrowLeft color={`${hover ? "white" : "black"}`} /> */}
                 </div>
-                <span>خرید</span>
+                <Link href={link}>خرید</Link>
               </div>
             )}
           </div>
         </div>
-      </Link>
+      </div>
     );
   }
 }

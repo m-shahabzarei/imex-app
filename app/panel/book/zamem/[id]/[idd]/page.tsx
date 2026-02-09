@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import api from "@/lib/api";
 import InfoBox from "@/component/panel/book/tariffs/InfoBox";
+import LoadingSpinner from "@/component/ui/Loading";
+import NoItem from "@/component/Error/no-item";
 
 interface Iitem{
   hs_code:string;
@@ -30,7 +32,7 @@ export default function Page() {
     idd: string;
   }>();
 
-  const [item, setItem] = useState<Iitem>(null);
+  const [item, setItem] = useState<Iitem>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,9 +77,9 @@ useEffect(() => {
 }, [id, idd])
 
 console.log(item)
-  if (loading) return <div>در حال بارگذاری...</div>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <div>{error}</div>;
-  if (!item) return <div>آیتمی یافت نشد</div>;
+  if (!item) return <NoItem />;
 
   return (
     <div className="flex items-center justify-center">

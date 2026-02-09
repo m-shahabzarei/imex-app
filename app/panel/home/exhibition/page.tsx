@@ -31,6 +31,7 @@ export default function ConsultantsPage() {
           link={`/panel/home/exhibition/${item.id}`}
           location={item.location?.title}
           type={item.type}
+          days_until_start={item.days_until_start}
         />
       )}
     /> : <NoItem />

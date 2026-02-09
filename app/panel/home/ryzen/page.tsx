@@ -1,37 +1,38 @@
 
-
 "use client";
 import DataListWithFilters from "@/component/panel/common/DataListWithFilters";
 import NoItem from "@/component/Error/no-item";
-import HighlightText from "@/component/panel/common/HighlightText";
 import Item from "@/component/panel/home/ryzen/item";
 import api from "@/lib/api";
 import { useAuthStore } from "@/stores/auth.store";
 
-const getMentor = async (params: any) => {
+export const getCountry = async (
+  params: any
+): Promise<{ results: Country[]; next: number | null }> => {
   const res = await api.get("/core/country/?is_ryzen=true", {
     params,
-    paramsSerializer: {
-      indexes: false,
-    },
+    paramsSerializer: { indexes: false },
   });
 
-  let nextPage = null;
+  let nextPage: number | null = null;
 
   if (res.data.next) {
     try {
       const url = new URL(res.data.next);
-      nextPage = url.searchParams.get("page");
+      const pageParam = url.searchParams.get("page");
+      nextPage = pageParam ? Number(pageParam) : null;
+      if (nextPage !== null && isNaN(nextPage)) nextPage = null;
     } catch {
       nextPage = null;
     }
   }
 
   return {
-    results: res.data.results,
+    results: Array.isArray(res.data.results) ? res.data.results : [],
     next: nextPage,
   };
 };
+
 
 interface Country {
   id: number;
@@ -52,7 +53,7 @@ export default function ConsultantsPage() {
       NoFilter
       grid4
       queryKey="Mentor"
-      fetcher={getMentor}
+      fetcher={getCountry}
       searchPlaceholder="جستجو در دانستی و ..."
       emptyComponent={<NoItem />}
       renderItem={(item, search) => (

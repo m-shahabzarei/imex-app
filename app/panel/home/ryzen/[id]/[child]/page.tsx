@@ -71,7 +71,7 @@ export default function Page() {
             </div>
 
             {/* عنوان (نام) */}
-            <h1 className="text-xl sm:text-2xl font-bold text-blue-800 mb-2 text-right">
+            <h1 className="text-xl sm:text-xl font-bold text-blue-800 mb-2 text-right">
               {data.title}
             </h1>
 
@@ -81,14 +81,14 @@ export default function Page() {
             </span>
 
             {/* توضیحات کوتاه (مثلا: رایزن کشور ارمنستان) */}
-            <h1 className="text-xl text-gray-800 mb-8 text-right ">
+            <h1 className="text-xl text-gray-800 mb-2 text-right ">
               {data.head}
             </h1>
 
             {/* بخش آدرس - طبق عکس انگلیسی و چپ‌چین است */}
-            <div className="w-full mt-auto pt-6 border-t border-gray-100">
+            <div className="w-full pt-2 border-t border-gray-100">
               <div
-                className="text-gray-800 text-lg leading-relaxed text-right font-sans"
+                className="text-gray-500 text-xs text-right whitespace-pre-line"
                 dir="ltr"
               >
                 {data.description}

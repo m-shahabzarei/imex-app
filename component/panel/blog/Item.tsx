@@ -3,14 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import HighlightText from "../common/HighlightText";
+import { ReactElement } from "react";
 
 interface IItem {
   image: string;
-  title: string;
-  description: string;
+  title: ReactElement;
+  description: ReactElement;
   link: string;
-  category: string;
-  query: string;
+  category: string | undefined;
+  query?: string;
 }
 
 function Item(props: IItem) {
@@ -18,13 +19,16 @@ function Item(props: IItem) {
     <Link href={props.link}>
       <div className="bg-white w-full h-32 max-md:h-fit shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex gap-2 p-4 max-md:p-2 hover:cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)]">
         <div className="w-fit max-md:h-32 overflow-hidden flex justify-center items-center rounded-xl">
-          <Image
+          {
+            props.image && 
+            <Image
             src={props.image}
             width={200}
             height={40}
             alt="icon"
             className="object-cover rounded-xl"
           />
+          }
         </div>
 
         <div className="h-full flex flex-col w-full justify-start max-md:py-4">

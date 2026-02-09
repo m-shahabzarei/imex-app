@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useQueryParams } from "./useQueryParams";
 
 export function useInfiniteDataList<T>(
-  key: string,
+  key: string | (string | number)[],
   fetcher: (params: any) => Promise<{
     results: T[];
     next: number | null;

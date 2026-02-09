@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import api from '@/lib/api';
 import { Send, RefreshCw, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Header from '@/component/panel/layout/Header';
 
 // --- Types ---
 interface Message {
@@ -204,29 +205,14 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col items-center h-screen bg-[#F8F9FE] font-sans" dir="rtl">
+    <div className="flex w-full flex-col items-center h-screen bg-[#F8F9FE] font-sans" dir="rtl">
       
       {/* Header */}
-      <header className="md:max-w-3xl px-3 items-center pb-7 rounded-b-3xl justify-end h-43 text-white w-full bg-linear-to-b  from-[#5764EF] to-[#3E47AD]  flex flex-col ">
-        <div className="flex items-center w-full flex-row-reverse justify-between max-w-3xl mx-auto mb-6">
-          <button 
-            onClick={handleResetChat}
-            className="flex hover:cursor-pointer items-center gap-2 bg-white text-[#4F46E5] hover:bg-gray-100 px-5 py-2.5 rounded-lg transition-all text-sm font-bold shadow-sm"
-          >
-            <RefreshCw size={18} />
-            تازه سازی چت
-          </button>
-
-          <Link href="/panel/home" className="flex flex-row-reverse items-center gap-3 text-2xl font-bold">
-            <h1>راهنمایی</h1>
-            <ArrowLeft className="rotate-180 w-6 h-6" />
-          </Link>
-        </div>
-      </header>
-
+        <Header  isAI onclick={handleResetChat}/>
+        
       {/* Main Chat */}
-      <main className="flex-1 overflow-y-auto px-4 py-6 scroll-smooth">
-        <div className="max-w-3xl mx-auto space-y-6 pb-28">
+      <main className="max-md:flex-1 md:w-[83%] w-full overflow-y-auto max-md:px-4 max-md:py-6 scroll-smooth">
+        <div className="max-md:max-w-3xl w-full mx-auto space-y-6 pb-28">
           
           {messages.length === 0 && chatId === null && (
             <div className="text-center text-gray-400 mt-10 text-sm">
@@ -273,7 +259,7 @@ export default function ChatPage() {
       <footer className="fixed bottom-0 left-0 right-0 p-5 z-20">
         <div className="absolute inset-0 bg-gradient-to-t from-[#F8F9FE] via-[#F8F9FE] to-transparent -z-10 h-32 bottom-0 pointer-events-none" />
 
-        <div className="max-w-3xl mx-auto">
+        <div className="max-md:max-w-3xl md:w-[83%] mx-auto">
           <form 
             onSubmit={handleSendMessage}
             className="bg-white p-2 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 flex flex-row-reverse items-center gap-3 pr-4"

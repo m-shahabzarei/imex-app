@@ -1,6 +1,8 @@
+import { ReactElement } from "react";
+
 export interface Iitem {
   image: string;
-  name: string;
+  name: string | ReactElement;
   group: string;
   progress: string;
   country: string;

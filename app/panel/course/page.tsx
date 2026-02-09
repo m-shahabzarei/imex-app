@@ -13,6 +13,7 @@ import HighlightText from "@/component/panel/common/HighlightText";
 export default function Course() {
   return (
     <DataListWithFilters<ICourse>
+       gridS
       queryKey="blogs"
       fetcher={getCourse}
       filtersConfig={CoursesFilters}

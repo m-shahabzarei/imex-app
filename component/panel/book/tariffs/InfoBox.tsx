@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 
 interface InfoBoxProps {
   label?: string | undefined | number;
-  value?: string | undefined | number;
+  value?: string | undefined | number | ReactElement;
   variant: "single" | "frame";
 
 
@@ -15,7 +15,7 @@ interface InfoBoxProps {
 }
 
 
-const getType = (type : string)=>{
+const getType = (type : string | undefined)=>{
   if(type == null ){
     return "-"
   }

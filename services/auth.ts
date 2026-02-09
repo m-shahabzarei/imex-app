@@ -41,7 +41,7 @@ export const setName = (ID : number,last_name:string)=> {
 
 export const SubscriptionService = {
   getLast() {
-    return api.get("/subscription/last/");
+    return api.get("/subscription/subscription-plan/last/");
   },
 
   validateCoupon(code: string) {
