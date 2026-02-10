@@ -48,7 +48,6 @@ if (res.data.next) {
     const pageParam = url.searchParams.get("page");
     nextPage = pageParam ? Number(pageParam) : null;
 
-    // ✅ فقط وقتی nextPage عدد هست چک isNaN
     if (nextPage !== null && isNaN(nextPage)) {
       nextPage = null;
     }

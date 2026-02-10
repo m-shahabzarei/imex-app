@@ -44,7 +44,6 @@ function Item({
   onClick={onClick}
   className={`${baseStyle} bg-white relative overflow-hidden hover:cursor-pointer justify-center`}
 >
-  {/* ✅ لایه گرادیانت */}
   <div
     className={`
       absolute inset-0 rounded-[inherit]
@@ -54,7 +53,6 @@ function Item({
     `}
   />
 
-  {/* ✅ محتوا */}
   <p
     className={`${variants[variant]} relative z-10 transition-colors duration-500
       ${hover ? "text-white" : "text-gray-600"}
@@ -174,10 +172,3 @@ function Item({
 
 export default Item;
 
-// interface Iitem<T extends "primary" | "profile" | "subscribe"> {
-//   variant: T;
-//   phone:T extends "profile"? number : undefined;
-//   icon?: string;
-//   children: string | number;
-//   onClick?: () => void;
-// }

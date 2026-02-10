@@ -37,13 +37,11 @@ function Item(props: Iitem) {
     <Link href={`/panel/book/tariffs/${props.id}`}  className="w-full">
       <div className="relative bg-white shadow-[0_0_20px_rgba(0,0,0,0.12)] rounded-xl flex flex-col md:flex-row items-center justify-between p-4 md:py-6 md:px-8 gap-4 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)] transition-all duration-300">
         
-        {/* بخش راست: عنوان و مشخصات */}
         <div className="flex flex-col justify-between w-full md:w-5/12 gap-4 md:gap-6 h-full">
           <div className="flex justify-between items-center w-full">
             <div className="text-sm md:text-base font-bold text-custom2 block">
               {props.name}
             </div>
-            {/* آیکون بوک‌مارک فقط برای موبایل در اینجا */}
             <Image
               src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
               width={20}
@@ -68,10 +66,8 @@ function Item(props: Iitem) {
           </div>
         </div>
 
-        {/* خط جداکننده عمودی برای دسکتاپ */}
         <div className="hidden md:block w-[1px] h-16 bg-gray-200 mx-2"></div>
 
-        {/* خط جداکننده افقی برای موبایل */}
         <hr className="md:hidden w-full text-gray-200" />
 
         {/* بخش چپ: توضیحات سلسله مراتبی */}
@@ -93,15 +89,14 @@ function Item(props: Iitem) {
           </div>
         </div>
 
-        {/* آیکون بوک‌مارک برای دسکتاپ (سمت چپ مطلق) */}
         <div className="hidden md:flex justify-end items-center md:absolute md:left-6 md:top-1/2 md:-translate-y-1/2">
              <Image
               src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
-              width={24} // سایز کمی بزرگتر برای دسکتاپ
+              width={24} 
               height={24}
               alt="bookmark"
               onClick={(e) => {
-                e.preventDefault(); // جلوگیری از کلیک روی لینک والد اگر وجود داشته باشد
+                e.preventDefault();
                 toggleSave();
               }}
               className={`hover:cursor-pointer transition-all ${isSaved ? "scale-110" : ""}`}

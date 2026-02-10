@@ -2,7 +2,6 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "@/lib/api";
 import InfoBox from "@/component/panel/book/tariffs/InfoBox";
 import LoadingSpinner from "@/component/ui/Loading";

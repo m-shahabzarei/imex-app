@@ -11,7 +11,7 @@ interface AccordionProps {
   children: React.ReactNode;
   share?: boolean;
   isFilter?: boolean;
-  shareText?: string; // <--- این پراپ اضافه شد
+  shareText?: string; 
 }
 
 export default function Accordion({
@@ -20,7 +20,7 @@ export default function Accordion({
   children,
   isFilter = false,
   share = false,
-  shareText = "", // مقدار پیش‌فرض
+  shareText = "", 
 }: AccordionProps) {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -51,7 +51,6 @@ export default function Accordion({
           <div className="mt-4">
             {children}
           </div>
-          {/* اینجا متن را به کامپوننت شیر پاس می‌دهیم */}
           {share ? <Share text={shareText} /> : null}
         </>
       )}

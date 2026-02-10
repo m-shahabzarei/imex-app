@@ -28,7 +28,6 @@ function Item(props: IItem) {
     bg-white overflow-hidden
   `}
 >
-  {/* ✅ لایه گرادیانت که فقط opacity اش تغییر میکنه */}
   <div
     className={`
       absolute inset-0 rounded-xl
@@ -38,7 +37,6 @@ function Item(props: IItem) {
     `}
   />
 
-  {/* ✅ محتوا باید z-index بالاتر داشته باشه */}
   <Image
     src={props.icon}
     height={30}
@@ -98,13 +96,3 @@ function Item(props: IItem) {
 }
 
 export default Item;
-
-{
-  /* <Image
-          src="/image/alt arrow left.svg"
-          height={32}
-          width={32}
-          alt="icon"
-          className="absolute left-2"
-        /> */
-}

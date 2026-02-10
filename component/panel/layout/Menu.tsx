@@ -67,7 +67,6 @@ function Menu() {
     ${isHovered ? "md:pr-16" : "md:pr-12"}
   `}
                 >
-                  {/* ✅ لایه گرادیانت برای حالت Active (همیشه نمایان) */}
                   <div
                     className={`
       absolute inset-0 rounded-4xl
@@ -77,7 +76,6 @@ function Menu() {
     `}
                   />
 
-                  {/* ✅ لایه گرادیانت برای حالت Hover (فقط md به بالا) */}
                   <div
                     className={`
       absolute inset-0 rounded-4xl
@@ -88,7 +86,6 @@ function Menu() {
     `}
                   />
 
-                  {/* ✅ محتوا با z-index بالاتر */}
                   <Image
                     src={item.icon}
                     width={20}

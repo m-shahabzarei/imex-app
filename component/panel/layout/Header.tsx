@@ -12,7 +12,6 @@ function Header({ isAI, onclick }: { isAI?: boolean; onclick?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // 🔹 normalize pathname (remove trailing slash)
   const normalizedPathname =
     pathname !== "/" && pathname.endsWith("/")
       ? pathname.slice(0, -1)
@@ -67,7 +66,6 @@ function Header({ isAI, onclick }: { isAI?: boolean; onclick?: () => void }) {
               ""
             )}
 
-            {/* 👇 فقط منطق این بخش تغییر کرده، UI همونه */}
             <div className="flex flex-col mr-3">
               <button
                 onClick={() => router.back()}

@@ -26,7 +26,6 @@ function Item(props: IItem) {
     justify-between  /* ✅ تغییر: برای فاصله انداختن یا چیدمان صحیح */
   `}
 >
-  {/* ✅ لایه گرادیانت (اصلاح نام کلاس گرادیانت) */}
   <div
     className={`
       absolute inset-0 rounded-xl
@@ -36,8 +35,7 @@ function Item(props: IItem) {
     `}
   />
 
-  {/* ✅ بخش متن و آیکون */}
-  {/* برای اینکه مثل عکس اول شود، اگر پروژه RTL است، متن باید اول باشد و آیکون دوم */}
+ 
   
   <div className="flex items-center gap-x-3 w-full justify-end flex-row-reverse">
       <span

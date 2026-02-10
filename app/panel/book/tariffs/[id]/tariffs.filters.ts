@@ -18,38 +18,6 @@ export const TariffFilters: FilterConfig[] = [
       }
     ],
   },
-//   {
-//     key: "start_date__gte",
-//     type: "Date",
-//     label: "تاریخ شروع",
-//   },
-//   {
-//     key: "end_date__lte",
-//     type: "Date",
-//     label: "تاریخ پایان",
-//   },
+
 ];
 
-// export const getExhi = async (params: any) => {
-//   const res = await api.get("/knowledge/exhibition/", {
-//     params,
-//     paramsSerializer: { indexes: false },
-//   });
-
-//   let nextPage: number | null = null;
-
-//   if (res.data.next) {
-//     try {
-//       const url = new URL(res.data.next);
-//       const page = url.searchParams.get("page");
-//       nextPage = page ? Number(page) : null;
-//     } catch {
-//       nextPage = null;
-//     }
-//   }
-
-//   return {
-//     results: res.data.results,
-//     next: nextPage,
-//   };
-// };
