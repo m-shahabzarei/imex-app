@@ -82,7 +82,7 @@ function Header({ isAI, onclick }: { isAI?: boolean; onclick?: () => void }) {
                     className="invert rotate-180"
                   />
                 </span>
-                <span>دستیار هوش مصنوعی</span>
+                <span className="max-md:text-sm">دستیار هوش مصنوعی</span>
               </button>
             </div>
           </div>
