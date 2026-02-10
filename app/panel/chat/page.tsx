@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability */
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
@@ -31,7 +32,7 @@ interface StreamResponse {
   ai_response_id: number;
   chat_history: number;
   role: 'ai';
-  text: string; // این متن حاوی کل پاسخ تا این لحظه است
+  text: string; 
   is_streaming: boolean;
 }
 
@@ -45,7 +46,7 @@ export default function ChatPage() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 1. دریافت آیدی و لود تاریخچه در شروع
+// Hystory
   useEffect(() => {
     const savedChatId = localStorage.getItem('imex_chat_id');
     if (savedChatId) {
@@ -55,7 +56,6 @@ export default function ChatPage() {
     }
   }, []);
 
-  // اسکرول به پایین
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -94,11 +94,9 @@ export default function ChatPage() {
     localStorage.removeItem('imex_chat_id');
   };
 
-  // --- بخش مهم: اصلاح حلقه دریافت پاسخ ---
   const pollForResponse = async (aiResponseId: number) => {
     let isStreaming = true;
 
-    // ایجاد حباب پیام خالی برای هوش مصنوعی
     const aiMessageTempId = Date.now();
     setMessages((prev) => [
       ...prev,
@@ -118,9 +116,6 @@ export default function ChatPage() {
             if (msg.id === aiMessageTempId) {
               return {
                 ...msg,
-                // تغییر اصلی اینجاست: 
-                // به جای چسباندن متن (+=)، متن جدید را جایگزین میکنیم (=)
-                // چون سرور هر بار کل متن تولید شده را می‌فرستد.
                 text: data.text || '', 
                 is_streaming: data.is_streaming,
               };
@@ -131,7 +126,6 @@ export default function ChatPage() {
 
         isStreaming = data.is_streaming;
 
-        // تاخیر کوچک برای جلوگیری از درخواست‌های رگباری
         if (isStreaming) {
           await new Promise((resolve) => setTimeout(resolve, 200));
         }
@@ -139,7 +133,6 @@ export default function ChatPage() {
       } catch (error) {
         console.error('Streaming error:', error);
         isStreaming = false;
-        // در صورت خطا، حالت لودینگ پیام را غیرفعال کن
         setMessages((prev) =>
             prev.map((msg) => 
                 msg.id === aiMessageTempId ? { ...msg, is_streaming: false } : msg
@@ -159,7 +152,6 @@ export default function ChatPage() {
     setInput('');
     setIsLoading(true);
 
-    // افزودن پیام کاربر
     const userMsgId = Date.now();
     setMessages((prev) => [
       ...prev,
@@ -169,12 +161,10 @@ export default function ChatPage() {
     try {
       let activeChatId = chatId;
 
-      // اگر چت روم نداریم، بساز
       if (!activeChatId) {
         activeChatId = await createChatRoom();
       }
 
-      // ارسال پیام
       const payload = {
         text: userText,
         chat_history: activeChatId 
@@ -187,7 +177,6 @@ export default function ChatPage() {
 
       const data = res.data;
 
-      // شروع دریافت جواب
       if (data.ai_response_id) {
         await pollForResponse(data.ai_response_id);
       } else {

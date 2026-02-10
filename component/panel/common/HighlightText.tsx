@@ -30,8 +30,3 @@ export default function HighlightText({ text, highlight }: Props) {
     </span>
   );
 }
-
-
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}

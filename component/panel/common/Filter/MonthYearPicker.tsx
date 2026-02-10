@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
@@ -12,10 +13,7 @@ const MONTHS = [
 
 const YEARS = Array.from({ length: 10 }, (_, i) => 1400 + i);
 
-/**
- * تبدیل ماه و سال شمسی به روز اول آن ماه میلادی
- * مثلاً: بهمن 1403 → "2025-01-21"
- */
+// shamsi to miladi
 function toGregorianFirstDay(jy: number, jm: number): string {
   const { gy, gm, gd } = jalaali.toGregorian(jy, jm, 1);
   const mm = String(gm).padStart(2, '0');
@@ -23,9 +21,7 @@ function toGregorianFirstDay(jy: number, jm: number): string {
   return `${gy}-${mm}-${dd}`;
 }
 
-/**
- * تبدیل تاریخ میلادی به ماه و سال شمسی
- */
+// miladi to shamsi
 function fromGregorian(dateStr: string): { jy: number; jm: number } | null {
   if (!dateStr) return null;
   try {
@@ -52,7 +48,6 @@ export default function DateFilterUI({ label, value, onChange }: DateFilterUIPro
 
   const prevValueRef = useRef<string>('');
 
-  // هر وقت ماه یا سال تغییر کرد، مقدار میلادی رو به parent بفرست
   useEffect(() => {
     const jm = MONTHS.indexOf(month) + 1;
     const gregorianDate = toGregorianFirstDay(year, jm);
@@ -66,7 +61,6 @@ export default function DateFilterUI({ label, value, onChange }: DateFilterUIPro
   return (
     <div className="w-full bg-white p-4" dir="rtl">
       <div className="relative flex h-[240px]">
-        {/* Selection lines */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[48px] border-y pointer-events-none" />
 
         <ScrollColumn

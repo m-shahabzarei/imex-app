@@ -1,77 +1,45 @@
-import { NextConfig } from "next";
+import type { NextConfig } from "next";
+
+const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
+
+if (!API_ORIGIN) {
+  throw new Error("NEXT_PUBLIC_API_ORIGIN is not defined");
+}
+
+const API_ROUTES = [
+  "auth",
+  "users",
+  "core",
+  "subscription",
+  "ai_assistant",
+
+  "knowledge",
+  "knowledge/business-knowledge",
+
+  "book/tariff",
+  "book/statistics",
+  "book/preferential-tariff",
+  "book/preferential-tariff-country",
+] as const;
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
+
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'webapp.imexapp.ir',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "webapp.imexapp.ir",
+        pathname: "/**",
       },
     ],
   },
+
   async rewrites() {
-    return [
-      {
-        source: "/users/:path*/",
-        destination: "https://api.imexapp.ir/users/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/ai_assistant/:path*/",
-        destination: "https://api.imexapp.ir/ai_assistant/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/auth/:path*/",
-        destination: "https://api.imexapp.ir/auth/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/knowledge/business-knowledge/:path*/",
-        destination:
-          "https://api.imexapp.ir/knowledge/business-knowledge/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/knowledge/:path*/",
-        destination: "https://api.imexapp.ir/knowledge/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/core/:path*/",
-        destination: "https://api.imexapp.ir/core/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/book/preferential-tariff-country/:path*/",
-        destination:
-          "https://api.imexapp.ir/book/preferential-tariff-country/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/book/preferential-tariff/:path*/",
-        destination: "https://api.imexapp.ir/book/preferential-tariff/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/book/tariff/:path*/",
-        destination: "https://api.imexapp.ir/book/tariff/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/book/statistics/:path*/",
-        destination: "https://api.imexapp.ir/book/statistics/:path*/",
-        basePath: false,
-      },
-      {
-        source: "/subscription/:path*/",
-        destination: "https://api.imexapp.ir/subscription/:path*/",
-        basePath: false,
-      },
-    ];
+    return API_ROUTES.map((route) => ({
+      source: `/api/${route}/:path*/`,
+      destination: `${API_ORIGIN}/${route}/:path*/`,
+    }));
   },
 };
 

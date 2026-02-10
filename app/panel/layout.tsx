@@ -19,7 +19,6 @@ export default function PanelLayout({
     if (!user) {
       getMe()
         .then((res) => setUser(res.data))
-
     }
   }, []);
 

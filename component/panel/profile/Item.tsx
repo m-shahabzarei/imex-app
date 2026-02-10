@@ -80,7 +80,7 @@ function Item({
       ${hover ? "invert brightness-0 contrast-200" : ""}
     `}
   >
-    <Image src="/image/alt arrow left.svg" alt="arrow left" width={29} height={24} />
+    <Image src="/image/Alt Arrow Left.svg" alt="arrow left" width={29} height={24} />
   </div>
 </div>
       </Link>

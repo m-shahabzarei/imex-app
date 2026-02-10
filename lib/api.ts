@@ -3,11 +3,10 @@ import { useAuthStore } from "@/stores/auth.store";
 import { refresh } from "@/services/auth";
 
 const api = axios.create({
-  baseURL: "/",
-  withCredentials: true, // ارسال refresh cookie
+  baseURL: "/api",
+  withCredentials: true, 
 });
 
-// افزودن Authorization
 api.interceptors.request.use((config) => {
   const accessToken = useAuthStore.getState().accessToken;
   if (accessToken) {

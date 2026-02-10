@@ -169,7 +169,7 @@ function Home() {
         </Item>
 
         <Item
-          icon="/image/moneyBagC.svg"
+          icon="/image/MoneyBagC.svg"
           link="/panel/home/ryzen"
           variant="primary"
         >

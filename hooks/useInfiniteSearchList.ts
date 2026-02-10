@@ -4,7 +4,7 @@ import { useSearchQuery } from "./useSearchQuery";
 
 interface FetcherResult<T> {
   results: T[];
-  next: string | null; // URL کامل از backend
+  next: string | null; 
 }
 
 export function useInfiniteSearchList<T>(

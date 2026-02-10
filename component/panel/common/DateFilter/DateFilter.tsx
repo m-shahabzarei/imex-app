@@ -30,7 +30,7 @@ function DateFilter() {
   className={`${
     open ? "hidden" : ""
   } fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-xs`}
-  onClick={HandleOpen} // کلیک بیرون = بستن
+  onClick={HandleOpen} 
 >
   <div
     className="
@@ -41,7 +41,7 @@ function DateFilter() {
       animate-slideUp md:animate-fadeIn
       flex flex-col gap-5
     "
-    onClick={(e) => e.stopPropagation()} // کلیک داخل = بسته نشه
+    onClick={(e) => e.stopPropagation()} 
   >
     <h2 className="text-center text-custom2 text-lg font-bold mb-4">
       انتخاب سال مندرج

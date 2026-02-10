@@ -19,7 +19,7 @@ const menuItems: MenuItem[] = [
   {
     name: "کتاب",
     url: "/panel/book/",
-    icon: "/image/document.svg",
+    icon: "/image/Document.svg",
     subPages: {
       "/panel/book/tariffs": "تعرفه ها",
       "/panel/book/categories": "دسته‌بندی‌ها",

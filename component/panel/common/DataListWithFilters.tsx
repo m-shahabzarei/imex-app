@@ -56,7 +56,6 @@ export default function DataListWithFilters<T>({
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  /** 🔹 state مخصوص ورودی سرچ (debounce) */
   const [searchInput, setSearchInput] = useState(params.search || "");
 
   const allResults = data?.pages.flatMap((p) => p.results) || [];
@@ -65,16 +64,14 @@ export default function DataListWithFilters<T>({
     return Ment || Date === true;
   };
 
-  /** 🔹 debounce logic */
   useEffect(() => {
     const timeout = setTimeout(() => {
       setParams({
         ...params,
         search: searchInput || undefined,
-        page: undefined, // برای جلوگیری از تداخل با infinite scroll
+        page: undefined,
       });
-    }, 500); // ⏱ زمان دیبانس (می‌تونی 300 یا 700 بذاری)
-
+    }, 500); 
     return () => clearTimeout(timeout);
   }, [searchInput]);
 

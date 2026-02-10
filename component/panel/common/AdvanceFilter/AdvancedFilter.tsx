@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import api from "@/lib/api";
 import Image from "next/image";
 import Button from "@/component/ui/Button";
-import jalaali from "jalaali-js"; // مطمئن شوید که این پکیج نصب است
+import jalaali from "jalaali-js"; 
 
 // --- Constants ---
 const ITEM_HEIGHT = 40;
@@ -86,7 +87,7 @@ function ScrollColumn<T extends string | number>({
  const handleScrollEnd = (
   e: React.MouseEvent<HTMLUListElement> | React.TouchEvent<HTMLUListElement>
 ) => {
-  const target = e.currentTarget; // ✅ تایپ شده
+  const target = e.currentTarget; 
   const scrollTop = target.scrollTop;
   const index = Math.round(scrollTop / ITEM_HEIGHT);
 
@@ -246,7 +247,6 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
     }
 
     if (fieldKey === "date") {
-      // استفاده از تاریخ امروز برای پیش‌فرض (در صورت خالی بودن)
       const today = jalaali.toJalaali(new Date());
       setTempSelection(filters.date || {
         startYear: today.jy, startMonth: 1,
@@ -259,7 +259,6 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
         setPage(1);
         setHasMore(true);
         setOptions([]);
-        // درخواست دستی حذف شده تا از درخواست تکراری جلوگیری شود
       }
     }
   };
@@ -283,7 +282,6 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({ onApply, hiddenFields =
   useEffect(() => {
     if (!activeField || activeField === 'date') return;
 
-    // اجرای سریع برای بار اول یا وقتی سرچ خالی است، تاخیر برای تایپ کردن
     const delay = searchTerm === "" ? 0 : 500;
 
     const delayDebounceFn = setTimeout(() => {

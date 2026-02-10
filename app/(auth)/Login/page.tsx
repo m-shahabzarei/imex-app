@@ -8,7 +8,7 @@ import { getMe, sendOtp, verifyOtp } from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 
 const OTP_LENGTH = 5;
-const TIMER_START = 120; // زمان تایمر به ثانیه (مثلا 2 دقیقه)
+const TIMER_START = 120;
 
 export default function LoginPage() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
@@ -45,8 +45,7 @@ export default function LoginPage() {
       setLoading(true);
       await sendOtp(phone);
       setStep("otp");
-      setTimer(TIMER_START); // ریست کردن تایمر هنگام رفتن به مرحله بعد
-
+      setTimer(TIMER_START);
       setError("");
     } catch {
       setError("خطا در ارسال کد");
@@ -55,15 +54,14 @@ export default function LoginPage() {
     }
   };
 
-    // --- اضافه شده: تابع ارسال مجدد کد ---
   const handleResendOtp = async () => {
-    if (timer > 0) return; // اگر تایمر هنوز تمام نشده، کاری نکن
+    if (timer > 0) return;
 
     try {
       setLoading(true);
-      await sendOtp(phone); // استفاده از همان تابع ارسال کد
-      setTimer(TIMER_START); // شروع مجدد تایمر
-      setOtp(Array(OTP_LENGTH).fill("")); // پاک کردن اینپوت‌ها (اختیاری)
+      await sendOtp(phone); 
+      setTimer(TIMER_START); 
+      setOtp(Array(OTP_LENGTH).fill("")); 
       setError("");
     } catch {
       setError("خطا در ارسال مجدد کد");
@@ -73,13 +71,11 @@ export default function LoginPage() {
   };
 
   const handleVerifyOtp = async (inputOtp?: string) => {
-    // اگر کد به صورت دستی پاس داده شده بود (حالت اتوماتیک) یا از استیت خوانده شود (حالت دکمه)
     const codeToCheck = typeof inputOtp === "string" ? inputOtp : otp.join("");
 
-    // اعتبارسنجی ساده برای طول کد
 
     try {
-      setLoading(true); // بهتر است لودینگ را فعال کنید
+      setLoading(true);
       const res = await verifyOtp(phone, codeToCheck);
 
       useAuthStore.getState().setAccessToken(res.data.access_token);
@@ -106,20 +102,14 @@ export default function LoginPage() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // اگر عدد وارد شده بود و ایندکس کمتر از آخری بود، برو بعدی
     if (value && index < OTP_LENGTH - 1) {
       (e.target.nextElementSibling as HTMLInputElement)?.focus();
     }
 
-    // ---------------- تغییر جدید: ارسال خودکار ----------------
-    // اگر عدد وارد شده بود و این آخرین خانه بود
     if (value && index === OTP_LENGTH - 1) {
-      // کیبورد را در موبایل می‌بندیم (اختیاری)
       (e.target as HTMLInputElement).blur();
-      // کد جدید را ساخته و مستقیماً ارسال می‌کنیم
       handleVerifyOtp(newOtp.join(""));
     }
-    // ---------------------------------------------------------
   };
 
   const handleOtpBackspace = (
@@ -154,7 +144,6 @@ export default function LoginPage() {
     return () => clearInterval(interval);
   }, [step, timer]);
 
-  // --- اضافه شده: فرمت کردن زمان (تبدیل ثانیه به دقیقه:ثانیه) ---
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -165,7 +154,6 @@ export default function LoginPage() {
     if (step == "phone") {
       phoneRef.current?.focus();
     } else if (step == "otp") {
-      // چون otpRef الان به اینپوت اول وصل است، فوکوس روی اولی می‌رود
       otpRef.current?.focus();
     }
   }, [step]);

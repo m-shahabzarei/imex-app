@@ -56,7 +56,7 @@ export default function Filters({ second, config, open, onClose }: Props) {
     const cleared: Record<string, any> = {};
 
     config.forEach((filter) => {
-      cleared[filter.key] = undefined; // 👈 remove param from URL
+      cleared[filter.key] = undefined; 
     });
     setParams({});
     setLocalFilters({});
