@@ -24,7 +24,34 @@ function Page() {
     return Data?.slice(0, 10);
   };
 
-  console.log(data);
+  const getLink = ()=>{
+    if(data?.title == "دانستنی"){
+    return(
+                <div className="w-full border border-gray-100 rounded-2xl p-4 mt-2 mb-2 bg-white shadow-[0_0_20px_rgba(0,0,0,0.05)]">
+            <h1 className="text-right text-blue-900 font-bold mb-4 ">
+              لینک ارجاع
+            </h1>
+
+            <Link href={data?.link || "#"} target="_blank">
+              <div className="w-full bg-[#EEF2FF] hover:bg-[#E0E7FF] transition-colors rounded-xl py-3 flex justify-center items-center gap-2 text-blue-600 font-medium cursor-pointer">
+                <span>خرید کتاب</span>
+
+                <div
+                  className="w-5 h-5 bg-blue-600"
+                  style={{
+                    maskImage: "url('/image/Export.svg')",
+                    WebkitMaskImage: "url('/image/Export.svg')",
+                    maskRepeat: "no-repeat",
+                    maskSize: "contain",
+                  }}
+                />
+              </div>
+            </Link>
+          </div>
+    )
+  }
+  }
+
 
   return (
     <>
@@ -65,27 +92,7 @@ function Page() {
 
             <p className="text-sm whitespace-pre-line">{data?.description}</p>
           </div>
-          <div className="w-full border border-gray-100 rounded-2xl p-4 mt-2 mb-2 bg-white shadow-[0_0_20px_rgba(0,0,0,0.05)]">
-            <h1 className="text-right text-blue-900 font-bold mb-4 ">
-              لینک ارجاع
-            </h1>
-
-            <Link href={data?.link || "#"} target="_blank">
-              <div className="w-full bg-[#EEF2FF] hover:bg-[#E0E7FF] transition-colors rounded-xl py-3 flex justify-center items-center gap-2 text-blue-600 font-medium cursor-pointer">
-                <span>خرید کتاب</span>
-
-                <div
-                  className="w-5 h-5 bg-blue-600" // رنگ آیکون
-                  style={{
-                    maskImage: "url('/image/Export.svg')",
-                    WebkitMaskImage: "url('/image/Export.svg')",
-                    maskRepeat: "no-repeat",
-                    maskSize: "contain",
-                  }}
-                />
-              </div>
-            </Link>
-          </div>
+                    {getLink()}
         </div>
       )}
     </>

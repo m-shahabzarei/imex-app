@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-/* eslint-disable react-hooks/immutability */
 "use client";
 
+import { useEffect, useState } from "react";
 import Search from "@/component/panel/common/Search";
 import Item from "@/component/panel/home/item";
 import Button from "@/component/ui/Button";
@@ -9,7 +9,6 @@ import { useAuthStore } from "@/stores/auth.store";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export type SearchTarget =
   | "zamem"
@@ -32,23 +31,61 @@ function Home() {
   const user = useAuthStore((s) => s.user);
   const router = useRouter();
 
-  const [showSuggest, setShowSuggest] = useState(true);
+  const [showSuggest, setShowSuggest] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [searchTarget, setSearchTarget] = useState<SearchTarget>("zamem");
+  const [searchTarget, setSearchTarget] =
+    useState<SearchTarget>("zamem");
 
+  /*
+   |--------------------------------------------------------------------------
+   | Suggest Modal Logic (Show Only Once)
+   |--------------------------------------------------------------------------
+   */
+  useEffect(() => {
+    if (!user) return;
+
+    const storageKey = `suggest_modal_seen_${user.id}`;
+    const hasSeen = localStorage.getItem(storageKey);
+
+    if (user.type_subscription === "free" && !hasSeen) {
+      setShowSuggest(true);
+    }
+  }, [user]);
+
+  const handleCloseSuggest = () => {
+    if (!user) return;
+
+    const storageKey = `suggest_modal_seen_${user.id}`;
+    localStorage.setItem(storageKey, "true");
+    setShowSuggest(false);
+  };
+
+  /*
+   |--------------------------------------------------------------------------
+   | Search Handling
+   |--------------------------------------------------------------------------
+   */
   const handleSearch = () => {
     if (!searchText) return;
 
     router.push(
-      `${SEARCH_TARGETS[searchTarget]}?search=${encodeURIComponent(searchText)}`
+      `${SEARCH_TARGETS[searchTarget]}?search=${encodeURIComponent(
+        searchText
+      )}`
     );
 
     setShowSearchModal(false);
   };
 
-  const getSuggest = () => {
-    if (user?.type_subscription !== "free" || !showSuggest) return null;
+  /*
+   |--------------------------------------------------------------------------
+   | Suggest Modal Component
+   |--------------------------------------------------------------------------
+   */
+  const renderSuggestModal = () => {
+    if (user?.type_subscription !== "free" || !showSuggest)
+      return null;
 
     return (
       <div className="fixed inset-0 z-5000 flex items-end md:items-center justify-center bg-black/40">
@@ -70,11 +107,14 @@ function Home() {
           </p>
 
           <div className="flex gap-3 mt-6 w-full">
-            <Button onClick={() => setShowSuggest(false)} variant="glassy">
+            <Button onClick={handleCloseSuggest} variant="glassy">
               تایید
             </Button>
+
             <Link href="/panel/profile/subscribe" className="w-full">
-              <Button variant="secondary">خرید اشتراک</Button>
+              <Button variant="secondary">
+                خرید اشتراک
+              </Button>
             </Link>
           </div>
         </div>
@@ -124,27 +164,15 @@ function Home() {
 
       {/* Menu Items */}
       <div className="grid-cols-2 grid gap-3 w-full">
-        <Item
-          icon="/image/bookC.svg"
-          link="/panel/book/rules"
-          variant="primary"
-        >
+        <Item icon="/image/bookC.svg" link="/panel/book/rules" variant="primary">
           کتاب مقررات صادرات و واردات
         </Item>
 
-        <Item
-          icon="/image/shipC.svg"
-          link="/panel/home/report"
-          variant="primary"
-        >
+        <Item icon="/image/shipC.svg" link="/panel/home/report" variant="primary">
           آمار و اطلاعات تجاری
         </Item>
 
-        <Item
-          icon="/image/messagesC.svg"
-          link="/panel/home/mentors"
-          variant="primary"
-        >
+        <Item icon="/image/messagesC.svg" link="/panel/home/mentors" variant="primary">
           مشاوره تجاری
         </Item>
 
@@ -152,27 +180,15 @@ function Home() {
           دوره های تخصصی
         </Item>
 
-        <Item
-          icon="/image/bookC.svg"
-          link="/panel/home/exhibition"
-          variant="primary"
-        >
+        <Item icon="/image/bookC.svg" link="/panel/home/exhibition" variant="primary">
           نمایشگاه های تجاری
         </Item>
 
-        <Item
-          icon="/image/message-questionC.svg"
-          link="/panel/blog"
-          variant="primary"
-        >
+        <Item icon="/image/message-questionC.svg" link="/panel/blog" variant="primary">
           دانستنی های تجاری
         </Item>
 
-        <Item
-          icon="/image/MoneyBagC.svg"
-          link="/panel/home/ryzen"
-          variant="primary"
-        >
+        <Item icon="/image/MoneyBagC.svg" link="/panel/home/ryzen" variant="primary">
           صفحه اختصاصی رایزن اقتصادی
         </Item>
       </div>
@@ -180,12 +196,12 @@ function Home() {
       {/* Search Modal */}
       {showSearchModal && (
         <div
-          className="fixed inset-0 z-5000 bg-black/40 backdrop-blur-xs  flex items-end md:items-center justify-center"
-          onClick={() => setShowSearchModal(false)} // کلیک بیرون = بستن
+          className="fixed inset-0 z-5000 bg-black/40 backdrop-blur-xs flex items-end md:items-center justify-center"
+          onClick={() => setShowSearchModal(false)}
         >
           <div
             className="bg-white w-full md:w-[420px] rounded-t-2xl md:rounded-2xl p-6 animate-slideUp"
-            onClick={(e) => e.stopPropagation()} // جلوگیری از بستن با کلیک داخل
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-custom2 font-bold text-lg mb-4 text-center">
               محدوده جستجو
@@ -204,7 +220,9 @@ function Home() {
                   <input
                     type="radio"
                     checked={searchTarget === item.key}
-                    onChange={() => setSearchTarget(item.key as SearchTarget)}
+                    onChange={() =>
+                      setSearchTarget(item.key as SearchTarget)
+                    }
                   />
                   <span>{item.label}</span>
                 </label>
@@ -218,6 +236,7 @@ function Home() {
               >
                 بازگشت
               </Button>
+
               <Button variant="secondary" onClick={handleSearch}>
                 جستجو
               </Button>
@@ -226,7 +245,8 @@ function Home() {
         </div>
       )}
 
-      {getSuggest()}
+      {/* Suggest Modal */}
+      {renderSuggestModal()}
     </div>
   );
 }
