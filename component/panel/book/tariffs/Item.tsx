@@ -43,7 +43,7 @@ function Item(props: Iitem) {
               {props.name}
             </div>
             <Image
-              src={isSaved ? "/image/bookmark.svg" : "/image/bookmark2.svg"}
+              src={isSaved ? "/image/Bookmark.svg" : "/image/bookmark2.svg"}
               width={20}
               height={20}
               alt="bookmark"
