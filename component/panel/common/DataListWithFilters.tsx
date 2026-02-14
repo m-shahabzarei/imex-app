@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import Search from "@/component/panel/common/Search";
 import Filters from "@/component/panel/common/Filter/Filter";
 import InfiniteLoader from "@/component/panel/common/InfiniteLoader";
@@ -22,7 +22,7 @@ interface Props<T> {
   emptyComponent?: ReactNode;
   grid4?: boolean;
   grid1?: boolean;
-  gridS?:boolean;
+  gridS?: boolean;
   Ment?: boolean;
   Date?: boolean;
   NoFilter?: boolean;
@@ -51,18 +51,16 @@ export default function DataListWithFilters<T>({
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
+    isPending,
+    isFetching,
   } = useInfiniteDataList(queryKey, fetcher);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
   const [searchInput, setSearchInput] = useState(params.search || "");
 
   const allResults = data?.pages.flatMap((p) => p.results) || [];
 
-  const getBool = () => {
-    return Ment || Date === true;
-  };
+  const isInitialLoading = isPending || (!data && isFetching);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -71,16 +69,16 @@ export default function DataListWithFilters<T>({
         search: searchInput || undefined,
         page: undefined,
       });
-    }, 500); 
+    }, 500);
+
     return () => clearTimeout(timeout);
   }, [searchInput]);
 
   return (
     <div className="max-md:pb-4 relative">
-      {/* Search */}
       <div className="flex justify-between w-full gap-3">
         <Search
-          Date={getBool()}
+          Date={Date}
           NoFilter={NoFilter}
           variant="secondary"
           placeholder={searchPlaceholder}
@@ -89,19 +87,18 @@ export default function DataListWithFilters<T>({
           onClick={() => setIsFilterOpen(true)}
         />
 
-        {Date ? <DateFilter /> : null}
+        {Date && <DateFilter />}
 
-        {Ment ? (
+        {Ment && (
           <Link
             href="/panel/profile/myMentor"
-            className="bg-blue-100 p-2 rounded-xl text-custom2 border-[1.5px] border-custom hover:cursor-pointer flex w-[120px] items-center text-center justify-center"
+            className="bg-blue-100 p-2 rounded-xl text-custom2 border-[1.5px] border-custom flex w-[120px] items-center justify-center"
           >
             سوابق گفتگو
           </Link>
-        ) : null}
+        )}
       </div>
 
-      {/* Filters */}
       {filtersConfig.length > 0 && (
         <Filters
           config={filtersConfig}
@@ -110,9 +107,8 @@ export default function DataListWithFilters<T>({
         />
       )}
 
-      {/* Content */}
       <div className="mt-4">
-        {isLoading ? (
+        {isInitialLoading ? (
           <LoadingSpinner />
         ) : allResults.length === 0 ? (
           emptyComponent ?? null
@@ -123,6 +119,7 @@ export default function DataListWithFilters<T>({
                 {count} نتیجه یافت شد
               </span>
             )}
+
             <div
               className={`grid ${
                 grid4

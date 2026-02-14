@@ -18,7 +18,9 @@ export function useInfiniteDataList<T>(
         page: pageParam,
       }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.next ?? undefined, 
+    getNextPageParam: (lastPage) => lastPage.next ?? undefined,
+
+    placeholderData: undefined,
   });
 
   return {

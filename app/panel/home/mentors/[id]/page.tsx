@@ -27,7 +27,7 @@ export default function Page() {
       {loading ? (
         <LoadingSpinner />
       ) : (
-        <div className="w-full lg:py-12 flex flex-col lg:px-24 p-4 items-end gap-8">
+        <div className="w-full flex flex-col items-end gap-8">
 
           {/* Top */}
           <div className="flex max-lg:flex-col gap-6 w-full h-fit justify-between">

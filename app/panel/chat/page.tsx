@@ -201,7 +201,7 @@ export default function ChatPage() {
         
       {/* Main Chat */}
       <main className="max-md:flex-1 md:w-[83%] w-full overflow-y-auto max-md:px-4 max-md:py-6 scroll-smooth">
-        <div className="max-md:max-w-3xl w-full mx-auto space-y-6 pb-28 md:pb-100">
+        <div className="max-md:max-w-3xl w-full mx-auto space-y-6 pb-28 md:pb-40">
           
           {messages.length === 0 && chatId === null && (
             <div className="text-center text-gray-400 mt-10 text-sm">
