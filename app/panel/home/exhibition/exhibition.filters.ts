@@ -17,8 +17,8 @@ export const ExhibitionFilters: FilterConfig[] = [
 
       return {
         results: res.data.results.map((item: any) => ({
-          label: item.title, // 👈 از API
-          value: String(item.id), // 👈 از API
+          label: item.title, 
+          value: String(item.id), 
         })),
         next: res.data.next ? page + 1 : null,
       };

@@ -52,11 +52,10 @@ function Profile() {
         {user.last_name}
       </Item>
 
-      {/* مودال ویرایش */}
       {isEditing && (
         <div
           className="fixed inset-0 z-2000 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-xs"
-          onClick={() => setIsEditing(false)} // کلیک بیرون = بستن مودال
+          onClick={() => setIsEditing(false)} 
         >
           <div
             className="
@@ -66,7 +65,7 @@ function Profile() {
       p-6
       animate-slideUp md:animate-fadeIn
     "
-            onClick={(e) => e.stopPropagation()} // کلیک داخل = بسته نشه
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-center text-custom2 text-lg font-bold mb-4">
               ویرایش اطلاعات

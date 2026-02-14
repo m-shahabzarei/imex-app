@@ -6,22 +6,6 @@ if (!API_ORIGIN) {
   throw new Error("NEXT_PUBLIC_API_ORIGIN is not defined");
 }
 
-const API_ROUTES = [
-  "auth",
-  "users",
-  "core",
-  "subscription",
-  "ai_assistant",
-
-  "knowledge",
-  "knowledge/business-knowledge",
-
-  "book/tariff",
-  "book/statistics",
-  "book/preferential-tariff",
-  "book/preferential-tariff-country",
-] as const;
-
 const nextConfig: NextConfig = {
   trailingSlash: true,
 
@@ -35,12 +19,16 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  async rewrites() {
-    return API_ROUTES.map((route) => ({
-      source: `/api/${route}/:path*/`,
-      destination: `${API_ORIGIN}/${route}/:path*/`,
-    }));
+async rewrites() {
+    return [
+      {
+        source: "/api/:path*/",
+        destination: `${API_ORIGIN}/:path*/`,
+        basePath : false
+      },
+    ];
   },
+ 
 };
 
 export default nextConfig;

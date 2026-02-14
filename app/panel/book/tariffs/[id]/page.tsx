@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-hooks/preserve-manual-memoization */
 "use client";
 import NoItem from "@/component/Error/no-item";
@@ -11,20 +12,14 @@ import { useEffect, useState, useCallback } from "react";
 import AdvancedFilter from "@/component/panel/common/AdvanceFilter/AdvancedFilter";
 import LoadingSpinner from "@/component/ui/Loading";
 
-// ... (Interfaces remain the same as your code)
-// برای خلاصه شدن کد اینترفیس‌ها را تکرار نکردم اما شما باید نگه دارید
-
 function Page() {
   const { id } = useParams();
-  const [data1, setData] = useState<any>(); // تایپ‌ها را مطابق کد خودتان بگذارید
+  const [data1, setData] = useState<any>();
   const [trade, setTrade] = useState<any>();
   const [report, setReport] = useState<any>();
 
   const [reportLoading, setReportLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
-
-  // ... (useEffects remain the same)
-  // کدهای Fetch دیتا اینجا قرار دارد (بدون تغییر) ...
 
   useEffect(() => {
     if (!id) return;
@@ -60,11 +55,6 @@ function Page() {
     }
   }, [data1?.code, fetchReport]);
 
-  // ----------------------------------------------------
-  // ساخت متن‌های اشتراک‌گذاری (قسمت جدید)
-  // ----------------------------------------------------
-
-  // ۱. متن اطلاعات کلی
   const generalInfoText = `
 شماره تعرفه: ${data1?.code || "-"}
 شرح تعرفه: ${data1?.name || "-"}
@@ -78,7 +68,6 @@ function Page() {
 واحد: ${data1?.unit || "-"}
   `.trim();
 
-  // ۲. متن تعرفه ترجیحی
   const tradeText = trade
     ? `
 کشور: ${trade?.country?.title || "-"}
@@ -89,7 +78,6 @@ function Page() {
   `.trim()
     : "اطلاعاتی موجود نیست";
 
-  // ۳. متن آمار (مشابه عکس اولی که فرستادید)
   const reportText = `
 شماره تعرفه: ${data1?.code || "-"}
 شرح تعرفه: ${data1?.name || "-"}
@@ -105,13 +93,11 @@ function Page() {
   ).toLocaleString("fa-IR")}
   `.trim();
 
-  // ۴. متن یادداشت فصل (مشابه عکس دوم)
   const seasonNoteText = `
 یادداشت فصل:
 ${data1?.season?.description || "-"}
   `.trim();
 
-  // ۵. متن منابع (مشابه عکس سوم)
   const resourcesText = `
 منابع:
 - سایت رسمی گمرک ایران

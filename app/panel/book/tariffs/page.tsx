@@ -70,7 +70,7 @@ export default function Page() {
         NoFilter
         grid1
         Date
-        queryKey={["Tariffs", selectedYear]} // 👈 مهم برای refetch
+        queryKey={["Tariffs", selectedYear]} 
         fetcher={getTariffs}
         searchPlaceholder="جستجو در تعرفه ها،ارزش ها و ..."
         emptyComponent={<NoItem />}

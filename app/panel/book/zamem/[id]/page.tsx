@@ -76,7 +76,6 @@ export default function Page() {
           country: id,
         };
 
-        // 👇 فقط اگر 1403 بود تاریخ بفرست
         if (selectedYear === 1403) {
           Object.assign(finalFilters, getDateRangeByYear(1403));
         }

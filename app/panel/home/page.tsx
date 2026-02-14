@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -37,11 +38,7 @@ function Home() {
   const [searchTarget, setSearchTarget] =
     useState<SearchTarget>("zamem");
 
-  /*
-   |--------------------------------------------------------------------------
-   | Suggest Modal Logic (Show Only Once)
-   |--------------------------------------------------------------------------
-   */
+ 
   useEffect(() => {
     if (!user) return;
 
@@ -61,11 +58,7 @@ function Home() {
     setShowSuggest(false);
   };
 
-  /*
-   |--------------------------------------------------------------------------
-   | Search Handling
-   |--------------------------------------------------------------------------
-   */
+
   const handleSearch = () => {
     if (!searchText) return;
 
@@ -78,11 +71,6 @@ function Home() {
     setShowSearchModal(false);
   };
 
-  /*
-   |--------------------------------------------------------------------------
-   | Suggest Modal Component
-   |--------------------------------------------------------------------------
-   */
   const renderSuggestModal = () => {
     if (user?.type_subscription !== "free" || !showSuggest)
       return null;

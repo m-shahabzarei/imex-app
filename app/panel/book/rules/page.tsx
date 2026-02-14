@@ -20,7 +20,7 @@ const getRules = async (): Promise<{ results: IData[]; next: number | null }> =>
 
   return {
     results: Array.isArray(res.data.results) ? res.data.results : [],
-    next: null, // چون pagination نداره
+    next: null,
   };
 };
 

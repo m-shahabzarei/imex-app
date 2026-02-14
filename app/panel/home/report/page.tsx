@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import React, { useEffect, useState } from "react";
 import api from "@/lib/api";
@@ -17,12 +18,9 @@ function Page() {
   const [report, setReport] = useState<IReport>();
   const [loading, setLoading] = useState(false);
 
-  // تابع اصلی دریافت اطلاعات گزارش
-  // این تابع کوئری استرینگ ساخته شده توسط فیلتر را میگیرد
   const fetchReport = (queryString: string = "") => {
     setLoading(true);
 
-    // درخواست به آدرس اصلی گزارش + فیلترها
     api
       .get(`/book/statistics/report/?${queryString}`)
       .then((res) => {
@@ -36,7 +34,6 @@ function Page() {
       });
   };
 
-  // بارگذاری اولیه (بدون فیلتر)
   useEffect(() => {
     fetchReport();
   }, []);
@@ -44,18 +41,14 @@ function Page() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6" dir="rtl">
       <div className="max-w-3xl mx-auto">
-        {/* هدر صفحه */}
         <div className=" p-4 rounded-xl mb-6 shadow-sm">
           <h1 className="text-custom2 font-bold text-right">
             آمار صادرات و واردات
           </h1>
         </div>
 
-        {/* ۱. کامپوننت فیلتر */}
-        {/* وقتی دکمه اعمال زده شود، fetchReport با پارامترهای جدید صدا زده می‌شود */}
         <AdvancedFilter onApply={fetchReport} />
 
-        {/* ۲. نمایش نتایج */}
         {loading ? (
           <div className="flex justify-center items-center py-10">
             <div className="animate-pulse text-blue-600 font-bold">
