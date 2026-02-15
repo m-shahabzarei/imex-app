@@ -110,11 +110,11 @@ ${data1?.season?.description || "-"}
 
   return (
     <div
-      className="w-full max-md:flex max-md:flex-col max-md:items-center md:grid md:grid-cols-2 gap-8 md:gap-20 justify-center max-md:pt-12"
+      className="w-full max-md:flex max-md:flex-col max-md:items-center md:grid md:grid-cols-2 gap-8 md:gap-20 justify-center max-md:pt-4"
       dir="rtl"
     >
       {/* Right Column */}
-      <div className="md:w-[120%] w-[83%] flex flex-col gap-8">
+      <div className="md:w-[120%] w-full flex flex-col gap-8">
         {/* اطلاعات کلی */}
         <Accordion
           title="اطلاعات کلی"
@@ -123,7 +123,7 @@ ${data1?.season?.description || "-"}
           shareText={generalInfoText}
         >
           <div className="w-full mt-4">
-            <div className="flex gap-4">
+            <div className="flex max-md:flex-col gap-4">
               <InfoBox
                 variant="single"
                 label={"شماره تعرفه"}
@@ -212,7 +212,7 @@ ${data1?.season?.description || "-"}
                 </div>
               ) : (
                 <div className="animate-in fade-in duration-500">
-                  <div className="flex gap-3 mt-3">
+                  <div className="flex max-md:flex-col gap-3 mt-3">
                     <InfoBox
                       variant="single"
                       label="مجموع وزن(U)"
@@ -261,7 +261,7 @@ ${data1?.season?.description || "-"}
       </div>
 
       {/* Left Column */}
-      <div className="md:w-[80%] w-[83%] md:mr-20  flex flex-col gap-8">
+      <div className="md:w-[80%] w-full md:mr-20  flex flex-col gap-8">
         {/* یادداشت های فصل */}
         <Accordion
           title="یادداشت های فصل"
