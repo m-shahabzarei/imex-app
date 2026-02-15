@@ -12,6 +12,7 @@ interface ISearch {
   onChange?: (value: string) => void;
   home?:boolean;
   Date?:boolean;
+  Ment?:boolean;
   NoFilter?:boolean;
 }
 
@@ -24,6 +25,7 @@ export default function Search({
   onChange,
   onKeyDown,
   Date,
+  Ment,
   NoFilter
 }: ISearch) {
   const baseClass =
@@ -41,7 +43,8 @@ export default function Search({
         placeholder={placeholder}
         className={`${baseClass} focus:outline-0`}
       />
-      <Image onClick={onClick} src="/image/setting-4.svg" width={25} height={25} alt="setting icon" className={`${home ? "hidden" : ""} ${NoFilter ? "hidden" : ""} cursor-pointer invert brightness-40 absolute ${Date ? "max-md:top-4 max-md:left-29 top-4 left-32" :"max-md:top-4 max-md:left-3 top-4 left-2"} `} />
+      <Image onClick={onClick} src="/image/setting-4.svg" width={25} height={25} alt="setting icon" className={`${home ? "hidden" : ""} ${NoFilter ? "hidden" : ""} cursor-pointer invert brightness-40 absolute ${Date ? "max-md:top-4 max-md:left-29 top-4 left-32" :"max-md:top-4 max-md:left-3 top-4 left-2"}
+      ${Ment ? "max-md:top-4 max-md:left-29 top-4 left-32" :"max-md:top-4 max-md:left-3 top-4 left-2"} `} />
     </div>
   );
 }

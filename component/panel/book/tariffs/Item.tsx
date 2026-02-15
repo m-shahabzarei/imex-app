@@ -70,7 +70,6 @@ function Item(props: Iitem) {
 
         <hr className="md:hidden w-full text-gray-200" />
 
-        {/* بخش چپ: توضیحات سلسله مراتبی */}
         <div className="w-full md:w-5/12">
           <div className="flex flex-col gap-2 text-gray-400 text-xs md:text-right">
             {props.product_group.map(

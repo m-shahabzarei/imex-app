@@ -41,17 +41,12 @@ export default function Filters({ second, config, open, onClose }: Props) {
     isInitialized.current = true;
   }, [config, params]);
 
-  /**
-   * apply filters to URL
-   */
   const applyFilters = () => {
     setParams(localFilters);
     onClose?.();
   };
 
-  /**
-   * clear filters from URL and UI
-   */
+ 
   const resetFilters = () => {
     const cleared: Record<string, any> = {};
 

@@ -78,6 +78,7 @@ export default function DataListWithFilters<T>({
     <div className="max-md:pb-4 relative">
       <div className="flex justify-between w-full gap-3">
         <Search
+          Ment={Ment}
           Date={Date}
           NoFilter={NoFilter}
           variant="secondary"
@@ -108,6 +109,17 @@ export default function DataListWithFilters<T>({
       )}
 
       <div className="mt-4">
+         {
+          Ment? (
+            <div>
+              <hr className="text-gray-300 mb-3"/>
+              <Link href="/panel/home/mentors/RegistrationMentor" className="bg-[#5764ef34] text-[#5764EF] w-full mb-5 text-center justify-center py-[8px] rounded text-sm font-medium cursor-pointer flex items-center gap-1">
+              ثبت نام به عنوان مشاور
+            </Link>
+              </div>
+          ):
+          ""
+        }
         {isInitialLoading ? (
           <LoadingSpinner />
         ) : allResults.length === 0 ? (
@@ -135,6 +147,7 @@ export default function DataListWithFilters<T>({
             </div>
           </div>
         )}
+       
 
         {isFetchingNextPage && <LoadingSpinner />}
 

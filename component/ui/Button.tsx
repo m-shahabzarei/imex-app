@@ -1,10 +1,12 @@
 import Image from 'next/image'
 
 interface IButton{
-  variant : "primary" | "secondary" | "outline" | "payment" | "glassy",
+  variant : "primary" | "secondary" | "outline" | "payment" | "glassy" ,
   icon? : string,
   children : string | number,
-  onClick?: () => void
+  header?:boolean,
+  onClick?: () => void,
+  type?:"button" | "submit" | "reset"
 }
 const variants = {
   primary:"bg-[#FFFFFF] text-[#5562EF]",
@@ -13,12 +15,13 @@ const variants = {
   payment:"bg-[#FFFFFF] text-[#5562EF]",
   glassy:"bg-[#5764ef34] text-[#5764EF] w-full text-center justify-center"
 }
-const baseStyle = "max-md:py-[12px] max-md:text-lg px-[12px] py-[8px] rounded-[12px] text-sm font-medium cursor-pointer hover:opacity-90 transition-all duration-200 ease-in-out flex items-center gap-1"
 
-function Button({variant , icon , children , onClick} : IButton) {
+function Button({variant , icon,type ,header , children , onClick} : IButton) {
+  const baseStyle = `max-md:py-[12px] max-md:${header? "text-xs" : "text-sm "} px-[12px] py-[8px] rounded-[12px] text-sm font-medium cursor-pointer hover:opacity-90 transition-all duration-200 ease-in-out flex items-center gap-1`
+
   return (
     <>
-      <button  onClick={onClick} className={`${variants[variant]} ${baseStyle} `}>
+      <button type={type ?? "button"}  onClick={onClick} className={`${variants[variant]} ${baseStyle} `}>
       {icon && <Image src={icon} alt='icon' width="20" height="20"/> }
       {children}   
       </button>

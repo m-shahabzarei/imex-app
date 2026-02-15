@@ -53,7 +53,7 @@ function Item({
     `}
   />
 
-  <p
+  <span
     className={`${variants[variant]} relative z-10 transition-colors duration-500
       ${hover ? "text-white" : "text-gray-600"}
     `}
@@ -71,7 +71,7 @@ function Item({
         <Image src={icon} alt="icon" width="23" height="22" />
       </div>
     )}
-  </p>
+  </span>
 
   <div
     className={`left-[4%] absolute z-10 transition-all duration-500
